@@ -64,6 +64,8 @@ where:
 ##Semi-supervised Learning on Tripartite Graph
 ###Code location
 The implementation for Label Propagation is in LP folder and the Regularization-based clustering is in Regularization folder
+The implementation for selecting important nodes to be labeled is in node centrality folder
+### Node centrality
 ###Label Propagation on Tripartite Graph
 On-going work
 ###Regularization-based Tripartite Graph Clustering
