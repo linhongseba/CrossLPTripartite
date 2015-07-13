@@ -6,6 +6,7 @@
 package labelinference;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  *
@@ -13,32 +14,34 @@ import java.util.Collection;
  */
 public class Vertex {
     private Object info;
-    private Collection<Vertex> neighbors;
+    private final Collection<Vertex> neighbors;
     public Vertex(Object _info){
-
+        info=_info;
+        neighbors=new HashSet<>();
     }
 
     public Vertex(){
-
+        info=null;
+        neighbors=new HashSet<>();
     }
 
     public void setInfo(Object _info) {
-
+        info=_info;
     }
 
     public Object getInfo() {
-        return null;
+        return info;
     }
 
-    public void newEdge(Vertex _neighbor) {
-
+    public void addEdge(Vertex _neighbor) {
+        neighbors.add(_neighbor);
     }
 
-    public void deleteEdge(Vertex _neighbor) {
-
+    public void removeEdge(Vertex _neighbor) {
+        neighbors.remove(_neighbor);
     }
 
     public int degree() {
-        return 0;
+        return neighbors.size();
     }
 }

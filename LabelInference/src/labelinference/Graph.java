@@ -6,43 +6,48 @@
 package labelinference;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 /**
  *
  * @author sailw
  */
 public class Graph {
-    private Collection<Vertex> vertices;
+    private final Collection<Vertex> vertices;
 
     public Graph() {
-
+        vertices=new HashSet<>();
     }
 
     public Graph(Collection<Vertex> _vertices) {
-
+        vertices=_vertices;
     }
 
     public void addVertex(Vertex _vertex) {
-
+        vertices.add(_vertex);
     }
 
-    public void addEdge() {
-
+    public void addEdge(Vertex a, Vertex b) {
+        a.addEdge(b);
+        b.addEdge(a);
     }
 
-    public void deleteVertex(Vertex _vertex) {
-
+    public void removeVertex(Vertex _vertex) {
+        vertices.remove(_vertex);
     }
 
-    public void deleteEdge() {
-
+    public void removeEdge(Vertex a, Vertex b) {
+        a.removeEdge(b);
+        b.removeEdge(a);
     }
 
     public Collection<Vertex> getVertices() {
-        return null;
+        return vertices;
     }
 
     public Matrix toMatrix() {
-        return null;
+        double data[][]=new double[vertices.size()][vertices.size()];
+        MatrixFactory matrixFactory=MatrixFactory.getInstance();
+        return matrixFactory.creatMatrix(data);
     }
 }
