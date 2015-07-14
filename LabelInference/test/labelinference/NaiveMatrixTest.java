@@ -5,7 +5,10 @@
  */
 package labelinference;
 
-import org.junit.BeforeClass;
+import static java.lang.Math.abs;
+import static java.lang.Math.sqrt;
+import labelinference.exceptions.DimensionNotAgreeException;
+import labelinference.exceptions.IrreversibleException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -15,207 +18,141 @@ import static org.junit.Assert.*;
  */
 public class NaiveMatrixTest {
     
-    public NaiveMatrixTest() {
-    }
+    double dataA[][]={{1,2},{4,8}};
+    double dataB[][]={{5,8,5},{2,3,4}};
+    double dataC[][]={{6,4},{3,4},{7,6}};
+    double dataD[][]={{2,1,5},{2,4,4},{7,3,1}};
     
-    @BeforeClass
-    public static void setUpClass() {
+    Matrix mA;
+    Matrix mB;
+    Matrix mC;
+    Matrix mD;
+    Matrix mE;
+    Matrix mF;
+    
+    public NaiveMatrixTest() throws DimensionNotAgreeException {
+        mA=new NaiveMatrix(dataA);
+        mB=new NaiveMatrix(dataB);
+        mC=new NaiveMatrix(dataC);
+        mD=new NaiveMatrix(dataD);
+        mE=mB.times(mC);
+        mF=mC.times(mB);
     }
 
     /**
      * Test of times method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testTimes() throws Exception {
+    public void testTimes() throws DimensionNotAgreeException {
         System.out.println("times");
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.times(b);
+        double expResData1[][]={{9,18},{36,72}};
+        Matrix expResult = new NaiveMatrix(expResData1);
+        Matrix result = mA.times(mA);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        double expResData2[][]={{9, 14, 13}, {36, 56, 52}};
+        expResult = new NaiveMatrix(expResData2);
+        result = mA.times(mB);
+        assertEquals(expResult, result);
+        
+        double expResData3[][]={{41, 21, 19}, {40, 30, 30}, {27, 22, 48}};
+        expResult = new NaiveMatrix(expResData3);
+        result = mD.times(mD);
+        assertEquals(expResult, result);
+        
+        double expMEData[][]={{89, 82}, {49, 44}};
+        Matrix expME = new NaiveMatrix(expMEData);
+        assertEquals(expME, mE);
+        
+        double expMFData[][]={{38, 60, 46}, {23, 36, 31}, {47, 74, 59}};
+        Matrix expMF = new NaiveMatrix(expMFData);
+        assertEquals(expMF, mF);
     }
 
     /**
      * Test of cron method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testCron() throws Exception {
+    public void testCron() throws DimensionNotAgreeException  {
         System.out.println("cron");
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.cron(b);
+        double expResData1[][]={{1,4},{16,64}};
+        Matrix expResult = new NaiveMatrix(expResData1);
+        Matrix result = mA.cron(mA);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        double expResData2[][]={{4, 1, 25}, {4, 16, 16}, {49, 9, 1}};
+        expResult = new NaiveMatrix(expResData2);
+        result = mD.cron(mD);
+        assertEquals(expResult, result);
     }
 
     /**
      * Test of add method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testAdd() throws Exception {
+    public void testAdd() throws DimensionNotAgreeException {
         System.out.println("add");
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.add(b);
+        double expResData1[][]={{2,4},{8,16}};
+        Matrix expResult = new NaiveMatrix(expResData1);
+        Matrix result = mA.cron(mA);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        double expResData2[][]={{4, 2, 10}, {4, 8, 8}, {14, 6, 2}};
+        expResult = new NaiveMatrix(expResData2);
+        result = mD.cron(mD);
+        assertEquals(expResult, result);
     }
 
     /**
      * Test of subtract method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testSubtract() throws Exception {
+    public void testSubtract() throws DimensionNotAgreeException {
         System.out.println("subtract");
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.subtract(b);
+        double expResData1[][]={{88,80},{45,36}};
+        Matrix expResult = new NaiveMatrix(expResData1);
+        Matrix result = mE.subtract(mA);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        double expResData2[][]={{36, 59, 41}, {21, 32, 27}, {40, 71, 58}};
+        expResult = new NaiveMatrix(expResData2);
+        result = mF.subtract(mD);
+        assertEquals(expResult, result);
     }
 
     /**
      * Test of divide method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testDivide() throws Exception {
+    public void testDivide() throws DimensionNotAgreeException  {
         System.out.println("divide");
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.divide(b);
+        double expResData1[][]={{89, 41}, {49/4, 11/2}};
+        Matrix expResult = new NaiveMatrix(expResData1);
+        Matrix result = mE.divide(mA);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        double expResData2[][]={{19, 60, 46/5}, {23/2, 9, 31/4}, {47/7, 74/3, 59}};
+        expResult = new NaiveMatrix(expResData2);
+        result = mF.divide(mD);
+        assertEquals(expResult, result);
     }
 
     /**
      * Test of sqrt method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testSqrt() throws Exception {
+    public void testSqrt() throws DimensionNotAgreeException {
         System.out.println("sqrt");
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.sqrt();
+        double expResData2[][]={{sqrt(2), 1, sqrt(5)}, {sqrt(2), 2, 2}, {sqrt(7), sqrt(3), 1}};
+        Matrix expResult = new NaiveMatrix(expResData2);
+        Matrix result = mD.sqrt();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of get method, of class NaiveMatrix.
-     */
-    @Test
-    public void testGet() throws Exception {
-        System.out.println("get");
-        int row = 0;
-        int col = 0;
-        NaiveMatrix instance = new NaiveMatrix();
-        double expResult = 0.0;
-        double result = instance.get(row, col);
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getRow method, of class NaiveMatrix.
-     */
-    @Test
-    public void testGetRow() throws Exception {
-        System.out.println("getRow");
-        int row = 0;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.getRow(row);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getCol method, of class NaiveMatrix.
-     */
-    @Test
-    public void testGetCol() throws Exception {
-        System.out.println("getCol");
-        int col = 0;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.getCol(col);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of set method, of class NaiveMatrix.
-     */
-    @Test
-    public void testSet() throws Exception {
-        System.out.println("set");
-        int row = 0;
-        int col = 0;
-        double x = 0.0;
-        NaiveMatrix instance = new NaiveMatrix();
-        instance.set(row, col, x);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setRow method, of class NaiveMatrix.
-     */
-    @Test
-    public void testSetRow() throws Exception {
-        System.out.println("setRow");
-        int row = 0;
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        instance.setRow(row, b);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of setCol method, of class NaiveMatrix.
-     */
-    @Test
-    public void testSetCol() throws Exception {
-        System.out.println("setCol");
-        int col = 0;
-        Matrix b = null;
-        NaiveMatrix instance = new NaiveMatrix();
-        instance.setCol(col, b);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of subMatrix method, of class NaiveMatrix.
-     */
-    @Test
-    public void testSubMatrix() throws Exception {
-        System.out.println("subMatrix");
-        int topRow = 0;
-        int bottomRow = 0;
-        int leftCol = 0;
-        int rightCol = 0;
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.subMatrix(topRow, bottomRow, leftCol, rightCol);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -224,26 +161,24 @@ public class NaiveMatrixTest {
     @Test
     public void testDeterminant() {
         System.out.println("determinant");
-        NaiveMatrix instance = new NaiveMatrix();
-        double expResult = 0.0;
-        double result = instance.determinant();
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        double result = mA.determinant();
+        if(abs(result)>1e-6)fail();
+        
+        result = mD.determinant();
+        if(abs(result+100)>1e-6)fail();
     }
 
     /**
      * Test of inverse method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.IrreversibleException
      */
     @Test
-    public void testInverse() throws Exception {
+    public void testInverse() throws IrreversibleException {
         System.out.println("inverse");
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.inverse();
+        double expResData2[][]={{2/25, -7/50, 4/25}, {-13/50, 33/100, -1/50}, {11/50, -1/100, -3/50}};
+        Matrix expResult = new NaiveMatrix(expResData2);
+        Matrix result = mD.inverse();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -252,12 +187,10 @@ public class NaiveMatrixTest {
     @Test
     public void testTranspose() {
         System.out.println("transpose");
-        NaiveMatrix instance = new NaiveMatrix();
-        Matrix expResult = null;
-        Matrix result = instance.transpose();
+        double expResData2[][]={{2, 2, 7}, {1, 4, 3}, {5, 4, 1}};
+        Matrix expResult = new NaiveMatrix(expResData2);
+        Matrix result = mD.transpose();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -266,13 +199,11 @@ public class NaiveMatrixTest {
     @Test
     public void testNorm() {
         System.out.println("norm");
-        String normName = "";
-        NaiveMatrix instance = new NaiveMatrix();
-        double expResult = 0.0;
-        double result = instance.norm(normName);
-        assertEquals(expResult, result, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        double result = mA.norm(Matrix.FROBENIUS_NORM);
+        if(abs(result-sqrt(85))>1e-6)fail();
+        
+        result = mD.norm(Matrix.FROBENIUS_NORM);
+        if(abs(result-sqrt(125))>1e-6)fail();
     }
     
 }
