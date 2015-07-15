@@ -32,8 +32,8 @@ public class NaiveMatrix implements Matrix{
 		A= new Jama.Matrix(dim,dim);
 	}
     public Matrix times(Matrix b) throws DimensionNotAgreeException {
-   		Matrix M;
-   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
    		{
    			throw new DimensionNotAgreeException();
    		}
@@ -43,8 +43,8 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public Matrix cron(Matrix b) throws DimensionNotAgreeException {
-   		Matrix M;
-   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+ 		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
    		{
    			throw new DimensionNotAgreeException();
    		}
@@ -54,8 +54,8 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public Matrix add(Matrix b) throws DimensionNotAgreeException {
-   		Matrix M;
-   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
    		{
    			throw new DimensionNotAgreeException();
    		}
@@ -65,8 +65,8 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public Matrix subtract(Matrix b) throws DimensionNotAgreeException {
-    	Matrix M;
-   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+  		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
    		{
    			throw new DimensionNotAgreeException();
    		}
@@ -75,8 +75,8 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
-    	Matrix M;
-   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+ 		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
    		{
    			throw new DimensionNotAgreeException();
    		}
@@ -87,8 +87,8 @@ public class NaiveMatrix implements Matrix{
     @Override
     public Matrix sqrt(){
     	int n=A.getRowDimension(),m=A.getColumnDimension();
-    	Matrix M;
-    	for(int i=0;i<n;i++)
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+   		for(int i=0;i<n;i++)
     		for(int j=0;j<m;j++)
     			M.A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
     	return M;
@@ -113,8 +113,8 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new RowOutOfRangeException();
    		}
-   		Matrix M;
-    	M.A=A.getMatrix(row,row,0,A.getColumnDimension());
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+   		M.A=A.getMatrix(row,row,0,A.getColumnDimension());
         return M;
     }
 
@@ -124,8 +124,8 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new ColumnOutOfRangeException("Dimension Error!");
    		}
-     	Matrix M;
-    	M.A=A.getMatrix(0,A.getRowDimension(),col,col);
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+   		M.A=A.getMatrix(0,A.getRowDimension(),col,col);
         return M;
     }
 
@@ -170,8 +170,8 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new ColumnOutOfRangeException("Dimension Error!");
    		}
-    	Matrix M;
-    	M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+   		M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
 		return M;
     }
 
@@ -185,16 +185,16 @@ public class NaiveMatrix implements Matrix{
     public Matrix inverse() throws IrreversibleException {
     	if(A.inverse()==null)
     		throw new IrreversibleException("Irreversibl!");
-    	Matrix M;
-    	M.A=A.inverse();
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+   		M.A=A.inverse();
     	return M;
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Matrix transpose() {
-    	Matrix M;
-    	M.A=A.transpose();
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+   		M.A=A.transpose();
     	return M;
     }
 
