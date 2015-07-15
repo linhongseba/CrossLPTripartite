@@ -97,12 +97,12 @@ public class NaiveMatrixTest {
         System.out.println("add");
         double expResData1[][]={{2,4},{8,16}};
         Matrix expResult = new NaiveMatrix(expResData1);
-        Matrix result = mA.cron(mA);
+        Matrix result = mA.add(mA);
         assertEquals(expResult, result);
         
         double expResData2[][]={{4, 2, 10}, {4, 8, 8}, {14, 6, 2}};
         expResult = new NaiveMatrix(expResData2);
-        result = mD.cron(mD);
+        result = mD.add(mD);
         assertEquals(expResult, result);
     }
 
@@ -131,12 +131,12 @@ public class NaiveMatrixTest {
     @Test
     public void testDivide() throws DimensionNotAgreeException  {
         System.out.println("divide");
-        double expResData1[][]={{89, 41}, {49/4, 11/2}};
+        double expResData1[][]={{89, 41}, {49.0/4, 11.0/2}};
         Matrix expResult = new NaiveMatrix(expResData1);
         Matrix result = mE.divide(mA);
         assertEquals(expResult, result);
         
-        double expResData2[][]={{19, 60, 46/5}, {23/2, 9, 31/4}, {47/7, 74/3, 59}};
+        double expResData2[][]={{19, 60, 46.0/5}, {23.0/2, 9, 31.0/4}, {47.0/7, 74.0/3, 59}};
         expResult = new NaiveMatrix(expResData2);
         result = mF.divide(mD);
         assertEquals(expResult, result);
@@ -175,7 +175,7 @@ public class NaiveMatrixTest {
     @Test
     public void testInverse() throws IrreversibleException {
         System.out.println("inverse");
-        double expResData2[][]={{2/25, -7/50, 4/25}, {-13/50, 33/100, -1/50}, {11/50, -1/100, -3/50}};
+        double expResData2[][]={{2.0/25, -7.0/50, 4.0/25}, {-13.0/50, 33.0/100, -1.0/50}, {11.0/50, -1.0/100, -3.0/50}};
         Matrix expResult = new NaiveMatrix(expResData2);
         Matrix result = mD.inverse();
         assertEquals(expResult, result);

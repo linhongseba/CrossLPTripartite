@@ -26,7 +26,7 @@ public class MatrixFactory {
     }
 
     public Matrix creatMatrix(String path) {
-        return new NaiveMatrix(path);
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Matrix creatMatrix(double data[][]) {

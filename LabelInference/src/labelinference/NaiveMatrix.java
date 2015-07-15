@@ -4,10 +4,8 @@
  * and open the template in the editor.
  */
 package labelinference;
-import Jama.*; 
-import java.util.*;
-import java.lang.Math.*;
 
+import static java.lang.Math.abs;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
@@ -18,69 +16,72 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author sailw
  */
 public class NaiveMatrix implements Matrix{
-	Jama.Matrix A; 
-	public NaiveMatrix(int row,int col)
-	{
-		A= new Jama.Matrix(row,col);
-	}
-	public NaiveMatrix(double data[][])
-	{
-		A= new Jama.Matrix(data);
-	}
-	public NaiveMatrix(int dim)
-	{
-		A= new Jama.Matrix(dim,dim);
-	}
+    Jama.Matrix A; 
+    public NaiveMatrix(int row,int col)
+    {
+        A= new Jama.Matrix(row,col);
+    }
+    public NaiveMatrix(double data[][])
+    {
+        A= new Jama.Matrix(data);
+    }
+    public NaiveMatrix(int dim)
+    {
+        A= new Jama.Matrix(dim,dim);
+    }
+    
+    @Override
     public Matrix times(Matrix b) throws DimensionNotAgreeException {
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
-   		{
-   			throw new DimensionNotAgreeException();
-   		}
-   		M.A=A.times(b.A);
-   		return M;
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(M.A.getColumnDimension()!=((NaiveMatrix)b).A.getRowDimension())
+        {
+                throw new DimensionNotAgreeException();
+        }
+        M.A=A.times(((NaiveMatrix)b).A);
+        return M;
     }
 
     @Override
     public Matrix cron(Matrix b) throws DimensionNotAgreeException {
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
- 		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
-   		{
-   			throw new DimensionNotAgreeException();
-   		}
-   		M.A=A.arrayTimes(b.A);
-   		return M;
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
+        {
+            throw new DimensionNotAgreeException();
+        }
+        M.A=A.arrayTimes(((NaiveMatrix)b).A);
+        return M;
     }
 
     @Override
     public Matrix add(Matrix b) throws DimensionNotAgreeException {
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
-   		{
-   			throw new DimensionNotAgreeException();
-   		}
-   		M.A=A.plus(b.A);
-   		return M;
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
+        {
+                throw new DimensionNotAgreeException();
+        }
+        M.A=A.plus(((NaiveMatrix)b).A);
+        return M;
     }
 
     @Override
     public Matrix subtract(Matrix b) throws DimensionNotAgreeException {
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-  		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
-   		{
-   			throw new DimensionNotAgreeException();
-   		}
-    	M.A=A.minus(b.A);
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
+        {
+                throw new DimensionNotAgreeException();
+        }
+    	M.A=A.minus(((NaiveMatrix)b).A);
+        return M;
     }
 
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
    		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
- 		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+ 		if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
    		{
    			throw new DimensionNotAgreeException();
    		}
-    	M.A=A.arrayRightDivide(b.A);
+    	M.A=A.arrayRightDivide(((NaiveMatrix)b).A);
     	return M;
     }
 
@@ -96,11 +97,11 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public double get(int row, int col) throws ColumnOutOfRangeException, RowOutOfRangeException {
-   		if(row>A.getRowDimension())
+   		if(row>=A.getRowDimension())
    		{
    			throw new RowOutOfRangeException();
    		}
-   		if(col>A.getColumnDimension())
+   		if(col>=A.getColumnDimension())
    		{
    			throw new ColumnOutOfRangeException();
    		}
@@ -109,7 +110,7 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public Matrix getRow(int row) throws RowOutOfRangeException {
-   		if(row>A.getRowDimension())
+   		if(row>=A.getRowDimension())
    		{
    			throw new RowOutOfRangeException();
    		}
@@ -120,9 +121,9 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public Matrix getCol(int col) throws ColumnOutOfRangeException {
-   		if(col>A.getColumnDimension())
+   		if(col>=A.getColumnDimension())
    		{
-   			throw new ColumnOutOfRangeException("Dimension Error!");
+   			throw new ColumnOutOfRangeException();
    		}
    		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
    		M.A=A.getMatrix(0,A.getRowDimension(),col,col);
@@ -131,13 +132,13 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public void set(int row, int col, double x) throws ColumnOutOfRangeException, RowOutOfRangeException {
-  		if(row>A.getRowDimension())
+  		if(row>=A.getRowDimension())
    		{
-   			throw new RowOutOfRangeException("Dimension Error!");
+   			throw new RowOutOfRangeException();
    		}
-   		if(col>A.getColumnDimension())
+   		if(col>=A.getColumnDimension())
    		{
-   			throw new ColumnOutOfRangeException("Dimension Error!");
+   			throw new ColumnOutOfRangeException();
    		}
         A.set(row, col, x);
     }
@@ -146,29 +147,29 @@ public class NaiveMatrix implements Matrix{
     public void setRow(int row, Matrix b) throws RowOutOfRangeException, DimensionNotAgreeException {
   		if(row>A.getRowDimension())
    		{
-   			throw new RowOutOfRangeException("Dimension Error!");
+   			throw new RowOutOfRangeException();
    		}
-        A.setMatrix(row,row,0,A.getColumnDimension(),b.A);
+        A.setMatrix(row,row,0,A.getColumnDimension(),((NaiveMatrix)b).A);
     }
 
     @Override
     public void setCol(int col, Matrix b) throws ColumnOutOfRangeException, DimensionNotAgreeException {
-   		if(col>A.getColumnDimension())
+   		if(col>=A.getColumnDimension())
    		{
-   			throw new ColumnOutOfRangeException("Dimension Error!");
+   			throw new ColumnOutOfRangeException();
    		}
-        A.setMatrix(0,A.getRowDimension(),col,col,b.A);
+        A.setMatrix(0,A.getRowDimension(),col,col,((NaiveMatrix)b).A);
     }
 
     @Override
     public Matrix subMatrix(int topRow, int bottomRow, int leftCol, int rightCol) throws ColumnOutOfRangeException, RowOutOfRangeException {
-  		if(bottomRow>A.getRowDimension())
+  		if(bottomRow>=A.getRowDimension())
    		{
-   			throw new RowOutOfRangeException("Dimension Error!");
+   			throw new RowOutOfRangeException();
    		}
-   		if(rightCol>A.getColumnDimension())
+   		if(rightCol>=A.getColumnDimension())
    		{
-   			throw new ColumnOutOfRangeException("Dimension Error!");
+   			throw new ColumnOutOfRangeException();
    		}
    		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
    		M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
@@ -178,19 +179,16 @@ public class NaiveMatrix implements Matrix{
     @Override
     public double determinant() {
     	return A.det();
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public Matrix inverse() throws IrreversibleException {
-    	if(A.inverse()==null)
-    		throw new IrreversibleException("Irreversibl!");
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-   		M.A=A.inverse();
+    	if(A.inverse()==null)throw new IrreversibleException();
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        M.A=A.inverse();
     	return M;
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
+    
     @Override
     public Matrix transpose() {
    		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
@@ -200,8 +198,41 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public double norm(String normName) {
-    	if(normName=="F")
+    	if(normName==Matrix.FROBENIUS_NORM)
     		return A.normF();
+        return 0;
     }
     
+   @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof NaiveMatrix)) {
+            return false;
+        }
+        NaiveMatrix other = (NaiveMatrix) object;
+        
+        if(A.getRowDimension()!=other.A.getRowDimension()||A.getColumnDimension()!=other.A.getColumnDimension())return false;
+        
+        for(int row=0;row<A.getRowDimension();row++)
+            for(int col=0;col<A.getColumnDimension();col++)
+                try {
+                    if(abs(get(row,col)-other.get(row,col))>1e-6)return false;
+                } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        String ret="{";
+        for(int row=0;row<A.getRowDimension();row++) {
+            ret+="{";
+            for(int col=0;col<A.getColumnDimension();col++)
+                try {
+                    ret+=(Double)get(row,col);
+                    if(A.getColumnDimension()-col>1)ret+=", ";
+                } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+            ret+="}";
+            if(A.getRowDimension()-row>1)ret+=", ";
+        }
+        return ret;
+    }
 }
