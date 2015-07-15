@@ -4,6 +4,9 @@
  * and open the template in the editor.
  */
 package labelinference;
+import Jama.*; 
+import java.util.*;
+import java.lang.Math.*;
 
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
@@ -15,90 +18,190 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author sailw
  */
 public class NaiveMatrix implements Matrix{
-
-    @Override
+	Jama.Matrix A; 
+	public NaiveMatrix(int row,int col)
+	{
+		A= new Jama.Matrix(row,col);
+	}
+	public NaiveMatrix(double data[][])
+	{
+		A= new Jama.Matrix(data);
+	}
+	public NaiveMatrix(int dim)
+	{
+		A= new Jama.Matrix(dim,dim);
+	}
     public Matrix times(Matrix b) throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		Matrix M;
+   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		{
+   			throw new DimensionNotAgreeException();
+   		}
+   		M.A=A.times(b.A);
+   		return M;
     }
 
     @Override
     public Matrix cron(Matrix b) throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		Matrix M;
+   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		{
+   			throw new DimensionNotAgreeException();
+   		}
+   		M.A=A.arrayTimes(b.A);
+   		return M;
     }
 
     @Override
     public Matrix add(Matrix b) throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		Matrix M;
+   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		{
+   			throw new DimensionNotAgreeException();
+   		}
+   		M.A=A.plus(b.A);
+   		return M;
     }
 
     @Override
     public Matrix subtract(Matrix b) throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	Matrix M;
+   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		{
+   			throw new DimensionNotAgreeException();
+   		}
+    	M.A=A.minus(b.A);
     }
 
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	Matrix M;
+   		if(M.A.getRowDimension()!=b.A.getRowDimension()||M.A.getColumnDimension()!=b.A.getColumnDimension())
+   		{
+   			throw new DimensionNotAgreeException();
+   		}
+    	M.A=A.arrayRightDivide(b.A);
+    	return M;
     }
 
     @Override
-    public Matrix sqrt() throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Matrix sqrt(){
+    	int n=A.getRowDimension(),m=A.getColumnDimension();
+    	Matrix M;
+    	for(int i=0;i<n;i++)
+    		for(int j=0;j<m;j++)
+    			M.A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
+    	return M;
     }
 
     @Override
     public double get(int row, int col) throws ColumnOutOfRangeException, RowOutOfRangeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		if(row>A.getRowDimension())
+   		{
+   			throw new RowOutOfRangeException();
+   		}
+   		if(col>A.getColumnDimension())
+   		{
+   			throw new ColumnOutOfRangeException();
+   		}
+    	return A.get(row,col);
     }
 
     @Override
     public Matrix getRow(int row) throws RowOutOfRangeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		if(row>A.getRowDimension())
+   		{
+   			throw new RowOutOfRangeException();
+   		}
+   		Matrix M;
+    	M.A=A.getMatrix(row,row,0,A.getColumnDimension());
+        return M;
     }
 
     @Override
     public Matrix getCol(int col) throws ColumnOutOfRangeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		if(col>A.getColumnDimension())
+   		{
+   			throw new ColumnOutOfRangeException("Dimension Error!");
+   		}
+     	Matrix M;
+    	M.A=A.getMatrix(0,A.getRowDimension(),col,col);
+        return M;
     }
 
     @Override
     public void set(int row, int col, double x) throws ColumnOutOfRangeException, RowOutOfRangeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  		if(row>A.getRowDimension())
+   		{
+   			throw new RowOutOfRangeException("Dimension Error!");
+   		}
+   		if(col>A.getColumnDimension())
+   		{
+   			throw new ColumnOutOfRangeException("Dimension Error!");
+   		}
+        A.set(row, col, x);
     }
 
     @Override
     public void setRow(int row, Matrix b) throws RowOutOfRangeException, DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  		if(row>A.getRowDimension())
+   		{
+   			throw new RowOutOfRangeException("Dimension Error!");
+   		}
+        A.setMatrix(row,row,0,A.getColumnDimension(),b.A);
     }
 
     @Override
     public void setCol(int col, Matrix b) throws ColumnOutOfRangeException, DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+   		if(col>A.getColumnDimension())
+   		{
+   			throw new ColumnOutOfRangeException("Dimension Error!");
+   		}
+        A.setMatrix(0,A.getRowDimension(),col,col,b.A);
     }
 
     @Override
     public Matrix subMatrix(int topRow, int bottomRow, int leftCol, int rightCol) throws ColumnOutOfRangeException, RowOutOfRangeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  		if(bottomRow>A.getRowDimension())
+   		{
+   			throw new RowOutOfRangeException("Dimension Error!");
+   		}
+   		if(rightCol>A.getColumnDimension())
+   		{
+   			throw new ColumnOutOfRangeException("Dimension Error!");
+   		}
+    	Matrix M;
+    	M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
+		return M;
     }
 
     @Override
     public double determinant() {
+    	return A.det();
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Matrix inverse() throws IrreversibleException {
+    	if(A.inverse()==null)
+    		throw new IrreversibleException("Irreversibl!");
+    	Matrix M;
+    	M.A=A.inverse();
+    	return M;
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public Matrix transpose() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	Matrix M;
+    	M.A=A.transpose();
+    	return M;
     }
 
     @Override
     public double norm(String normName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	if(normName=="F")
+    		return A.normF();
     }
     
 }
