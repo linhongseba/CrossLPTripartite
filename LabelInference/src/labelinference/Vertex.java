@@ -13,24 +13,32 @@ import java.util.HashSet;
  * @author sailw
  */
 public class Vertex {
-    private Object info;
+    public static class Type {}
+
+    final Type type;
+    public final static Type typeA=new Type();
+    public final static Type typeB=new Type();
+    public final static Type typeC=new Type();
+
+    Matrix label;
+
     private final Collection<Vertex> neighbors;
-    public Vertex(Object _info){
-        info=_info;
+    public Vertex(Type _type, Matrix _label){
+        type=_type;
+        label=_label;
         neighbors=new HashSet<>();
     }
 
-    public Vertex(){
-        info=null;
-        neighbors=new HashSet<>();
+    public void setLabel(Matrix _label) {
+        label=_label;
     }
 
-    public void setInfo(Object _info) {
-        info=_info;
+    public Matrix getLabel() {
+        return label;
     }
-
-    public Object getInfo() {
-        return info;
+    
+    public Type getType() { 
+        return type;
     }
 
     public void addEdge(Vertex _neighbor) {
