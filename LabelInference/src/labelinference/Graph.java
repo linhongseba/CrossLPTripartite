@@ -27,9 +27,9 @@ public class Graph {
         vertices.add(_vertex);
     }
 
-    public void addEdge(Vertex a, Vertex b) {
-        a.addEdge(b);
-        b.addEdge(a);
+    public void addEdge(Vertex a, Vertex b, double weight) {
+        a.addEdge(b,weight);
+        b.addEdge(a,weight);
     }
 
     public void removeVertex(Vertex _vertex) {

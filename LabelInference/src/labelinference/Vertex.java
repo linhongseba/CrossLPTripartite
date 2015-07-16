@@ -5,8 +5,8 @@
  */
 package labelinference;
 
-import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -19,16 +19,22 @@ public class Vertex {
     public final static Type typeA=new Type();
     public final static Type typeB=new Type();
     public final static Type typeC=new Type();
+    final boolean ISY0;
 
     Matrix label;
 
-    private final Collection<Vertex> neighbors;
-    public Vertex(Type _type, Matrix _label){
+    private final Map<Vertex,Double> neighbors;
+    public Vertex(Type _type, Matrix _label,boolean  _isY0){
         type=_type;
         label=_label;
-        neighbors=new HashSet<>();
+        neighbors=new HashMap<>();
+        ISY0=_isY0;
     }
 
+    public boolean isY0() {
+        return ISY0;
+    }
+    
     public void setLabel(Matrix _label) {
         label=_label;
     }
@@ -41,8 +47,8 @@ public class Vertex {
         return type;
     }
 
-    public void addEdge(Vertex _neighbor) {
-        neighbors.add(_neighbor);
+    public void addEdge(Vertex _neighbor, double _weight) {
+        neighbors.put(_neighbor,_weight);
     }
 
     public void removeEdge(Vertex _neighbor) {

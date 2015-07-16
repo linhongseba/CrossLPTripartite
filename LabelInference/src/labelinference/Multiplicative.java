@@ -1,10 +1,29 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package labelinference;
 
-import labelinference.exceptions.ColumnOutOfRangeException;
-import labelinference.exceptions.DimensionNotAgreeException;
-import labelinference.exceptions.RowOutOfRangeException;
+/**
+ *
+ * @author sailw
+ */
+public class Multiplicative implements LabelInference{
+    
+    public Multiplicative(Graph _g) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public Graph getResult() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+}
 
-public class Multiplicative {
+/************
+ * public class Multiplicative {
 	Matrix Y0;
 	Matrix Y;
 	Matrix Gab,Gbc,Gac;
@@ -91,3 +110,4 @@ public class Multiplicative {
 		return x<nuance;
 	}
 }
+ */
