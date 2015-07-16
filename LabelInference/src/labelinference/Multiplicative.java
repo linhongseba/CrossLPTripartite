@@ -9,11 +9,14 @@ public class Multiplicative {
 	Matrix Y;
 	Matrix Gab,Gbc,Gac;
 	Matrix Sa,Sb,Sc;
+	Matrix tempY;
 	int na,nb,nc;
 	//M is the matrix transfered from the tripartite graph. Yl is the ground matrix. 
-	Multiplicative(Matrix M,Matrix Yl,int Na,int Nb,int Nc) throws ColumnOutOfRangeException, RowOutOfRangeException
+	Multiplicative(Matrix M,Matrix Yl,int Na,int Nb,int Nc) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException
 	{
 		Y0=new NaiveMatrix(Na+Nb+Nc,2);
+		Y=new NaiveMatrix(Na+Nb+Nc,2);
+		tempY=new NaiveMatrix(Na+Nb+Nc,2);
 		Sa=new NaiveMatrix(Na,Na+Nb+Nc);
 		na=Na;nb=Nb;nc=Nc;
 		Gab=M.subMatrix(0,na-1,na,na+nb-1);
@@ -40,7 +43,7 @@ public class Multiplicative {
 					Y0.set(na+nb+i, j, 1);
 					Sc.set(i, i, 1);
 				}
-		Y=Y0;
+		Y.clone(Y0);
 	}
 	public void update() throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException 
 	{
@@ -50,6 +53,7 @@ public class Multiplicative {
 		Matrix Ya_new=Y.subMatrix(0,na-1,0,1);
 		Matrix Yb_new=Y.subMatrix(na,na+nb-1,0,1);
 		Matrix Yc_new=Y.subMatrix(na+nb,na+nb+nc-1,0,1);
+		tempY.clone(Y);
 		//initialize Ya Yb Yc
 		
 		Matrix temp_a_up=new NaiveMatrix(na,2);
@@ -80,8 +84,10 @@ public class Multiplicative {
 		Y.setM(na,na+nb-1,0,1,Yb_new);
 		Y.setM(na+nb,na+nb+nc-1,0,1,Yc_new);
 	}
-	public boolean converge()
+	public boolean converge() throws DimensionNotAgreeException
 	{
-		return true;
+		double x=Y.subtract(tempY).norm("F");
+		double nuance=0.0001;
+		return x<nuance;
 	}
 }
