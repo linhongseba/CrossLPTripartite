@@ -17,7 +17,10 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author sailw
  */
 public interface Matrix {
-    Matrix times(Matrix b) throws DimensionNotAgreeException;
+
+	void setM(int topRow,int bottomRow,int leftCol,int rightCol,Matrix b) throws ColumnOutOfRangeException,RowOutOfRangeException;
+	Matrix times(Matrix b) throws DimensionNotAgreeException;
+    void clone(Matrix b) throws DimensionNotAgreeException;
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
     Matrix add(Matrix b) throws DimensionNotAgreeException;
     Matrix subtract(Matrix b) throws DimensionNotAgreeException;

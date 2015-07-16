@@ -31,6 +31,13 @@ public class NaiveMatrix implements Matrix{
     }
     
     @Override
+    public void clone(Matrix b)
+    {
+    	NaiveMatrix M;
+    	M=(NaiveMatrix)b;
+   		A=M.A.getMatrix(0,M.A.getRowDimension(),0,M.A.getColumnDimension());
+	}
+    @Override
     public Matrix times(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         if(M.A.getColumnDimension()!=((NaiveMatrix)b).A.getRowDimension())
@@ -141,6 +148,18 @@ public class NaiveMatrix implements Matrix{
    			throw new ColumnOutOfRangeException();
    		}
         A.set(row, col, x);
+    }
+    @Override
+    public void setM(int upperrow,int bottomrow, int leftcol,int rightcol, Matrix x) throws ColumnOutOfRangeException, RowOutOfRangeException {
+  		if(bottomrow>=A.getRowDimension())
+   		{
+   			throw new RowOutOfRangeException();
+   		}
+   		if(rightcol>=A.getColumnDimension())
+   		{
+   			throw new ColumnOutOfRangeException();
+   		}
+        A.setMatrix(upperrow, bottomrow, leftcol, rightcol, ((NaiveMatrix)x).A);
     }
 
     @Override
