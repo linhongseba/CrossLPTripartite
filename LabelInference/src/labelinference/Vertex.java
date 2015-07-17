@@ -13,6 +13,12 @@ import java.util.Map;
  * @author sailw
  */
 public class Vertex {
+
+    double getEdge(Vertex vertex) {
+        if(neighbors.containsKey(vertex))return neighbors.get(vertex);
+        return 0;
+    }
+    
     public static class Type {}
 
     private Type type;

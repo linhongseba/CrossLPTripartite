@@ -20,7 +20,7 @@ import labelinference.exceptions.RowOutOfRangeException;
 
  *
 
- * @author sailw
+ * @author Tangyiqi
 
  */
 
@@ -73,42 +73,42 @@ public class Multiplicative implements LabelInference {
     		Vertex point=(Vertex)element;
     		if(point.getType()==Vertex.typeA)
     		{
-    			Ya.setRow(Na, point.label);
+    			Ya.setRow(Na, point.getLabel());
     			num_a[N]=Na;
     			node[N]=Na;
-        		if(point.ISY0)
+        		if(point.isY0())
         		{
-        			Y0.setRow(Na, point.label);
+        			Y0.setRow(Na, point.getLabel());
         			Sa.set(Na, Na, 1);//set Sa
         		}
     			Na++;
     		}
     		if(point.getType()==Vertex.typeB)
     		{
-    			Yb.setRow(Nb, point.label);
+    			Yb.setRow(Nb, point.getLabel());
     			num_b[N]=Nb;
     			node[N]=na+Nb;
-        		if(point.ISY0)
+        		if(point.isY0())
         		{
-        			Y0.setRow(na+Nb, point.label);
+        			Y0.setRow(na+Nb, point.getLabel());
         			Sb.set(Nb, na+Nb, 1);
         		}
     			Nb++;
     		}
     		if(point.getType()==Vertex.typeC)
     		{
-    			Yc.setRow(Nc, point.label);
+    			Yc.setRow(Nc, point.getLabel());
     			num_c[N]=Nc;
     			node[N]=na+nb+Nc;
-        		if(point.ISY0)
+        		if(point.isY0())
         		{
-        			Y0.setRow(na+nb+Nc, point.label);
+        			Y0.setRow(na+nb+Nc, point.getLabel());
         			Sc.set(Nc, na+nb+Nc, 1);
         		}
     			Nc++;
     		}
     		
-        	Vertex TempPoint=new Vertex(point.getType(),point.label,point.ISY0);
+        	Vertex TempPoint=new Vertex(point.getType(),point.getLabel(),point.isY0());
         	local_g.addVertex(TempPoint);
     		
     		N++;
@@ -287,7 +287,7 @@ public class Multiplicative implements LabelInference {
     	while (it.hasNext()) {
         	Object element = it.next();
         	Vertex point=(Vertex)element;
-        	Vertex TempPoint=new Vertex(point.getType(),Y.getRow(node[n]),point.ISY0);
+        	Vertex TempPoint=new Vertex(point.getType(),Y.getRow(node[n]),point.isY0());
         	TempGraph.addVertex(TempPoint);
         	n++;
     	}
