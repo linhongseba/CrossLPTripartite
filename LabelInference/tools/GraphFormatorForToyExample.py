@@ -1,6 +1,6 @@
 import os,sys,collections,re,subprocess,time
 
-graphName='37'
+graphName='1'
 
 fTweetLabel='tweetlabel-'+graphName+'.txt'
 fTweetWord='tweet-word-'+graphName+'.txt'
@@ -67,7 +67,6 @@ for v in graph:
     graph[v].setdefault('label','0')
     graphB[str(vNum)].update({'label':graph[v]['label'],'id':str(vNum)})
     graphB[str(vNum)].setdefault('neighbors',{})
-    graph[v].setdefault('neighbors',{})
     graph[v].update({'id':str(vNum)})
     vNum+=1
 for v in graph:
@@ -96,14 +95,16 @@ for v in result:
     testGraph.write(v[0]+' '+v[1]+' '+graphB[v[0]]['label']+' '+graphB[v[0]]['type']+'\n')
     [testGraph.write(' '+u+' '+graphB[v[0]]['neighbors'][u]+'\n') for u in graphB[v[0]]['neighbors']]
     testGraph.write('\n')
-sortedResult=[(-float(v[2]),v[0]) for v in result if 'label' in graphB[v[0]]]
+sortedResult=[(-float(v[2]),v[0]) for v in result if graphB[v[0]]['label']!='0']
 sortedResult.sort()
+trainGraph5.write(str(vNum)+'\n')
 for v in result:
-    trainGraph5.write(v[0]+' '+v[1]+' '+(graphB[v[0]]['label'] if (-float(v[2]),v[0]) in sortedResult[:int(len(sortedResult)/20)] else '0')+' '+graphB[v[0]]['type'])
+    trainGraph5.write(v[0]+' '+v[1]+' '+(graphB[v[0]]['label'] if (-float(v[2]),v[0]) in sortedResult[:int(len(sortedResult)/20)] else '0')+' '+graphB[v[0]]['type']+'\n')
     [trainGraph5.write(' '+u+' '+graphB[v[0]]['neighbors'][u]+'\n') for u in graphB[v[0]]['neighbors']]
     trainGraph5.write('\n')
+trainGraph10.write(str(vNum)+'\n')
 for v in result:
-    trainGraph10.write(v[0]+' '+v[1]+' '+(graphB[v[0]]['label'] if (-float(v[2]),v[0]) in sortedResult[:int(len(sortedResult)/10)] else '0')+' '+graphB[v[0]]['type'])
+    trainGraph10.write(v[0]+' '+v[1]+' '+(graphB[v[0]]['label'] if (-float(v[2]),v[0]) in sortedResult[:int(len(sortedResult)/10)] else '0')+' '+graphB[v[0]]['type']+'\n')
     [trainGraph10.write(' '+u+' '+graphB[v[0]]['neighbors'][u]+'\n') for u in graphB[v[0]]['neighbors']]
     trainGraph10.write('\n')
 testGraph.close()
