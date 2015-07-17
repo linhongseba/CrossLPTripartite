@@ -25,10 +25,10 @@ public class Vertex {
 
     private final Map<Vertex,Double> neighbors;
     public Vertex(Type _type, Matrix _label,boolean  _isY0){
-        type=_type;
-        label=_label;
-        neighbors=new HashMap<>();
-        ISY0=_isY0;
+        type=_type;                              //initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
+        label=_label;                            //?
+        neighbors=new HashMap<>();               //the edges denote the relationship between the vertex and other vertices
+        ISY0=_isY0;                              //whether the graph is n*k or n*n
     }
 
     public boolean isY0() {
