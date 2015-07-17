@@ -1,6 +1,6 @@
 import os,sys,collections,re,subprocess,time
 
-graphName='1'
+graphName='37'
 
 fTweetLabel='tweetlabel-'+graphName+'.txt'
 fTweetWord='tweet-word-'+graphName+'.txt'
@@ -8,7 +8,7 @@ fUserLabel='userlabel-'+graphName+'.txt'
 fUserRetweet='user-retweet-'+graphName+'.txt'
 fUserUserGraph='user-user-graph-'+graphName+'.txt'
 fUserWord='user-word-'+graphName+'.txt'
-#fSf0='Sf0.txt'
+fSf0='Sf0.txt'
 fTempGraph='.tempGraph'
 fTestGraph='testGraph.g'
 fTrainGraph5='trainGraph5.g'
@@ -20,7 +20,7 @@ userLabel=open(fUserLabel).readlines()
 userRetweet=open(fUserRetweet).readlines()
 userUserGraph=open(fUserUserGraph).readlines()
 userWord=open(fUserWord).readlines()
-#sf0=open(fSf0).readlines()
+sf0=open(fSf0).readlines()
 tempGraph=open(fTempGraph,'w')
 testGraph=open(fTestGraph,'w')
 trainGraph5=open(fTrainGraph5,'w')
@@ -34,10 +34,10 @@ for s in userLabel:
 for s in tweetLabel:
     v=s.split()
     graph['B'+v[0]].update({'label':v[1]})
-#for s in sf0:
-#    v=s.split()
-#    if v[2]==1:
-#        graph['C'+v[0]].update({'label':v[1]})
+for s in sf0:
+    v=s.split()
+    if v[2]==1:
+        graph['C'+v[0]].update({'label':v[1]})
 for s in userRetweet:
     e=s.split()
     graph['A'+e[0]].setdefault('neighbors',{})
@@ -64,15 +64,17 @@ for s in userWord:
 vNum=0
 graphB=collections.defaultdict(dict)
 for v in graph:
-    graph[v].setdefault('label','')
+    graph[v].setdefault('label','0')
     graphB[str(vNum)].update({'label':graph[v]['label'],'id':str(vNum)})
     graphB[str(vNum)].setdefault('neighbors',{})
+    graph[v].setdefault('neighbors',{})
     graph[v].update({'id':str(vNum)})
     vNum+=1
 for v in graph:
     graphB[graph[v]['id']].update({'name':v[1:],'type':v[:1]})
     graphB[graph[v]['id']].update({'neighbors':{graph[u]['id']:graph[v]['neighbors'][u] for u in graph[v]['neighbors']}})
     
+'''
 #write a temp file as SNA formated, run SNA and get result back
 tempGraph.write('{0}\n'.format(vNum))
 for v in graphB:
@@ -82,11 +84,16 @@ for v in graphB:
 tempGraph.close()
 subprocess.call(['SNA','.tempGraph','nei'],shell=True)
 result=[s.split() for s in open('.tempGraph.statistics.txt').readlines()[1:]]
+'''
+
+#use degree as result instead of SNA
+result=[[v,str(len(graphB[v]['neighbors'])),len(graphB[v]['neighbors'])] for v in graphB]
+result.sort(key=lambda v:int(v[0]))
 
 #make test set and train set
 testGraph.write(str(vNum)+'\n')
 for v in result:
-    testGraph.write(v[0]+' '+v[1]+' '+(graphB[v[0]]['label'] if 'label' in graphB[v[0]] else '0')+' '+graphB[v[0]]['type']+'\n')
+    testGraph.write(v[0]+' '+v[1]+' '+graphB[v[0]]['label']+' '+graphB[v[0]]['type']+'\n')
     [testGraph.write(' '+u+' '+graphB[v[0]]['neighbors'][u]+'\n') for u in graphB[v[0]]['neighbors']]
     testGraph.write('\n')
 sortedResult=[(-float(v[2]),v[0]) for v in result if 'label' in graphB[v[0]]]
