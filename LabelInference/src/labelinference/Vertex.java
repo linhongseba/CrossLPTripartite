@@ -15,15 +15,23 @@ import java.util.Map;
 public class Vertex {
     public static class Type {}
 
-    final Type type;
+    private Type type;
     public final static Type typeA=new Type();
     public final static Type typeB=new Type();
     public final static Type typeC=new Type();
-    final boolean ISY0;
+    private boolean ISY0;
 
-    Matrix label;
+    private Matrix label;
 
     private final Map<Vertex,Double> neighbors;
+    
+    /**
+     * 
+     * @param _type initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
+     * @param _label label vector of this vertex
+     * @param _isY0 whether the vertex is prelabeled
+     */
+    
     public Vertex(Type _type, Matrix _label,boolean  _isY0){
         type=_type;                              //initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
         label=_label;                            //?
@@ -31,6 +39,22 @@ public class Vertex {
         ISY0=_isY0;                              //whether the graph is n*k or n*n
     }
 
+    public Vertex(){
+        neighbors=new HashMap<>();
+    }
+    
+    /**
+     * 
+     * @param _type initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
+     * @param _label label vector of this vertex
+     * @param _isY0 whether the vertex is prelabeled
+     */
+    public void init(Type _type, Matrix _label,boolean  _isY0){
+        type=_type;
+        label=_label;
+        ISY0=_isY0;
+    }
+    
     public boolean isY0() {
         return ISY0;
     }
