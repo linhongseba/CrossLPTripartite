@@ -5,10 +5,14 @@
  */
 package labelinference;
 
+import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
+import labelinference.exceptions.RowOutOfRangeException;
+
 /**
  *
  * @author sailw
  */
 public interface LabelInference {
-    Graph getResult();
+    Graph getResult() throws DimensionNotAgreeException, ColumnOutOfRangeException, RowOutOfRangeException;
 }
