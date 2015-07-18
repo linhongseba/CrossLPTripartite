@@ -11,7 +11,10 @@ import java.io.FileReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
 import static org.junit.Assert.fail;
 import org.junit.BeforeClass;
@@ -79,9 +82,12 @@ public class MultiplicativeTest {
     
     Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
         Map<Integer,Vertex> graph=readGraph(path);
-        Multiplicative multiplicative=new Multiplicative(new Graph(graph.values()));
-        multiplicative.getResult();
-
+        try {
+            Multiplicative multiplicative=new Multiplicative(new Graph(graph.values()));
+            multiplicative.getResult();
+        } catch (DimensionNotAgreeException ex) {
+            Logger.getLogger(MultiplicativeTest.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return graph;
     }
     
@@ -114,7 +120,7 @@ public class MultiplicativeTest {
         check(expResult,result);
     }
 
-    private void check(Map<Integer, Vertex> expResult, Map<Integer, Vertex> result) {
+    private void check(Map<Integer, Vertex> expResult, Map<Integer, Vertex> result) throws ColumnOutOfRangeException, RowOutOfRangeException {
         double correct=0;
         double totle=0;
         for(Map.Entry<Integer, Vertex> v:expResult.entrySet()) {
@@ -130,6 +136,11 @@ public class MultiplicativeTest {
             
             if(expV.isY0()) {
                 totle+=1;
+                if(expV.getLabel().get(0, 0)==1) {
+                    if(resV.getLabel().get(0, 0)>resV.getLabel().get(1, 0))correct++;
+                } else {
+                    if(resV.getLabel().get(0, 0)<resV.getLabel().get(1, 0))correct++;
+                }
                 if(resV.getLabel().equals(expV.getLabel()))correct+=1;
             }
         }
