@@ -109,15 +109,6 @@ public class MultiplicativeTest {
         System.out.println("graph 1,top 10%:");
         result=test("data/1/trainGraph10.g");
         check(expResult,result);
-        
-        System.out.println("graph 30,top 5%:");
-        expResult=readGraph("data/30/testGraph.g");
-        result=test("data/30/trainGraph5.g");
-        check(expResult,result);
-        
-        System.out.println("graph 30,top 10%:");
-        result=test("data/30/trainGraph10.g");
-        check(expResult,result);
     }
 
     private void check(Map<Integer, Vertex> expResult, Map<Integer, Vertex> result) throws ColumnOutOfRangeException, RowOutOfRangeException {
@@ -141,7 +132,6 @@ public class MultiplicativeTest {
                 } else {
                     if(resV.getLabel().get(0, 0)<resV.getLabel().get(1, 0))correct++;
                 }
-                if(resV.getLabel().equals(expV.getLabel()))correct+=1;
             }
         }
         
