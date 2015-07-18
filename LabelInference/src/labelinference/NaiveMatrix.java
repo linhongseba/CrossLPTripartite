@@ -121,8 +121,8 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new RowOutOfRangeException();
    		}
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-   		M.A=A.getMatrix(row,row,0,A.getColumnDimension());
+   		NaiveMatrix M=new NaiveMatrix(1,A.getColumnDimension());
+   		M.A=A.getMatrix(row,row,0,A.getColumnDimension()-1);
         return M;
     }
 
@@ -132,8 +132,8 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new ColumnOutOfRangeException();
    		}
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-   		M.A=A.getMatrix(0,A.getRowDimension(),col,col);
+   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),1);
+   		M.A=A.getMatrix(0,A.getRowDimension()-1,col,col);
         return M;
     }
 
@@ -210,15 +210,15 @@ public class NaiveMatrix implements Matrix{
     
     @Override
     public Matrix transpose() {
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-   		M.A=A.transpose();
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        M.A=A.transpose();
     	return M;
     }
 
     @Override
-    public double norm(String normName) {
+    public double norm(Norm normName) {
     	if(normName==Matrix.FROBENIUS_NORM)
-    		return A.normF();
+            return A.normF();
         return 0;
     }
     
@@ -253,5 +253,23 @@ public class NaiveMatrix implements Matrix{
             if(A.getRowDimension()-row>1)ret+=", ";
         }
         return ret;
+    }
+
+    @Override
+    public Matrix times(double lambda) {
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        M.A=A.times(lambda);
+    	return M;
+    }
+
+    @Override
+    public Matrix orthonormalize() throws DimensionNotAgreeException {
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(A.getColumnDimension()!=1)throw new DimensionNotAgreeException();
+        double sqrsum=0;
+        for(int i=0;i<A.getRowDimension();i++)sqrsum+=A.get(i, 0)*A.get(i, 0);
+        sqrsum=Math.sqrt(sqrsum);
+        for(int i=0;i<A.getRowDimension();i++)M.A.set(i, 0, A.get(i, 0)/sqrsum);
+    	return M;
     }
 }

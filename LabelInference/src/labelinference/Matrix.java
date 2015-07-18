@@ -17,9 +17,11 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author sailw
  */
 public interface Matrix {
-
-	void setM(int topRow,int bottomRow,int leftCol,int rightCol,Matrix b) throws ColumnOutOfRangeException,RowOutOfRangeException;
-	Matrix times(Matrix b) throws DimensionNotAgreeException;
+    public class Norm{}
+    
+    void setM(int topRow,int bottomRow,int leftCol,int rightCol,Matrix b) throws ColumnOutOfRangeException,RowOutOfRangeException;
+    Matrix times(Matrix b) throws DimensionNotAgreeException;
+    Matrix times(double lambda);
     void clone(Matrix b) throws DimensionNotAgreeException;
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
     Matrix add(Matrix b) throws DimensionNotAgreeException;
@@ -36,7 +38,8 @@ public interface Matrix {
     double determinant();
     Matrix inverse() throws IrreversibleException;
     Matrix transpose();
-    double norm(String normName);
+    Matrix orthonormalize() throws DimensionNotAgreeException;
+    double norm(Norm normName);
     
-    public static final String FROBENIUS_NORM="F";
+    public static final Norm FROBENIUS_NORM=new Norm();
 }

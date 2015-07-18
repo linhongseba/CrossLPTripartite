@@ -7,6 +7,7 @@ package labelinference;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
+import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
 import org.junit.Test;
@@ -204,6 +205,32 @@ public class NaiveMatrixTest {
         
         result = mD.norm(Matrix.FROBENIUS_NORM);
         if(abs(result-sqrt(125))>1e-6)fail();
+    }
+    
+    /**
+     * Test of orthonormalize method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.ColumnOutOfRangeException
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     */
+    @Test
+    public void testOrthonormalize() throws ColumnOutOfRangeException, DimensionNotAgreeException {
+        System.out.println("orthonormalize");
+        double expResData[][]={{2/sqrt(57)}, {2/sqrt(57)}, {7/sqrt(57)}};
+        Matrix expResult = new NaiveMatrix(expResData);
+        Matrix result = mD.getCol(0).orthonormalize();
+        assertEquals(expResult, result);
+    }
+    
+    /**
+     * Test of times method, of class NaiveMatrix.
+     */
+    @Test
+    public void testTimesd() {
+        System.out.println("times");
+        double expResData[][]={{1,0.5,2.5},{1,2,2},{3.5,1.5,0.5}};
+        Matrix expResult = new NaiveMatrix(expResData);
+        Matrix result = mD.times(0.5);
+        assertEquals(expResult, result);
     }
     
 }
