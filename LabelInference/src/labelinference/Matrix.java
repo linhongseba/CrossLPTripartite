@@ -42,4 +42,5 @@ public interface Matrix {
     double norm(Norm normName);
     
     public static final Norm FROBENIUS_NORM=new Norm();
+    public static final Norm FIRST_NORM=new Norm();
 }

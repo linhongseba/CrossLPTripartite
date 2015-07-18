@@ -18,6 +18,10 @@ public class Vertex {
         if(neighbors.containsKey(vertex))return neighbors.get(vertex);
         return 0;
     }
+
+    Iterable<Vertex> getNeighbors() {
+        return neighbors.keySet();
+    }
     
     public static class Type {}
 

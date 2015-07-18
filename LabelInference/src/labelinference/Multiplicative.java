@@ -261,7 +261,7 @@ public class Multiplicative implements LabelInference {
 
 	{
 
-		double x=Y.subtract(lastY).norm("F");
+		double x=Y.subtract(lastY).norm(Matrix.FROBENIUS_NORM);
 
 		double nuance=0.0001;
 

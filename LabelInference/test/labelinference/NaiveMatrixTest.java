@@ -198,13 +198,16 @@ public class NaiveMatrixTest {
      * Test of norm method, of class NaiveMatrix.
      */
     @Test
-    public void testNorm() {
+    public void testNorm() throws ColumnOutOfRangeException {
         System.out.println("norm");
         double result = mA.norm(Matrix.FROBENIUS_NORM);
         if(abs(result-sqrt(85))>1e-6)fail();
         
         result = mD.norm(Matrix.FROBENIUS_NORM);
         if(abs(result-sqrt(125))>1e-6)fail();
+        
+        result = mD.getCol(0).norm(Matrix.FIRST_NORM);
+        if(abs(result-11)>1e-6)fail();
     }
     
     /**

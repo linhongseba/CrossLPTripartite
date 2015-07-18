@@ -168,7 +168,7 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new RowOutOfRangeException();
    		}
-        A.setMatrix(row,row,0,A.getColumnDimension(),((NaiveMatrix)b).A);
+        A.setMatrix(row,row,0,A.getColumnDimension()-1,((NaiveMatrix)b).A);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new ColumnOutOfRangeException();
    		}
-        A.setMatrix(0,A.getRowDimension(),col,col,((NaiveMatrix)b).A);
+        A.setMatrix(0,A.getRowDimension()-1,col,col,((NaiveMatrix)b).A);
     }
 
     @Override
@@ -219,6 +219,8 @@ public class NaiveMatrix implements Matrix{
     public double norm(Norm normName) {
     	if(normName==Matrix.FROBENIUS_NORM)
             return A.normF();
+        if(normName==Matrix.FIRST_NORM)
+            return A.norm1();
         return 0;
     }
     
@@ -252,6 +254,7 @@ public class NaiveMatrix implements Matrix{
             ret+="}";
             if(A.getRowDimension()-row>1)ret+=", ";
         }
+        ret+="}";
         return ret;
     }
 
@@ -267,8 +270,8 @@ public class NaiveMatrix implements Matrix{
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         if(A.getColumnDimension()!=1)throw new DimensionNotAgreeException();
         double sum=0;
-        for(int i=0;i<A.getRowDimension();i++)sum+=A.get(i, 0);
-        for(int i=0;i<A.getRowDimension();i++)M.A.set(i, 0, A.get(i, 0)/sum);
+        for(int i=0;i<A.getRowDimension();i++)sum+=abs(A.get(i, 0));
+        for(int i=0;i<A.getRowDimension();i++)M.A.set(i, 0, A.get(i, 0)/abs(sum));
     	return M;
     }
 }
