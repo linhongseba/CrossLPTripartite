@@ -215,7 +215,7 @@ public class NaiveMatrixTest {
     @Test
     public void testOrthonormalize() throws ColumnOutOfRangeException, DimensionNotAgreeException {
         System.out.println("orthonormalize");
-        double expResData[][]={{2/sqrt(57)}, {2/sqrt(57)}, {7/sqrt(57)}};
+        double expResData[][]={{2/11.0}, {2/11.0}, {7/11.0}};
         Matrix expResult = new NaiveMatrix(expResData);
         Matrix result = mD.getCol(0).orthonormalize();
         assertEquals(expResult, result);
