@@ -6,6 +6,8 @@
 package labelinference;
 
 import static java.lang.Math.abs;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
@@ -35,7 +37,7 @@ public class NaiveMatrix implements Matrix{
     {
     	NaiveMatrix M;
     	M=(NaiveMatrix)b;
-   		A=M.A.getMatrix(0,M.A.getRowDimension(),0,M.A.getColumnDimension());
+   		A=M.A.getMatrix(0,M.A.getRowDimension()-1,0,M.A.getColumnDimension()-1);
 	}
     @Override
     public Matrix times(Matrix b) throws DimensionNotAgreeException {
@@ -90,16 +92,23 @@ public class NaiveMatrix implements Matrix{
     
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
- 		if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
-   		{
-   			throw new DimensionNotAgreeException();
-   		}
-    	int n=A.getRowDimension(),m=A.getColumnDimension();
-   		for(int i=0;i<n;i++)
-    		for(int j=0;j<m;j++)
-    			M.A.set(i,j,A.get(i,j)/max(0.000000001,((NaiveMatrix)b).A.get(i,j)));
-    	return M;
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
+        {
+            throw new DimensionNotAgreeException();
+        }   int n=A.getRowDimension(),m=A.getColumnDimension();
+        final double ZERO=1e-9;
+        try {
+            for(int i=0;i<n;i++)
+                for(int j=0;j<m;j++)
+                    if(abs(b.get(i, j))<ZERO) {
+                        if(b.get(i, j)<0)b.set(i, j, -ZERO);
+                        else b.set(i, j, ZERO);
+                    }
+            
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+        M.A=A.arrayRightDivide(((NaiveMatrix)b).A);
+        return M;
     }
 
     @Override

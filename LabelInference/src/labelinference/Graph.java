@@ -24,7 +24,7 @@ public class Graph {
     }
 
     public void addVertex(Vertex _vertex) {
-        vertices.add(_vertex);
+        ((HashSet<Vertex>)vertices).add(_vertex);
     }
 
     public void addEdge(Vertex a, Vertex b, double weight) {

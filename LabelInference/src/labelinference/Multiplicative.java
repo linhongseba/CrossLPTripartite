@@ -30,7 +30,8 @@ public class Multiplicative implements LabelInference {
 	private Matrix Sa,Sb,Sc;
 	int[] node;
 	Graph local_g;
-	
+        Map<Integer,Vertex> map=new HashMap();
+        
 	private void randomSet(int row,int row1,int type) throws ColumnOutOfRangeException, RowOutOfRangeException
 	{
 		if(Math.random()<(1/3.0))
@@ -139,10 +140,12 @@ public class Multiplicative implements LabelInference {
     	while (it.hasNext()) {
 	   	 	Object element = it.next();
     		Vertex point=(Vertex)element;
+                map.put(N, point);
     		if(point.getType()==Vertex.typeA)
     		{
     			num_a[N]=Na;
     			node[N]=Na;
+                        
         		if(point.isY0())
         		{
         			Y0.setRow(Na, point.getLabel().transpose());
@@ -157,6 +160,7 @@ public class Multiplicative implements LabelInference {
     		{
     			num_b[N]=Nb;
     			node[N]=na+Nb;
+
         		if(point.isY0())
         		{
         			Y0.setRow(na+Nb, point.getLabel().transpose());
@@ -171,6 +175,7 @@ public class Multiplicative implements LabelInference {
     		{
     			num_c[N]=Nc;
     			node[N]=na+nb+Nc;
+
         		if(point.isY0())
         		{
         			Y0.setRow(na+nb+Nc, point.getLabel().transpose());
@@ -320,42 +325,15 @@ public class Multiplicative implements LabelInference {
     @Override
 
     public Graph getResult() throws DimensionNotAgreeException, ColumnOutOfRangeException, RowOutOfRangeException {
-    	
-    	Graph TempGraph=new Graph();
-    
-    	//iteration
+
     	do
     	{
 		 	update();
     	}while(!converge());
-	    System.out.println("YY:"+Y);
-		
-        System.out.println("&&&&&");
-    	int n=0;
-    	Collection<Vertex> points;
-    	points=local_g.getVertices();
-    	Iterator<Vertex> it = points.iterator();
-    	while (it.hasNext()) {
-        	Object element = it.next();
-        	Vertex point=(Vertex)element;
-        	Vertex TempPoint=new Vertex(point.getType(),Y.getRow(node[n]),point.isY0());
-        	TempGraph.addVertex(TempPoint);
-        	n++;
-    	}
-       	
-    	it = points.iterator();
-    	while (it.hasNext()) {
-    		Object element = it.next();
-    		Vertex point=(Vertex)element;
-    		Iterator<Vertex> jt=points.iterator();
-
-			while(jt.hasNext()){
-	    		Object _element = jt.next();
-	    		Vertex _point=(Vertex)_element;
-	    		TempGraph.addEdge(point, _point, point.getEdge(_point));
-			}
-    	}
-       	return TempGraph;
+        for(int i=0;i<N;i++)
+            if(!map.get(i).isY0())
+                map.get(i).setLabel(Y.getRow(node[i]).transpose());
+       	return local_g;
     }
 
     
