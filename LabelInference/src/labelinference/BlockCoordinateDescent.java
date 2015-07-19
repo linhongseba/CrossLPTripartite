@@ -23,7 +23,7 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author sailw
  */
 public class BlockCoordinateDescent implements LabelInference{
-        Map<Vertex,Matrix> y0Backup=new HashMap<>();
+        private Map<Vertex,Matrix> y0Backup=new HashMap<>();
 	private Matrix Y0,Y,lastY;
 	private int N;
 	int[] node;
