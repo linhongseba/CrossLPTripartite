@@ -226,7 +226,8 @@ public class NaiveMatrix implements Matrix{
     
     @Override
     public Matrix inverse() throws IrreversibleException {
-    	if(A.inverse()==null)throw new IrreversibleException();
+        if(A.getColumnDimension()!=A.getRowDimension())throw new IrreversibleException();
+    	if(abs(A.det())<1e-20)throw new IrreversibleException();
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         M.A=A.inverse();
     	return M;

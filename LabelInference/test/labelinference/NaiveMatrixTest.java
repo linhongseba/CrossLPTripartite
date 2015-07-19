@@ -180,6 +180,8 @@ public class NaiveMatrixTest {
         Matrix expResult = new NaiveMatrix(expResData2);
         Matrix result = mD.inverse();
         assertEquals(expResult, result);
+        
+        mA.inverse();
     }
 
     /**
