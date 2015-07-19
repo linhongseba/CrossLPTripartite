@@ -136,6 +136,7 @@ public class BlockCoordinateDescent implements LabelInference{
                 if(abs(A.determinant())<1e-9) A=A.add(delta);
                 temp=A.add(I);
                 if(abs(temp.determinant())<1e-9)temp=temp.add(delta);
+                //System.out.println(A);	
 		A0=A.inverse();
 		A1=(temp).inverse();
 		
@@ -147,10 +148,11 @@ public class BlockCoordinateDescent implements LabelInference{
                 if(abs(A.determinant())<1e-9)A=A.add(delta);
                 temp=A.add(I);
                 if(abs(temp.determinant())<1e-9)temp=temp.add(delta);
+                //System.out.println(A);	
 		B0=A.inverse();
 		B1=(temp).inverse();
     	
-    	A=F.creatMatrix(2,2);
+                A=F.creatMatrix(2,2);
 		for(Vertex v:local_g.getVertices()) 
 		if(v.getType()!=Vertex.typeC)
 			A=A.add(v.getLabel().times(v.getLabel().transpose()));
@@ -158,9 +160,16 @@ public class BlockCoordinateDescent implements LabelInference{
                 if(abs(A.determinant())<1e-9)A=A.add(delta);
                 temp=A.add(I);
                 if(abs(temp.determinant())<1e-9)temp=temp.add(delta);
+                //System.out.println(A);	
 		C0=A.inverse();
 		C1=(temp).inverse();
-    			
+    		//System.out.println(A0);	
+                //System.out.println(A1);	
+                //System.out.println(B0);	
+                //System.out.println(B1);	
+                //System.out.println(C0);	
+                //System.out.println(C1);	
+                
 		int cnt=0;
 		for(Vertex u:local_g.getVertices()) 
 		{
@@ -176,12 +185,12 @@ public class BlockCoordinateDescent implements LabelInference{
 				if(u.isY0())
 				{
 					B.clone(A1);
-					u.setLabel(B.times(tempY.add(Y0.getRow(cnt).transpose())));
+					u.setLabel(B.times(tempY.add(Y0.getRow(cnt).transpose().orthonormalize())));
 				}
 				else
 				{
 					B.clone(A0);
-					u.setLabel(B.times(tempY));
+					u.setLabel(B.times(tempY).orthonormalize());
 				}
 			}
 			else
@@ -190,12 +199,12 @@ public class BlockCoordinateDescent implements LabelInference{
 				if(u.isY0())
 				{
 					B.clone(B1);
-					u.setLabel(B.times(tempY.add(Y0.getRow(cnt).transpose())));
+					u.setLabel(B.times(tempY.add(Y0.getRow(cnt).transpose().orthonormalize())));
 				}
 				else
 				{
 					B.clone(B0);
-					u.setLabel(B.times(tempY));
+					u.setLabel(B.times(tempY).orthonormalize());
 				}
 			}
 			else
@@ -204,15 +213,15 @@ public class BlockCoordinateDescent implements LabelInference{
 				if(u.isY0())
 				{
 					B.clone(C1);
-					u.setLabel(B.times(tempY.add(Y0.getRow(cnt).transpose())));
+					u.setLabel(B.times(tempY.add(Y0.getRow(cnt).transpose().orthonormalize())));
 				}
 				else
 				{
 					B.clone(C0);
-					u.setLabel(B.times(tempY));
+					u.setLabel(B.times(tempY).orthonormalize());
 				}
 			}
-			Y.setRow(cnt,u.getLabel().transpose());
+			Y.setRow(cnt,u.getLabel().orthonormalize().transpose());
 			
 			cnt++;
 		}
@@ -224,7 +233,7 @@ public class BlockCoordinateDescent implements LabelInference{
 	private boolean converge() throws DimensionNotAgreeException
 	{
 		
-        double x=Y.subtract(lastY).norm(Matrix.FROBENIUS_NORM);
+        double x=Y.subtract(lastY).norm(Matrix.FROBENIUS_NORM)/local_g.getVertices().size();
 	
         //System.out.println(Y.toString());
         //System.out.println(lastY.toString());
@@ -235,12 +244,14 @@ public class BlockCoordinateDescent implements LabelInference{
 	}
     @Override
     public Graph getResult(){
+        int c=0;
         try {
             do
             {
                 update();
+                c++;
             }
-            while(!converge());
+            while(c<5 && !converge());
         } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException | IrreversibleException ex) {
             Logger.getLogger(BlockCoordinateDescent.class.getName()).log(Level.SEVERE, null, ex);
         }
