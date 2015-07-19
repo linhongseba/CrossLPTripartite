@@ -89,7 +89,12 @@ public class NaiveMatrix implements Matrix{
     		return a;
     	return b;
     }
-    
+        @Override
+    public Matrix timesNum(double b) {
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        M.A=A.times(b);
+        return M;
+    }
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
