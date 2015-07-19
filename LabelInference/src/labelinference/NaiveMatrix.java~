@@ -81,13 +81,6 @@ public class NaiveMatrix implements Matrix{
         return M;
     }
 
-    private double max(double a, double b)
-    {
-    	if(a>b)
-    		return a;
-    	return b;
-    }
-    
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
    		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
@@ -95,10 +88,7 @@ public class NaiveMatrix implements Matrix{
    		{
    			throw new DimensionNotAgreeException();
    		}
-    	int n=A.getRowDimension(),m=A.getColumnDimension();
-   		for(int i=0;i<n;i++)
-    		for(int j=0;j<m;j++)
-    			M.A.set(i,j,A.get(i,j)/max(0.000000001,((NaiveMatrix)b).A.get(i,j)));
+    	M.A=A.arrayRightDivide(((NaiveMatrix)b).A);
     	return M;
     }
 
