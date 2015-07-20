@@ -246,28 +246,6 @@ public class Multiplicative implements LabelInference {
             MatrixFactory F;
             F=MatrixFactory.getInstance();
             lastY=F.creatMatrix(N,2);
-<<<<<<< HEAD
-
-            Matrix Ya_new=F.creatMatrix(Na,2);
-            Matrix Yb_new=F.creatMatrix(Nb,2);
-            Matrix Yc_new=F.creatMatrix(Nc,2);
-
-            Ya_new.clone(Ya);
-            Yb_new.clone(Yb);
-            Yc_new.clone(Yc);
-            lastY.clone(Y);
-
-            //initialize Ya Yb Yc
-
-            Matrix temp_a_up=F.creatMatrix(Na,2);
-            Matrix temp_a_down=F.creatMatrix(Na,2);
-            temp_a_up=((Gab.times(Yb)).add(Gac.times(Yc))).add(Sa.times(Y0));
-            temp_a_down=Ya.times(Yb.transpose()).times(Yb).add(Ya.times(Yc.transpose()).times(Yc)).add(Sa.times(Y));
-
-            //calculate the numerator and denominator
-            Ya_new.clone(Ya.cron(temp_a_up.divide(temp_a_down).sqrt()));
-            //calculate Ya
-=======
 
             Matrix Ya_new=F.creatMatrix(Na,2);
             Matrix Yb_new=F.creatMatrix(Nb,2);
@@ -294,17 +272,6 @@ public class Multiplicative implements LabelInference {
             Matrix temp_b_down=F.creatMatrix(Nb,2);
             temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Y0));
             temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Y));
->>>>>>> e9f4800eb7776d6766ac2954cb65b9896df41951
-
-            //calculate the numerator and denominator
-            Yb_new.clone(Yb.cron(temp_b_up.divide(temp_b_down).sqrt()));
-            //calculate Yb
-
-<<<<<<< HEAD
-            Matrix temp_b_up=F.creatMatrix(Nb,2);
-            Matrix temp_b_down=F.creatMatrix(Nb,2);
-            temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Y0));
-            temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Y));
 
             //calculate the numerator and denominator
             Yb_new.clone(Yb.cron(temp_b_up.divide(temp_b_down).sqrt()));
@@ -322,20 +289,6 @@ public class Multiplicative implements LabelInference {
             //calculate Yc
 
 
-=======
-
-
-            Matrix temp_c_up=F.creatMatrix(Nc,2);
-            Matrix temp_c_down=F.creatMatrix(Nc,2);
-            temp_c_up=Gac.transpose().times(Ya).add(Gbc.transpose().times(Yb)).add(Sc.times(Y0));
-            temp_c_down=Yc.times(Ya.transpose()).times(Ya).add(Yc.times(Yb.transpose()).times(Yb)).add(Sc.times(Y));
-
-            //calculate the numerator and denominator
-            Yc_new.clone(Yc.cron(temp_c_up.divide(temp_c_down).sqrt()));
-            //calculate Yc
-
-
->>>>>>> e9f4800eb7776d6766ac2954cb65b9896df41951
             Ya.clone(Ya_new);
             Yb.clone(Yb_new);
             Yc.clone(Yc_new);
@@ -350,11 +303,7 @@ public class Multiplicative implements LabelInference {
 	private boolean converge() throws DimensionNotAgreeException
 	{
             double x=Y.subtract(lastY).norm(Matrix.FROBENIUS_NORM);
-<<<<<<< HEAD
-            double nuance=0.001;
-=======
             double nuance=0.01;
->>>>>>> e9f4800eb7776d6766ac2954cb65b9896df41951
             return x<nuance;
 	}
     /*The method gets the converge condition */
