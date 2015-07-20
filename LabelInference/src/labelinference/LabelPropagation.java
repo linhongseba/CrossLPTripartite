@@ -5,10 +5,7 @@
  */
 package labelinference;
 
-import static java.lang.Math.log;
 import static java.lang.Math.random;
-import java.util.Collection;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
@@ -24,8 +21,6 @@ public class LabelPropagation implements LabelInference{
     private final Graph g;
     private boolean isDone;
     private final double alpha=0.2;
-    private final MatrixFactory mf=MatrixFactory.getInstance();
-    private Map<Vertex.Type,Collection> vt;
     
     public LabelPropagation(Graph _g) {
         g=_g;
@@ -52,6 +47,7 @@ public class LabelPropagation implements LabelInference{
     }
 
     private double update() throws DimensionNotAgreeException, ColumnOutOfRangeException {
+        final MatrixFactory mf=MatrixFactory.getInstance();
         double delta=0;
         for(Vertex u:g.getVertices()) {
             if(u.isY0())continue;
@@ -90,6 +86,7 @@ public class LabelPropagation implements LabelInference{
     }
 
     private void init() throws ColumnOutOfRangeException, DimensionNotAgreeException, RowOutOfRangeException {
+        final MatrixFactory mf=MatrixFactory.getInstance();
         for(Vertex v:g.getVertices()) {
             Matrix label=mf.creatMatrix(2, 2);
             if(v.isY0())label.setCol(0, v.getLabel());
@@ -99,6 +96,7 @@ public class LabelPropagation implements LabelInference{
     }
 
     private Matrix ranLabel() throws ColumnOutOfRangeException, RowOutOfRangeException {
+        final MatrixFactory mf=MatrixFactory.getInstance();
         Matrix label=mf.creatMatrix(2,1);
         label.set(0, 0, random());
         label.set(1,0,1-label.get(0, 0));

@@ -226,7 +226,8 @@ public class NaiveMatrix implements Matrix{
     
     @Override
     public Matrix inverse() throws IrreversibleException {
-    	if(A.inverse()==null)throw new IrreversibleException();
+        if(A.getColumnDimension()!=A.getRowDimension())throw new IrreversibleException();
+    	if(abs(A.det())<1e-20)throw new IrreversibleException();
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         M.A=A.inverse();
     	return M;
@@ -295,6 +296,8 @@ public class NaiveMatrix implements Matrix{
         if(A.getColumnDimension()!=1)throw new DimensionNotAgreeException();
         double sum=0;
         for(int i=0;i<A.getRowDimension();i++)sum+=abs(A.get(i, 0));
+        final double ZERO=1e-9;
+        if(abs(sum)<ZERO)sum=ZERO;
         for(int i=0;i<A.getRowDimension();i++)M.A.set(i, 0, A.get(i, 0)/abs(sum));
     	return M;
     }

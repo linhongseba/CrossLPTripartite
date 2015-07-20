@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,7 +77,7 @@ public class BlockCoordinateDescentTest {
         return graph;
     }
     
-    Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
+    Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException, DimensionNotAgreeException {
         Map<Integer,Vertex> graph=readGraph(path);
         BlockCoordinateDescent blockCoordinateDescent=new BlockCoordinateDescent(new Graph(graph.values()));
         blockCoordinateDescent.getResult();
@@ -88,7 +89,7 @@ public class BlockCoordinateDescentTest {
      * Test of getResult method, of class BlockCoordinateDescent.
      */
     @Test
-    public void testGetResult() throws FileNotFoundException, ColumnOutOfRangeException, RowOutOfRangeException {
+    public void testGetResult() throws FileNotFoundException, ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
         System.out.println("\nBlockCoordinateDescent");
         
         System.out.println("graph 1,top 5%:");
@@ -110,7 +111,7 @@ public class BlockCoordinateDescentTest {
             
             if(resV==null)System.out.println("null "+v.getKey());
             
-            if(resV.isY0() && !resV.getLabel().equals(expV.getLabel())) {
+            if(resV.isY0() && !expV.getLabel().equals(resV.getLabel())) {
                 System.out.println("Y0 cahnged in vertex "+v.getKey());
                 fail("Y0 changed in vertex "+v.getKey());
             }
