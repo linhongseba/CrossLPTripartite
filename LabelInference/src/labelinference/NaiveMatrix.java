@@ -19,33 +19,29 @@ import labelinference.exceptions.RowOutOfRangeException;
  */
 public class NaiveMatrix implements Matrix{
     Jama.Matrix A; 
-    public NaiveMatrix(int row,int col)
-    {
+    public NaiveMatrix(int row,int col) {
         A= new Jama.Matrix(row,col);
     }
-    public NaiveMatrix(double data[][])
-    {
+    
+    public NaiveMatrix(double data[][]) {
         A= new Jama.Matrix(data);
     }
-    public NaiveMatrix(int dim)
-    {
+    
+    public NaiveMatrix(int dim) {
         A= new Jama.Matrix(dim,dim);
     }
     
     @Override
-    public void clone(Matrix b)
-    {
-    	NaiveMatrix M;
-    	M=(NaiveMatrix)b;
-   		A=M.A.getMatrix(0,M.A.getRowDimension()-1,0,M.A.getColumnDimension()-1);
-	}
+    public Matrix copy() {
+    	NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        M.A=A.getMatrix(0,M.A.getRowDimension()-1,0,M.A.getColumnDimension()-1);
+        return M;
+    }
+    
     @Override
     public Matrix times(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(M.A.getColumnDimension()!=((NaiveMatrix)b).A.getRowDimension())
-        {
-                throw new DimensionNotAgreeException();
-        }
+        if(M.A.getColumnDimension()!=((NaiveMatrix)b).A.getRowDimension())throw new DimensionNotAgreeException();
         M.A=A.times(((NaiveMatrix)b).A);
         return M;
     }
@@ -53,10 +49,7 @@ public class NaiveMatrix implements Matrix{
     @Override
     public Matrix cron(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
-        {
-            throw new DimensionNotAgreeException();
-        }
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
         M.A=A.arrayTimes(((NaiveMatrix)b).A);
         return M;
     }
@@ -64,10 +57,7 @@ public class NaiveMatrix implements Matrix{
     @Override
     public Matrix add(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
-        {
-                throw new DimensionNotAgreeException();
-        }
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
         M.A=A.plus(((NaiveMatrix)b).A);
         return M;
     }
@@ -75,21 +65,12 @@ public class NaiveMatrix implements Matrix{
     @Override
     public Matrix subtract(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
-        {
-                throw new DimensionNotAgreeException();
-        }
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
     	M.A=A.minus(((NaiveMatrix)b).A);
         return M;
     }
 
-    private double max(double a, double b)
-    {
-    	if(a>b)
-    		return a;
-    	return b;
-    }
-        @Override
+    @Override
     public Matrix timesNum(double b) {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         M.A=A.times(b);
@@ -98,10 +79,8 @@ public class NaiveMatrix implements Matrix{
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())
-        {
-            throw new DimensionNotAgreeException();
-        }   int n=A.getRowDimension(),m=A.getColumnDimension();
+        if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
+        int n=A.getRowDimension(),m=A.getColumnDimension();
         final double ZERO=1e-9;
         try {
             for(int i=0;i<n;i++)
@@ -110,7 +89,6 @@ public class NaiveMatrix implements Matrix{
                         if(b.get(i, j)<0)b.set(i, j, -ZERO);
                         else b.set(i, j, ZERO);
                     }
-            
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         M.A=A.arrayRightDivide(((NaiveMatrix)b).A);
         return M;
@@ -119,104 +97,68 @@ public class NaiveMatrix implements Matrix{
     @Override
     public Matrix sqrt(){
     	int n=A.getRowDimension(),m=A.getColumnDimension();
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-   		for(int i=0;i<n;i++)
-    		for(int j=0;j<m;j++)
-    			M.A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        for(int i=0;i<n;i++)
+        for(int j=0;j<m;j++)
+            M.A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
     	return M;
     }
 
     @Override
     public double get(int row, int col) throws ColumnOutOfRangeException, RowOutOfRangeException {
-   		if(row>=A.getRowDimension())
-   		{
-   			throw new RowOutOfRangeException();
-   		}
-   		if(col>=A.getColumnDimension())
-   		{
-   			throw new ColumnOutOfRangeException();
-   		}
+        if(row>=A.getRowDimension())throw new RowOutOfRangeException();
+        if(col>=A.getColumnDimension())throw new ColumnOutOfRangeException();
     	return A.get(row,col);
     }
 
     @Override
     public Matrix getRow(int row) throws RowOutOfRangeException {
-   		if(row>=A.getRowDimension())
-   		{
-   			throw new RowOutOfRangeException();
-   		}
-   		NaiveMatrix M=new NaiveMatrix(1,A.getColumnDimension());
-   		M.A=A.getMatrix(row,row,0,A.getColumnDimension()-1);
+        if(row>=A.getRowDimension())throw new RowOutOfRangeException();
+        NaiveMatrix M=new NaiveMatrix(1,A.getColumnDimension());
+        M.A=A.getMatrix(row,row,0,A.getColumnDimension()-1);
         return M;
     }
 
     @Override
     public Matrix getCol(int col) throws ColumnOutOfRangeException {
-   		if(col>=A.getColumnDimension())
-   		{
-   			throw new ColumnOutOfRangeException();
-   		}
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),1);
-   		M.A=A.getMatrix(0,A.getRowDimension()-1,col,col);
+        if(col>=A.getColumnDimension())throw new ColumnOutOfRangeException();
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),1);
+        M.A=A.getMatrix(0,A.getRowDimension()-1,col,col);
         return M;
     }
 
     @Override
     public void set(int row, int col, double x) throws ColumnOutOfRangeException, RowOutOfRangeException {
-  		if(row>=A.getRowDimension())
-   		{
-   			throw new RowOutOfRangeException();
-   		}
-   		if(col>=A.getColumnDimension())
-   		{
-   			throw new ColumnOutOfRangeException();
-   		}
+        if(row>=A.getRowDimension())throw new RowOutOfRangeException();
+        if(col>=A.getColumnDimension())throw new ColumnOutOfRangeException();
         A.set(row, col, x);
     }
     @Override
     public void setM(int upperrow,int bottomrow, int leftcol,int rightcol, Matrix x) throws ColumnOutOfRangeException, RowOutOfRangeException {
-  		if(bottomrow>=A.getRowDimension())
-   		{
-   			throw new RowOutOfRangeException();
-   		}
-   		if(rightcol>=A.getColumnDimension())
-   		{
-   			throw new ColumnOutOfRangeException();
-   		}
+        if(bottomrow>=A.getRowDimension())throw new RowOutOfRangeException();
+        if(rightcol>=A.getColumnDimension())throw new ColumnOutOfRangeException();
         A.setMatrix(upperrow, bottomrow, leftcol, rightcol, ((NaiveMatrix)x).A);
     }
 
     @Override
     public void setRow(int row, Matrix b) throws RowOutOfRangeException, DimensionNotAgreeException {
-  		if(row>A.getRowDimension())
-   		{
-   			throw new RowOutOfRangeException();
-   		}
+        if(row>A.getRowDimension())throw new RowOutOfRangeException();
         A.setMatrix(row,row,0,A.getColumnDimension()-1,((NaiveMatrix)b).A);
     }
 
     @Override
     public void setCol(int col, Matrix b) throws ColumnOutOfRangeException, DimensionNotAgreeException {
-   		if(col>=A.getColumnDimension())
-   		{
-   			throw new ColumnOutOfRangeException();
-   		}
+        if(col>=A.getColumnDimension())throw new ColumnOutOfRangeException();
         A.setMatrix(0,A.getRowDimension()-1,col,col,((NaiveMatrix)b).A);
     }
 
     @Override
     public Matrix subMatrix(int topRow, int bottomRow, int leftCol, int rightCol) throws ColumnOutOfRangeException, RowOutOfRangeException {
-  		if(bottomRow>=A.getRowDimension())
-   		{
-   			throw new RowOutOfRangeException();
-   		}
-   		if(rightCol>=A.getColumnDimension())
-   		{
-   			throw new ColumnOutOfRangeException();
-   		}
-   		NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-   		M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
-		return M;
+        if(bottomRow>=A.getRowDimension())throw new RowOutOfRangeException();
+        if(rightCol>=A.getColumnDimension())throw new ColumnOutOfRangeException();
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
+        return M;
     }
 
     @Override
@@ -242,22 +184,16 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public double norm(Norm normName) {
-    	if(normName==Matrix.FROBENIUS_NORM)
-            return A.normF();
-        if(normName==Matrix.FIRST_NORM)
-            return A.norm1();
+    	if(normName==Matrix.FROBENIUS_NORM)return A.normF();
+        if(normName==Matrix.FIRST_NORM)return A.norm1();
         return 0;
     }
     
    @Override
     public boolean equals(Object object) {
-        if (!(object instanceof NaiveMatrix)) {
-            return false;
-        }
+        if (!(object instanceof NaiveMatrix)) return false;
         NaiveMatrix other = (NaiveMatrix) object;
-        
         if(A.getRowDimension()!=other.A.getRowDimension()||A.getColumnDimension()!=other.A.getColumnDimension())return false;
-        
         for(int row=0;row<A.getRowDimension();row++)
             for(int col=0;col<A.getColumnDimension();col++)
                 try {

@@ -22,7 +22,7 @@ public interface Matrix {
     void setM(int topRow,int bottomRow,int leftCol,int rightCol,Matrix b) throws ColumnOutOfRangeException,RowOutOfRangeException;
     Matrix times(Matrix b) throws DimensionNotAgreeException;
     Matrix times(double lambda);
-    void clone(Matrix b) throws DimensionNotAgreeException;
+    Matrix copy();
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
     Matrix add(Matrix b) throws DimensionNotAgreeException;
     Matrix subtract(Matrix b) throws DimensionNotAgreeException;

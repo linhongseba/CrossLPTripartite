@@ -6,8 +6,6 @@
 package labelinference;
 
 import static java.lang.Math.random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
@@ -16,7 +14,7 @@ import labelinference.exceptions.RowOutOfRangeException;
  *
  * @author sailw
  */
-public class LabelPropagation implements LabelInference{
+public class LabelPropagation implements LabelInference {
     
     private final Graph g;
     private boolean isDone;
@@ -29,6 +27,7 @@ public class LabelPropagation implements LabelInference{
     
     @Override
     public Graph getResult() {
+        if(isDone)return g;
         try {
             if(isDone)return g;
             double delta;
@@ -36,13 +35,11 @@ public class LabelPropagation implements LabelInference{
             init();
             do {
                 delta=update()/g.getVertices().size();
-                //System.out.println(delta);
             }while(delta>nuance);
             for(Vertex v:g.getVertices())v.setLabel(v.getLabel().getCol(0));
             return g;
-        } catch (ColumnOutOfRangeException | DimensionNotAgreeException | RowOutOfRangeException ex) {
-            Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (ColumnOutOfRangeException | DimensionNotAgreeException | RowOutOfRangeException ex) {}
+        isDone=true;
         return g;
     }
 
@@ -68,16 +65,6 @@ public class LabelPropagation implements LabelInference{
             }
             label.setCol(1, a.orthonormalize().times(1-alpha).add(b.orthonormalize().times(alpha)));
             
-            /*
-            for(Vertex v:u.getNeighbors()) {
-                a=a.add(v.getLabel().getCol(0).times(u.getEdge(v)/u.degree()));
-                for(Vertex w:v.getNeighbors()) {
-                    if(w.getType()!=u.getType())continue;
-                    b=b.add(w.getLabel().getCol(0).times(1/log(v.degree())));
-                }
-            }
-            label.setCol(1, a.times(1-alpha).add(b.times(alpha)).orthonormalize());
-            */
             delta+=label.getCol(1).subtract(label.getCol(0)).norm(Matrix.FIRST_NORM);
         }
         for(Vertex u:g.getVertices())
@@ -102,6 +89,4 @@ public class LabelPropagation implements LabelInference{
         label.set(1,0,1-label.get(0, 0));
         return label;
     }
-    
-    
 }
