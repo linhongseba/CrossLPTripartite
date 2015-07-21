@@ -100,6 +100,15 @@ public class LabelPropagationTest {
         System.out.println("graph 1,top 10%:");
         result=test("data/1/trainGraph10.g");
         check(expResult,result);
+        
+        System.out.println("graph 30,top 5%:");
+        expResult=readGraph("data/30/testGraph.g");
+        result=test("data/30/trainGraph5.g");
+        check(expResult,result);
+        
+        System.out.println("graph 30,top 10%:");
+        result=test("data/30/trainGraph10.g");
+        check(expResult,result);
     }
 
     private void check(Map<Integer, Vertex> expResult, Map<Integer, Vertex> result) throws ColumnOutOfRangeException, RowOutOfRangeException {
