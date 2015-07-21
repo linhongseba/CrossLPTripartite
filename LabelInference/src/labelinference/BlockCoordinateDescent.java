@@ -21,8 +21,8 @@ import labelinference.exceptions.RowOutOfRangeException;
  * 
  * @linhong: 
  * 1)please change hard coded number of classes 2 to a parameter:)
- * 2)the convergence nuance might reduce to a smaller value
- * 3)increse the max number of iterations 
+ * 2)the convergence nuance might reduce to a smaller value or set as a parameter too:)
+ * 3)increse the max number of iterations or set as a parameter too:)
  * 
  * 
  */
