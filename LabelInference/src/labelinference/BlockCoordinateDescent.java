@@ -18,6 +18,13 @@ import labelinference.exceptions.RowOutOfRangeException;
 /**
  *
  * @author Hermes777, SailWhite
+ * 
+ * @linhong: 
+ * 1)please change hard coded number of classes 2 to a parameter:)
+ * 2)the convergence nuance might reduce to a smaller value
+ * 3)increse the max number of iterations 
+ * 
+ * 
  */
 public class BlockCoordinateDescent implements LabelInference {
     private final Graph g;
