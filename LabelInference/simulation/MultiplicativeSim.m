@@ -1,4 +1,4 @@
-Y=[0.5 0.5;0.5 0.5;0 1;0.5 0.5;0.5 0.5;0.5 0.5;0.5 0.5;1 0];
+Y=[0.5 0.5;0.5 0.5;1 0;0.5 0.5;0.5 0.5;0.5 0.5;0.5 0.5;0 1];
 
 G=[0 0 1 1 0 0 1 0;
    0 0 0 1 1 1 1 1;
@@ -9,13 +9,13 @@ G=[0 0 1 1 0 0 1 0;
    1 1 1 1 1 1 0 0;
    0 1 0 0 1 1 0 0];
 
-Sa=[1 0 0 0 0 0 0 0;
-    0 1 0 0 0 0 0 0];
+Sa=[0 0 0 0 0 0 0 0;
+    0 0 0 0 0 0 0 0];
 Sb=[0 0 1 0 0 0 0 0;
-    0 0 0 1 0 0 0 0;
-    0 0 0 0 1 0 0 0;
-    0 0 0 0 0 1 0 0];
-Sc=[0 0 0 0 0 0 1 0;
+    0 0 0 0 0 0 0 0;
+    0 0 0 0 0 0 0 0;
+    0 0 0 0 0 0 0 0];
+Sc=[0 0 0 0 0 0 0 0;
     0 0 0 0 0 0 0 1];
 
 Gab=[1 1 0 0;
@@ -33,12 +33,12 @@ for i=1:8
 	Ya=Y(1:2,:);
 	Yb=Y(3:6,:);
 	Yc=Y(7:8,:);
-	Ya=Ya.*(sqrt((Gab*Yb+Gac*Yc+Sa*Y0)./(Ya*Yb'*Yb+Ya*Yc'*Yc+Sa*Y)));
-	Yb=Yb.*(sqrt((Gab'*Ya+Gbc*Yc+Sb*Y0)./(Yb*Ya'*Ya+Yb*Yc'*Yc+Sb*Y)));
-	Yc=Yc.*(sqrt((Gac'*Ya+Gbc'*Yb+Sc*Y0)./(Yc*Yb'*Yb+Yc*Ya'*Ya+Sc*Y)));
-	Y(1:2,:)=Ya;
-	Y(3:6,:)=Yb;
-	Y(7:8,:)=Yc;
+	Ya_new=Ya.*(sqrt((Gab*Yb+Gac*Yc+Sa*Y0)./(Ya*Yb'*Yb+Ya*Yc'*Yc+Sa*Y)));	
+	Yb_new=Yb.*(sqrt((Gab'*Ya+Gbc*Yc+Sb*Y0)./(Yb*Ya'*Ya+Yb*Yc'*Yc+Sb*Y)));
+	Yc_new=Yc.*(sqrt((Gac'*Ya+Gbc'*Yb+Sc*Y0)./(Yc*Yb'*Yb+Yc*Ya'*Ya+Sc*Y)));
+	Y(1:2,:)=Ya_new;
+	Y(3:6,:)=Yb_new;
+	Y(7:8,:)=Yc_new;
 	Y
 end
 
