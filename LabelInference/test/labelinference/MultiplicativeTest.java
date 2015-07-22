@@ -101,13 +101,18 @@ public class MultiplicativeTest {
     public void testGetResult() throws FileNotFoundException, ColumnOutOfRangeException, RowOutOfRangeException {
         System.out.println("\nMultiplicative");
         
-        System.out.println("graph 1,top 5%:");
+        /*System.out.println("graph 1,top 5%:");
         Map<Integer,Vertex> expResult=readGraph("data/1/testGraph.g");
         Map<Integer,Vertex> result=test("data/1/trainGraph5.g");
         check(expResult,result);
         
         System.out.println("graph 1,top 10%:");
         result=test("data/1/trainGraph10.g");
+        check(expResult,result);*/
+        
+        System.out.println("graph 0:");
+        Map<Integer,Vertex> expResult=readGraph("data/0/testGraph.g");
+        Map<Integer,Vertex> result=test("data/0/trainGraph.g");
         check(expResult,result);
     }
 

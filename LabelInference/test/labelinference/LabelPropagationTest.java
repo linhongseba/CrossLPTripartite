@@ -101,6 +101,11 @@ public class LabelPropagationTest {
         result=test("data/1/trainGraph10.g");
         check(expResult,result);
         
+        System.out.println("graph 0:");
+        expResult=readGraph("data/0/testGraph.g");
+        result=test("data/0/trainGraph.g");
+        check(expResult,result);
+        
         System.out.println("graph 30,top 5%:");
         expResult=readGraph("data/30/testGraph.g");
         result=test("data/30/trainGraph5.g");
