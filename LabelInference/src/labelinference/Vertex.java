@@ -30,7 +30,7 @@ public class Vertex {
     public final static Type typeB=new Type();
     public final static Type typeC=new Type();
     private boolean ISY0;
-
+    private double sume;
     private Matrix label;
 
     private final Map<Vertex,Double> neighbors;
@@ -82,14 +82,22 @@ public class Vertex {
     }
 
     public void addEdge(Vertex _neighbor, double _weight) {
+        removeEdge(_neighbor);
+        sume+=_weight;
         neighbors.put(_neighbor,_weight);
     }
 
     public void removeEdge(Vertex _neighbor) {
+        if(neighbors.containsKey(_neighbor))sume-=neighbors.get(_neighbor);
         neighbors.remove(_neighbor);
     }
 
     public int degree() {
         return neighbors.size();
     }
+    
+    public double sumE() {
+        return sume;
+    }
+    
 }

@@ -7,8 +7,11 @@ package labelinference;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.random;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
@@ -36,46 +39,37 @@ public class BlockCoordinateDescent implements LabelInference {
         g=_g;
     }
     
-    private void update(Matrix Y, Matrix Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException, IrreversibleException {
+    private double update(Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException, IrreversibleException {
         final MatrixFactory mf=MatrixFactory.getInstance();
     	final Matrix I=mf.identityMatrix(2);
-        final double deltaData[][]={{1e-5,0},{0,1e-5}};
-        final Matrix delta=mf.creatMatrix(deltaData);
-        final Map<Vertex.Type,Matrix> A=new HashMap<>();
-        final Map<Vertex.Type,Matrix> Ay0=new HashMap<>();
+        final double dData[][]={{1e-5,0},{0,1e-5}};
+        final Matrix d=mf.creatMatrix(dData);
+        final Map<Vertex.Type,Double> A=new HashMap<>();
+        final Map<Vertex.Type,Double> Ay0=new HashMap<>();
         A.put(Vertex.typeA, null);
         A.put(Vertex.typeB, null);
         A.put(Vertex.typeC, null);
         
         for(Vertex.Type type:A.keySet()) {
-            A.put(type,mf.creatMatrix(2,2));
+            A.put(type,new Double(0));
             for(Vertex v:g.getVertices()) 
                 if(v.getType()!=type)
-                    A.put(type, A.get(type).add(v.getLabel().times(v.getLabel().transpose())));
-            if(abs(A.get(type).determinant())<1e-9) A.put(type,A.get(type).add(delta));
-            Ay0.put(type, A.get(type).add(I));
-            if(abs(Ay0.get(type).determinant())<1e-9)Ay0.put(type,Ay0.get(type).add(delta));	
-            A.put(type, A.get(type).inverse());
-            Ay0.put(type, Ay0.get(type).inverse());
+                    A.put(type, A.get(type).doubleValue()+v.getLabel().times(v.getLabel().transpose()).get(0, 0));
+            Ay0.put(type, 1/(A.get(type).doubleValue()+1));	
+            A.put(type, 1/A.get(type).doubleValue());
+            
         }
-        
-        int row=0;
+        double delta=0;
         for(Vertex u:g.getVertices()) {
-            Matrix tempY=mf.creatMatrix(2,1);
+            Matrix label=mf.creatMatrix(2,1);
             for(Vertex v:u.getNeighbors())
-                tempY=tempY.add(v.getLabel().timesNum(u.getEdge(v)));
-            if(u.isY0()) u.setLabel(Ay0.get(u.getType()).times(tempY.add(Y0.getRow(row).transpose().orthonormalize())));
-            else u.setLabel(A.get(u.getType()).times(tempY).orthonormalize());
-            Y.setRow(row,u.getLabel().orthonormalize().transpose());
-            row++;
+                label=label.add(v.getLabel().timesNum(u.getEdge(v)));
+            if(u.isY0()) label=label.add(Y0.get(u)).times(Ay0.get(u.getType())).orthonormalize();
+            else label=label.times(A.get(u.getType())).orthonormalize();
+            delta+=u.getLabel().subtract(label).norm(Matrix.FIRST_NORM);
+            u.setLabel(label);
         }
-    }
-
-    private boolean converge(Matrix Y, Matrix lastY) throws DimensionNotAgreeException {
-        final double nuance=0.0001;
-        double x=Y.subtract(lastY).norm(Matrix.FROBENIUS_NORM)/g.getVertices().size();
-        System.out.println(x);
-        return x<nuance;
+        return delta;
     }
     
     @Override
@@ -83,34 +77,26 @@ public class BlockCoordinateDescent implements LabelInference {
         if(isDone)return g;
         MatrixFactory mf=MatrixFactory.getInstance();
         try {
-            final Map<Vertex,Matrix> y0Backup=new HashMap<>();
-            final int nVertex=g.getVertices().size();
-            final Matrix Y0=mf.creatMatrix(nVertex,2);
-            final Matrix Y=mf.creatMatrix(nVertex,2);
-            Matrix lastY;
-            for (Vertex v : g.getVertices())
-                if(v.isY0())y0Backup.put(v, v.getLabel().copy());
-
-            int row=0;
-            for(Vertex u:g.getVertices()) {
-                if(u.isY0()) {
-                    Y0.setRow(row, u.getLabel().transpose());
-                    Y.setRow(row, u.getLabel().transpose());
-                } else Y.setRow(row, ranLabel().transpose());
-                row++;
-            }//get Y0
+            final Map<Vertex,Matrix> Y0=new HashMap<>();
+            for (Vertex v : g.getVertices()) {
+                if(v.isY0())Y0.put(v, v.getLabel().copy());
+                else v.setLabel(ranLabel());
+            }
 
             int iter=0;
+            double delta;
             do {
-                lastY=Y.copy();
-                update(Y,Y0);
+                delta=update(Y0)/g.getVertices().size();
+                System.out.println(delta);
                 iter++;
-            } while(iter<5 && !converge(Y,lastY));
+            } while(iter<25);
 
             for(Vertex v:g.getVertices())
                 if(v.isY0())
-                    v.setLabel(y0Backup.get(v));
-        } catch (RowOutOfRangeException | ColumnOutOfRangeException | DimensionNotAgreeException | IrreversibleException ex) {}
+                    v.setLabel(Y0.get(v));
+        } catch (ColumnOutOfRangeException | DimensionNotAgreeException | IrreversibleException | RowOutOfRangeException ex) {
+            Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
+        }
         isDone=true;
         return g;
     }

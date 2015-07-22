@@ -26,8 +26,8 @@ public class LabelPropagation implements LabelInference {
     private boolean isDone;
     private final double alpha=0.2;
     private final int maxThread=2000;
-    private final double minDelta=0.03;
-    private final double minDDelta=0.1;
+    private final double minDelta=0.01;
+    private final double minDDelta=0.01;
     
     public LabelPropagation(Graph _g) {
         g=_g;
@@ -83,7 +83,7 @@ public class LabelPropagation implements LabelInference {
                         a=a.add(v.getLabel().getCol(0).times(u.getEdge(v)));
                         for(Vertex w:v.getNeighbors()) {
                             if(w.getType()!=u.getType())continue;
-                            b=b.add(r.times(w.getLabel().getCol(0).times(v.getEdge(w)*v.getEdge(u))));
+                            b=b.add(r.times(w.getLabel().getCol(0).times(v.getEdge(w)*v.getEdge(u)/(w.sumE()*v.sumE()))));
                         }
                     }
                     label.setCol(1, a.orthonormalize().times(1-alpha).add(b.orthonormalize().times(alpha)));

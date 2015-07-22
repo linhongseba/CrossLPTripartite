@@ -177,7 +177,7 @@ public class NaiveMatrix implements Matrix{
     
     @Override
     public Matrix transpose() {
-        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        NaiveMatrix M=new NaiveMatrix(A.getColumnDimension(),A.getRowDimension());
         M.A=A.transpose();
     	return M;
     }
