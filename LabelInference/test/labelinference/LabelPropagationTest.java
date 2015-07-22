@@ -79,7 +79,7 @@ public class LabelPropagationTest {
     
     Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
         Map<Integer,Vertex> graph=readGraph(path);
-        LabelPropagation labelPropagation=new LabelPropagation(new Graph(graph.values()));
+        LabelPropagation labelPropagation=new LabelPropagation(new Graph(graph.values()),2);
         labelPropagation.getResult();
 
         return graph;

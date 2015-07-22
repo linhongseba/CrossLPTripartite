@@ -5,11 +5,9 @@
  */
 package labelinference;
 
-import static java.lang.Math.abs;
-import static java.lang.Math.random;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,18 +30,36 @@ import labelinference.exceptions.RowOutOfRangeException;
 public class BlockCoordinateDescent implements LabelInference {
     private final Graph g;
     private boolean isDone;
+    private final double nuance;
+    private final Function<Integer,Matrix> labelInit;
+    private final int k;
+    private final int maxIter;
 	
-    private Matrix ranLabel() throws ColumnOutOfRangeException, RowOutOfRangeException {
-        final MatrixFactory mf=MatrixFactory.getInstance();
-        Matrix label=mf.creatMatrix(2,1);
-        label.set(0, 0, random());
-        label.set(1,0,1-label.get(0, 0));
-        return label;
-    }
-	
-	
-    public BlockCoordinateDescent(Graph _g) {	
+    public BlockCoordinateDescent(Graph _g, int _k) {	
         g=_g;
+        k=_k;
+        isDone=false;
+        nuance=1e-4;
+        maxIter=100;
+        labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
+    }
+    
+    public BlockCoordinateDescent(Graph _g, int _k,double  _nuance, int _maxIter) {
+        g=_g;
+        k=_k;
+        isDone=false;
+        nuance=_nuance;
+        maxIter=_maxIter;
+        labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
+    }
+    
+    public BlockCoordinateDescent(Graph _g, int _k,double  _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
+        g=_g;
+        k=_k;
+        isDone=false;
+        nuance=_nuance;
+        maxIter=_maxIter;
+        labelInit=_labelInit;
     }
     
     private double update(Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException, IrreversibleException {
@@ -53,18 +69,16 @@ public class BlockCoordinateDescent implements LabelInference {
         final Matrix d=mf.creatMatrix(dData);
         final Map<Vertex.Type,Double> A=new HashMap<>();
         final Map<Vertex.Type,Double> Ay0=new HashMap<>();
-        A.put(Vertex.typeA, null);
-        A.put(Vertex.typeB, null);
-        A.put(Vertex.typeC, null);
+        A.put(Vertex.typeA, new Double(0));
+        A.put(Vertex.typeB, new Double(0));
+        A.put(Vertex.typeC, new Double(0));
         
         for(Vertex.Type type:A.keySet()) {
-            A.put(type,new Double(0));
             for(Vertex v:g.getVertices()) 
                 if(v.getType()!=type)
-                    A.put(type, A.get(type).doubleValue()+v.getLabel().times(v.getLabel().transpose()).get(0, 0));
-            Ay0.put(type, 1/(A.get(type).doubleValue()+1));	
-            A.put(type, 1/A.get(type).doubleValue());
-            
+                    A.put(type, A.get(type)+v.getLabel().transpose().times(v.getLabel()).get(0, 0));
+            Ay0.put(type, 1/(A.get(type)+1));	
+            A.put(type, 1/A.get(type));
         }
         double delta=0;
         for(Vertex u:g.getVertices()) {
@@ -87,16 +101,16 @@ public class BlockCoordinateDescent implements LabelInference {
             final Map<Vertex,Matrix> Y0=new HashMap<>();
             for (Vertex v : g.getVertices()) {
                 if(v.isY0())Y0.put(v, v.getLabel().copy());
-                else v.setLabel(ranLabel());
+                else v.setLabel(labelInit.apply(k));
             }
 
-            int iter=0;
             double delta;
+            int iter=0;
             do {
                 delta=update(Y0)/g.getVertices().size();
-                System.out.println(delta);
                 iter++;
-            } while(iter<25);
+                System.out.println(delta);
+            } while(delta>nuance && iter!=maxIter);
 
             for(Vertex v:g.getVertices())
                 if(v.isY0())

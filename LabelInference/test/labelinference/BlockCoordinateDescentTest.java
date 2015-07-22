@@ -79,7 +79,7 @@ public class BlockCoordinateDescentTest {
     
     Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException, DimensionNotAgreeException {
         Map<Integer,Vertex> graph=readGraph(path);
-        BlockCoordinateDescent blockCoordinateDescent=new BlockCoordinateDescent(new Graph(graph.values()));
+        BlockCoordinateDescent blockCoordinateDescent=new BlockCoordinateDescent(new Graph(graph.values()),2);
         blockCoordinateDescent.getResult();
 
         return graph;
@@ -99,6 +99,15 @@ public class BlockCoordinateDescentTest {
         
         System.out.println("graph 1,top 10%:");
         result=test("data/1/trainGraph10.g");
+        check(expResult,result);
+        
+        System.out.println("graph 30,top 5%:");
+        expResult=readGraph("data/30/testGraph.g");
+        result=test("data/30/trainGraph5.g");
+        check(expResult,result);
+        
+        System.out.println("graph 30,top 10%:");
+        result=test("data/30/trainGraph10.g");
         check(expResult,result);
     }
 
