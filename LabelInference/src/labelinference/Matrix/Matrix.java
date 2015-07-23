@@ -38,11 +38,10 @@ public interface Matrix {
     double determinant();
     Matrix inverse() throws IrreversibleException;
     Matrix transpose();
-    Matrix orthonormalize() throws DimensionNotAgreeException;
+    Matrix normalize() throws DimensionNotAgreeException;
     double norm(Norm normName);
     Matrix timesNum(double b);
     
     public static final Norm FROBENIUS_NORM=new Norm();
     public static final Norm FIRST_NORM=new Norm();
-	Matrix orthonormalizeCol() throws DimensionNotAgreeException;
-	}
+}

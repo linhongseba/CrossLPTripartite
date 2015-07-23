@@ -228,26 +228,15 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public Matrix orthonormalize() throws DimensionNotAgreeException {
+    public Matrix normalize() throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(A.getColumnDimension()!=1)throw new DimensionNotAgreeException();
-        double sum=0;
-        for(int i=0;i<A.getRowDimension();i++)sum+=abs(A.get(i, 0));
         final double ZERO=1e-9;
-        if(abs(sum)<ZERO)sum=ZERO;
-        for(int i=0;i<A.getRowDimension();i++)M.A.set(i, 0, A.get(i, 0)/abs(sum));
+        for(int col=0;col<A.getColumnDimension();col++){
+            double sum=0;
+            for(int row=0;row<A.getRowDimension();row++)sum+=abs(A.get(row, col));
+            if(abs(sum)<ZERO)sum=ZERO;
+            for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, A.get(row, col)/abs(sum));
+        }
     	return M;
     }
-    @Override
-    public Matrix orthonormalizeCol() throws DimensionNotAgreeException {
-        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        if(A.getRowDimension()!=1)throw new DimensionNotAgreeException();
-        double sum=0;
-        for(int i=0;i<A.getColumnDimension();i++)sum+=abs(A.get(0, i));
-        final double ZERO=1e-9;
-        if(abs(sum)<ZERO)sum=ZERO;
-        for(int i=0;i<A.getColumnDimension();i++)M.A.set(0, i, A.get(0, i)/abs(sum));
-    	return M;
-    }
-     
 }

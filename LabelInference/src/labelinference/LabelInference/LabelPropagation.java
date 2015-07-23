@@ -113,7 +113,7 @@ public class LabelPropagation implements LabelInference {
                         a=a.add(v.getLabel().getCol(0).times(u.getEdge(v)));
                         b=b.add(cache.get(v).get(u.getType()).subtract(u.getLabel().getCol(0).times(u.getEdge(v)/u.sumE())).times(1.0/v.sumE()));
                     }
-                    label.setCol(1, a.orthonormalize().times(1-alpha).add(b.orthonormalize().times(alpha)));
+                    label.setCol(1, a.normalize().times(1-alpha).add(b.normalize().times(alpha)));
                 } catch (ColumnOutOfRangeException | DimensionNotAgreeException ex) {
                     Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
                 }

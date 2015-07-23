@@ -86,8 +86,8 @@ public class BlockCoordinateDescent implements LabelInference {
             Matrix label=mf.creatMatrix(k,1);
             for(Vertex v:u.getNeighbors())
                 label=label.add(v.getLabel().timesNum(u.getEdge(v)));
-            if(u.isY0()) label=label.add(Y0.get(u)).times(Ay0.get(u.getType())).orthonormalize();
-            else label=label.times(A.get(u.getType())).orthonormalize();
+            if(u.isY0()) label=label.add(Y0.get(u)).times(Ay0.get(u.getType())).normalize();
+            else label=label.times(A.get(u.getType())).normalize();
             delta+=u.getLabel().subtract(label).norm(Matrix.FIRST_NORM);
             u.setLabel(label);
         }
@@ -114,8 +114,7 @@ public class BlockCoordinateDescent implements LabelInference {
             } while(delta>nuance && iter!=maxIter);
 
             for(Vertex v:g.getVertices())
-                if(v.isY0())
-                    v.setLabel(Y0.get(v));
+                if(v.isY0())v.setLabel(Y0.get(v));
         } catch (ColumnOutOfRangeException | DimensionNotAgreeException | IrreversibleException | RowOutOfRangeException ex) {
             Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
         }

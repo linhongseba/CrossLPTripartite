@@ -182,8 +182,6 @@ public class NaiveMatrixTest {
         Matrix expResult = new NaiveMatrix(expResData2);
         Matrix result = mD.inverse();
         assertEquals(expResult, result);
-        
-        mA.inverse();
     }
 
     /**
@@ -215,16 +213,16 @@ public class NaiveMatrixTest {
     }
     
     /**
-     * Test of orthonormalize method, of class NaiveMatrix.
+     * Test of normalize method, of class NaiveMatrix.
      * @throws labelinference.exceptions.ColumnOutOfRangeException
      * @throws labelinference.exceptions.DimensionNotAgreeException
      */
     @Test
-    public void testOrthonormalize() throws ColumnOutOfRangeException, DimensionNotAgreeException {
-        System.out.println("orthonormalize");
+    public void testNormalize() throws ColumnOutOfRangeException, DimensionNotAgreeException {
+        System.out.println("normalize");
         double expResData[][]={{2/11.0}, {2/11.0}, {7/11.0}};
         Matrix expResult = new NaiveMatrix(expResData);
-        Matrix result = mD.getCol(0).orthonormalize();
+        Matrix result = mD.getCol(0).normalize();
         assertEquals(expResult, result);
     }
     

@@ -30,12 +30,8 @@ public class MultiplicativeTest {
     Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
         Labor labor=Labor.getInstance();
         Map<Integer,Vertex> graph=labor.readGraph(path);
-        try {
-            Multiplicative multiplicative=new Multiplicative(new Graph(graph.values()));
-            multiplicative.getResult();
-        } catch (DimensionNotAgreeException ex) {
-            Logger.getLogger(MultiplicativeTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        Multiplicative multiplicative=new Multiplicative(new Graph(graph.values()),2);
+        multiplicative.getResult();
         return graph;
     }
     
