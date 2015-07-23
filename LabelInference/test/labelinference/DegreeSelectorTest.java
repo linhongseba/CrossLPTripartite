@@ -16,17 +16,14 @@ import org.junit.Test;
  *
  * @author sailw
  */
-public class SimpleHeuristicSelectorTest {
+public class DegreeSelectorTest {
     
-    public SimpleHeuristicSelectorTest() {
+    public DegreeSelectorTest() {
     }
-    
+
     @Test
-    public void testSimpleHeuristicSelector() throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
-        System.out.println("\nSimpleHeuristicSelector");
-        Labor labor=Labor.getInstance();
-        Map<Integer,Vertex> expResult;
-        Map<Integer,Vertex> result;
+    public void testDegreeSelector() throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
+        System.out.println("DegreeSelector");
         
         System.out.println("graph 0:");
         test("data/0/testGraph.g",3);
@@ -42,11 +39,11 @@ public class SimpleHeuristicSelectorTest {
         Labor labor=Labor.getInstance();
         Map<Integer,Vertex> graph=labor.readGraph(path);
         Graph g=new Graph(graph.values());
-        Collection<Vertex> result=new SimpleHeuristicSelector(g,threshold>0?threshold:g.getVertices().size()/10);
+        Collection<Vertex> result=new DegreeSelector(g,threshold>0?threshold:g.getVertices().size()/10);
         System.out.println(result.size());
         for(Integer vid:graph.keySet()) {
             if(result.contains(graph.get(vid)))
                 System.out.println(vid);
         }
-    }    
+    }
 }
