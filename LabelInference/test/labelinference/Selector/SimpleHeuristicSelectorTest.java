@@ -3,11 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.Selector;
 
+import labelinference.Selector.SimpleHeuristicSelector;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.Map;
+import labelinference.Labor;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.RowOutOfRangeException;
 import org.junit.Test;

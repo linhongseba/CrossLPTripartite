@@ -15,6 +15,10 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        final int x=1;
+        new Thread(() -> {
+            System.out.println(x);
+            new Thread(() -> System.out.println("Hello World!")).start();
+        }).start();
     }
 }

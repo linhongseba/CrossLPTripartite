@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.LabelInference;
 
+import labelinference.Graph.Graph;
+import labelinference.Matrix.MatrixFactory;
+import labelinference.Matrix.Matrix;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.RowOutOfRangeException;
 

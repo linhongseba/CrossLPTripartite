@@ -3,10 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.LabelInference;
 
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
+import labelinference.LabelInference.BlockCoordinateDescent;
 import java.io.FileNotFoundException;
 import java.util.Map;
+import labelinference.Labor;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
@@ -16,21 +20,20 @@ import org.junit.Test;
  *
  * @author sailw
  */
-public class LabelPropagationTest {
-    
-    public LabelPropagationTest() {
+public class BlockCoordinateDescentTest {
+    public BlockCoordinateDescentTest() {
     }
     
     public Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException, DimensionNotAgreeException {
         Labor labor=Labor.getInstance();
         Map<Integer,Vertex> graph=labor.readGraph(path);
-        LabelPropagation labelPropagation=new LabelPropagation(new Graph(graph.values()),2);
-        labelPropagation.getResult();
+        BlockCoordinateDescent blockCoordinateDescent=new BlockCoordinateDescent(new Graph(graph.values()),2);
+        blockCoordinateDescent.getResult();
         return graph;
     }
     
     /**
-     * Test of getResult method, of class LabelPropagation.
+     * Test of getResult method, of class BlockCoordinateDescent.
      * @throws java.io.FileNotFoundException
      * @throws labelinference.exceptions.ColumnOutOfRangeException
      * @throws labelinference.exceptions.RowOutOfRangeException
@@ -38,7 +41,7 @@ public class LabelPropagationTest {
      */
     @Test
     public void testGetResult() throws FileNotFoundException, ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
-        System.out.println("\nLabelPropagation");
+        System.out.println("\nBlockCoordinateDescent");
         Labor labor=Labor.getInstance();
         Map<Integer,Vertex> expResult;
         Map<Integer,Vertex> result;

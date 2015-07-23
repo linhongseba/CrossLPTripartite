@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.Selector;
 
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import java.util.ArrayList;
 import java.util.Collections;
 

@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.Graph;
 
+import labelinference.Matrix.Matrix;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,12 +15,12 @@ import java.util.Map;
  */
 public class Vertex {
 
-    double getEdge(Vertex vertex) {
+    public double getEdge(Vertex vertex) {
         if(neighbors.containsKey(vertex))return neighbors.get(vertex);
         return 0;
     }
 
-    Iterable<Vertex> getNeighbors() {
+    public Iterable<Vertex> getNeighbors() {
         return neighbors.keySet();
     }
     

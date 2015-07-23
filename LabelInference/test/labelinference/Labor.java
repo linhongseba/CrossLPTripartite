@@ -5,6 +5,9 @@
  */
 package labelinference;
 
+import labelinference.Graph.Vertex;
+import labelinference.Matrix.MatrixFactory;
+import labelinference.Matrix.Matrix;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -28,7 +31,7 @@ public class Labor {
         if(instance==null)instance=new Labor();
         return instance;
     }
-    
+
     public Map<Integer,Vertex> readGraph(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
         MatrixFactory matrixFactory=MatrixFactory.getInstance();
         Scanner in=new Scanner(new FileReader(new File(path)));
@@ -61,8 +64,7 @@ public class Labor {
             if(typeS.equals("A"))type=Vertex.typeA;
             else if(typeS.equals("B"))type=Vertex.typeB;
             else type=Vertex.typeC;
-            
-            
+
             vertex.init(type, label, isY0);
             
             for(int j=0;j<nNei;j++) {

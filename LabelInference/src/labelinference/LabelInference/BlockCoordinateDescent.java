@@ -3,13 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.LabelInference;
 
+import labelinference.Matrix.MatrixFactory;
+import labelinference.Matrix.Matrix;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
@@ -64,9 +68,6 @@ public class BlockCoordinateDescent implements LabelInference {
     
     private double update(Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException, IrreversibleException {
         final MatrixFactory mf=MatrixFactory.getInstance();
-    	final Matrix I=mf.identityMatrix(2);
-        final double dData[][]={{1e-5,0},{0,1e-5}};
-        final Matrix d=mf.creatMatrix(dData);
         final Map<Vertex.Type,Double> A=new HashMap<>();
         final Map<Vertex.Type,Double> Ay0=new HashMap<>();
         A.put(Vertex.typeA, new Double(0));
@@ -82,7 +83,7 @@ public class BlockCoordinateDescent implements LabelInference {
         }
         double delta=0;
         for(Vertex u:g.getVertices()) {
-            Matrix label=mf.creatMatrix(2,1);
+            Matrix label=mf.creatMatrix(k,1);
             for(Vertex v:u.getNeighbors())
                 label=label.add(v.getLabel().timesNum(u.getEdge(v)));
             if(u.isY0()) label=label.add(Y0.get(u)).times(Ay0.get(u.getType())).orthonormalize();

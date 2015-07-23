@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.LabelInference;
 
-import java.util.Collection;
+import labelinference.Matrix.MatrixFactory;
+import labelinference.Matrix.Matrix;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 
@@ -65,7 +67,7 @@ public class LabelPropagation implements LabelInference {
         final MatrixFactory mf=MatrixFactory.getInstance();
         try {
             for(Vertex v:g.getVertices()) {
-                Matrix label=mf.creatMatrix(2, 2);
+                Matrix label=mf.creatMatrix(k, 2);
                 if(v.isY0())label.setCol(0, v.getLabel());
                 else label.setCol(0, labelInit.apply(k));
                 v.setLabel(label);
@@ -89,16 +91,12 @@ public class LabelPropagation implements LabelInference {
 
     private double update() throws DimensionNotAgreeException, ColumnOutOfRangeException, InterruptedException {
         final MatrixFactory mf=MatrixFactory.getInstance();
-        final Collection<Vertex> threads=new HashSet<>();
-        final double dataR[][]={{0,1},{1,0}};
-        final Matrix r=mf.creatMatrix(dataR);
-        
         final Map<Vertex,Map<Vertex.Type,Matrix>> cache=new HashMap<>();
         for(Vertex u:g.getVertices()) {
             Map<Vertex.Type,Matrix> value=new HashMap<>();
-            value.put(Vertex.typeA, mf.creatMatrix(2, 1));
-            value.put(Vertex.typeB, mf.creatMatrix(2, 1));
-            value.put(Vertex.typeC, mf.creatMatrix(2, 1));
+            value.put(Vertex.typeA, mf.creatMatrix(k, 1));
+            value.put(Vertex.typeB, mf.creatMatrix(k, 1));
+            value.put(Vertex.typeC, mf.creatMatrix(k, 1));
             for(Vertex v:u.getNeighbors())
                 value.put(v.getType(), value.get(v.getType()).add(v.getLabel().getCol(0).times(v.getEdge(u)/v.sumE())));
             cache.put(u, value);
@@ -108,8 +106,8 @@ public class LabelPropagation implements LabelInference {
         for(Vertex u:g.getVertices()) {
                 if(u.isY0())continue;
                 Matrix label=u.getLabel();
-                Matrix a=mf.creatMatrix(2, 1);
-                Matrix b=mf.creatMatrix(2, 1);
+                Matrix a=mf.creatMatrix(k, 1);
+                Matrix b=mf.creatMatrix(k, 1);
                 try {
                     for(Vertex v:u.getNeighbors()) {
                         a=a.add(v.getLabel().getCol(0).times(u.getEdge(v)));

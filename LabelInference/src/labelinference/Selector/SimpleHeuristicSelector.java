@@ -3,8 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package labelinference;
+package labelinference.Selector;
 
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import static java.lang.Math.random;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +18,7 @@ import java.util.TreeSet;
  * @author sailw
  */
 public class SimpleHeuristicSelector extends HashSet implements Selector {
-    SimpleHeuristicSelector(Graph g, int threshold) {
+    public SimpleHeuristicSelector(Graph g, int threshold) {
         TreeSet<Vertex> H=new TreeSet<>((Vertex x,Vertex y)->{
             if(y.degree()!=x.degree())return y.degree()-x.degree();
             return y.hashCode()-x.hashCode();
