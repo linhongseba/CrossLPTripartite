@@ -237,4 +237,16 @@ public class NaiveMatrix implements Matrix{
         for(int i=0;i<A.getRowDimension();i++)M.A.set(i, 0, A.get(i, 0)/abs(sum));
     	return M;
     }
+    @Override
+    public Matrix orthonormalizeCol() throws DimensionNotAgreeException {
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        if(A.getRowDimension()!=1)throw new DimensionNotAgreeException();
+        double sum=0;
+        for(int i=0;i<A.getColumnDimension();i++)sum+=abs(A.get(0, i));
+        final double ZERO=1e-9;
+        if(abs(sum)<ZERO)sum=ZERO;
+        for(int i=0;i<A.getColumnDimension();i++)M.A.set(0, i, A.get(0, i)/abs(sum));
+    	return M;
+    }
+     
 }

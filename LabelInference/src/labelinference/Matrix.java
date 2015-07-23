@@ -44,4 +44,5 @@ public interface Matrix {
     
     public static final Norm FROBENIUS_NORM=new Norm();
     public static final Norm FIRST_NORM=new Norm();
-}
+	Matrix orthonormalizeCol() throws DimensionNotAgreeException;
+	}
