@@ -1,5 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
+* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -24,71 +23,29 @@ public class Multiplicative implements LabelInference {
 	private Matrix Gab,Gbc,Gac;
 	private int Na,Nb,Nc,N;
 	private Matrix Sa,Sb,Sc;
-	int[] node;
 	Graph local_g;
-    Map<Integer,Vertex> map=new HashMap();
+    Map<Vertex,Integer> map=new HashMap();
     
     /*The method produces the random elements in matrices:Y0/Ya/Yb/Yc */
 	private void randomSet(int row,int row1,int type) throws ColumnOutOfRangeException, RowOutOfRangeException
 	{
-		if(Math.random()<(1/3.0))
-		{
-			Y0.set(row,0,0);
-			Y0.set(row,1,1);
-			if(type==1)
-			{
-				Ya.set(row1,0,0);
-				Ya.set(row1,1,1);
-			}
-			if(type==2)
-			{
-				Yb.set(row1,0,0);
-				Yb.set(row1,1,1);
-			}
-			if(type==3)
-			{
-				Yc.set(row1,0,0);
-				Yc.set(row1,1,1);
-			}
-			return;
-		}
-		if(Math.random()<(2/3.0))
-		{
-			Y0.set(row,0,0.5);
-			Y0.set(row,1,0.5);
-			if(type==1)
-			{
-				Ya.set(row1,0,0.5);
-				Ya.set(row1,1,0.5);
-			}
-			if(type==2)
-			{
-				Yb.set(row1,0,0.5);
-				Yb.set(row1,1,0.5);
-			}
-			if(type==3)
-			{
-				Yc.set(row1,0,0.5);
-				Yc.set(row1,1,0.5);
-			}
-			return;
-		}
-		Y0.set(row,0,1);
-		Y0.set(row,1,0);
+
+		Y0.set(row,0,0.5);
+		Y0.set(row,1,0.5);
 		if(type==1)
 		{
-			Ya.set(row1,0,1);
-			Ya.set(row1,1,0);
+			Ya.set(row1,0,0.5);
+			Ya.set(row1,1,0.5);
 		}
 		if(type==2)
 		{
-			Yb.set(row1,0,1);
-			Yb.set(row1,1,0);
+			Yb.set(row1,0,0.5);
+			Yb.set(row1,1,0.5);
 		}
 		if(type==3)
 		{
-			Yc.set(row1,0,1);
-			Yc.set(row1,1,0);
+			Yc.set(row1,0,0.5);
+			Yc.set(row1,1,0.5);
 		}
 		return;
 	}
@@ -115,7 +72,6 @@ public class Multiplicative implements LabelInference {
     	int[] num_b=new int[na+nb+nc];
     	int[] num_c=new int[na+nb+nc];
     	
-    	node=new int[na+nb+nc];
 		Y0=F.creatMatrix(na+nb+nc,2);
 		Y=F.creatMatrix(na+nb+nc,2);
 		Sa=F.creatMatrix(na,na+nb+nc);
@@ -129,11 +85,13 @@ public class Multiplicative implements LabelInference {
     	Gac=F.creatMatrix(na,nc);
 			
 		for(Vertex point:_g.getVertices()) {
-			map.put(N, point);
+			//map.put(N, point);
     		if(point.getType()==Vertex.typeA)
     		{
     			num_a[N]=Na;
-    			node[N]=Na;
+    			map.put(point,Na);
+            	//System.out.println(map.get(point));
+            	
     			//get the No.N Y node's position in Ya/Yb/Yc matrices 
                         
         		if(point.isY0())
@@ -149,7 +107,8 @@ public class Multiplicative implements LabelInference {
             if(point.getType()==Vertex.typeB)
     		{
     			num_b[N]=Nb;
-    			node[N]=na+Nb;
+    			map.put(point,na+Nb);
+            	//System.out.println(map.get(point));
     			//get the No.N Y node's position in Ya/Yb/Yc matrices 
 
         		if(point.isY0())
@@ -165,7 +124,8 @@ public class Multiplicative implements LabelInference {
     		if(point.getType()==Vertex.typeC)
     		{
     			num_c[N]=Nc;
-    			node[N]=na+nb+Nc;
+    			map.put(point,na+nb+Nc);
+            	//System.out.println(map.get(point));
     			//get the No.N Y node's position in Ya/Yb/Yc matrices 
 
         		if(point.isY0())
@@ -179,8 +139,7 @@ public class Multiplicative implements LabelInference {
     			Nc++;
     		}
     		
-        	Vertex TempPoint=new Vertex(point.getType(),point.getLabel(),point.isY0());
-        	local_g.addVertex(TempPoint);
+        	local_g.addVertex(point);
         	//set the vertices in the output graph. 
     		N++;
         }//get Y0,Ya,Yb,Yc,Sa,Sb,Sc
@@ -223,7 +182,7 @@ public class Multiplicative implements LabelInference {
     		{
     			int cnt=0;
     			for(Vertex v:_g.getVertices()) {
-                		if(v.getType()==Vertex.typeA)
+                	if(v.getType()==Vertex.typeA)
     	        		Gac.set(num_a[cnt],nc,u.getEdge(v));
     	    		if(v.getType()==Vertex.typeB)
     	        		Gbc.set(num_b[cnt],nc,u.getEdge(v));
@@ -236,8 +195,7 @@ public class Multiplicative implements LabelInference {
     			nc++;
     		}
     	}
-		Y.clone(Y0);    	
-
+		Y=Y0.copy();    	
     }
     
     /*The method updates the matrices */
@@ -251,10 +209,10 @@ public class Multiplicative implements LabelInference {
             Matrix Yb_new=F.creatMatrix(Nb,2);
             Matrix Yc_new=F.creatMatrix(Nc,2);
 
-            Ya_new.clone(Ya);
-            Yb_new.clone(Yb);
-            Yc_new.clone(Yc);
-            lastY.clone(Y);
+            Ya_new=Ya.copy();
+            Yb_new=Yb.copy();
+            Yc_new=Yc.copy();
+            lastY=Y.copy();
 
             //initialize Ya Yb Yc
 
@@ -264,7 +222,7 @@ public class Multiplicative implements LabelInference {
             temp_a_down=Ya.times(Yb.transpose()).times(Yb).add(Ya.times(Yc.transpose()).times(Yc)).add(Sa.times(Y));
 
             //calculate the numerator and denominator
-            Ya_new.clone(Ya.cron(temp_a_up.divide(temp_a_down).sqrt()));
+            Ya_new=(Ya.cron(temp_a_up.divide(temp_a_down).sqrt())).copy();
             //calculate Ya
 
 
@@ -272,9 +230,9 @@ public class Multiplicative implements LabelInference {
             Matrix temp_b_down=F.creatMatrix(Nb,2);
             temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Y0));
             temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Y));
-
+            
             //calculate the numerator and denominator
-            Yb_new.clone(Yb.cron(temp_b_up.divide(temp_b_down).sqrt()));
+            Yb_new=(Yb.cron(temp_b_up.divide(temp_b_down).sqrt())).copy();
             //calculate Yb
 
 
@@ -285,17 +243,35 @@ public class Multiplicative implements LabelInference {
             temp_c_down=Yc.times(Ya.transpose()).times(Ya).add(Yc.times(Yb.transpose()).times(Yb)).add(Sc.times(Y));
 
             //calculate the numerator and denominator
-            Yc_new.clone(Yc.cron(temp_c_up.divide(temp_c_down).sqrt()));
+            Yc_new=(Yc.cron(temp_c_up.divide(temp_c_down).sqrt())).copy();
             //calculate Yc
 
 
-            Ya.clone(Ya_new);
-            Yb.clone(Yb_new);
-            Yc.clone(Yc_new);
+            for(int i=0;i<Na;i++)
+            {
+            	Matrix temp=F.creatMatrix(1,2);
+            	temp=Ya_new.getRow(i).orthonormalizeCol();
+            	Ya_new.setRow(i, temp);
+            }
+            for(int i=0;i<Nb;i++)
+            {
+            	Matrix temp=F.creatMatrix(1,2);
+            	temp=Yb_new.getRow(i).orthonormalizeCol();
+            	Yb_new.setRow(i, temp);
+            }
+            for(int i=0;i<Nc;i++)
+            {
+            	Matrix temp=F.creatMatrix(1,2);
+            	temp=Yc_new.getRow(i).orthonormalizeCol();
+            	Yc_new.setRow(i, temp);
+            }
+            Ya=(Ya_new).copy();
+            Yb=(Yb_new).copy();
+            Yc=(Yc_new).copy();
             Y.setM(0,Na-1,0,1,Ya_new);
             Y.setM(Na,Na+Nb-1,0,1,Yb_new);
             Y.setM(Na+Nb,Na+Nb+Nc-1,0,1,Yc_new);
-
+            
 	}
 
     
@@ -310,17 +286,33 @@ public class Multiplicative implements LabelInference {
     @Override
     public Graph getResult() throws DimensionNotAgreeException, ColumnOutOfRangeException, RowOutOfRangeException {
 
+        for(Vertex v:local_g.getVertices())
+        	System.out.println(v.getLabel());
+        int iter=0;
     	do
     	{
-		 	update();
-    	}while(!converge());
+		update();
+	        iter++;
+	 }while(!converge());
     	//do the cycle until converge
     	
-        for(int i=0;i<N;i++)
-            if(!map.get(i).isY0())
-                map.get(i).setLabel(Y.getRow(node[i]).transpose());
-        //change the labels and complete the output graph
-        
+        /*
+        System.out.println("&&&");
+        //System.out.println("****");
+        System.out.println(Y.toString());
+        */
+        //System.out.println("===");
+        for(Vertex v:local_g.getVertices())
+            if(!v.isY0())
+            {
+            	v.setLabel(Y.getRow(map.get(v)).transpose());
+            	//System.out.println(map.get(v));
+            }/*
+            System.out.println("##");
+        for(Vertex v:local_g.getVertices())
+        {
+        	System.out.println(v.getLabel().toString());
+        }*/
        	return local_g;
     }
 

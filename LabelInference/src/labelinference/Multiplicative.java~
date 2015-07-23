@@ -303,7 +303,7 @@ public class Multiplicative implements LabelInference {
 	private boolean converge() throws DimensionNotAgreeException
 	{
             double x=Y.subtract(lastY).norm(Matrix.FROBENIUS_NORM);
-            double nuance=0.001;
+            double nuance=0.01;
             return x<nuance;
 	}
     /*The method gets the converge condition */
