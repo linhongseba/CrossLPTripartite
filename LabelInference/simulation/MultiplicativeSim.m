@@ -39,6 +39,9 @@ for i=1:8
 	Y(1:2,:)=Ya_new;
 	Y(3:6,:)=Yb_new;
 	Y(7:8,:)=Yc_new;
+	
+	for j=1:8
+  		Y(j,:)=Y(j,:)./sum(Y(j,:));
+	end
 	Y
 end
-

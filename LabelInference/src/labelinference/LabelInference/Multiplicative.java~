@@ -1,12 +1,17 @@
-
-/*
- * To change this license header, choose License Headers in Project Properties.
+/* To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-package labelinference;
+package labelinference.LabelInference;
+import labelinference.LabelInference.LabelInference;
+import labelinference.Matrix.MatrixFactory;
+import labelinference.Matrix.Matrix;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
@@ -140,6 +145,9 @@ public class Multiplicative implements LabelInference {
         			randomSet(na+nb+Nc,Nc,3);
     			Nc++;
     		}
+    		
+        	local_g.addVertex(point);
+        	//set the vertices in the output graph. 
     		N++;
         }//get Y0,Ya,Yb,Yc,Sa,Sb,Sc
 		
@@ -154,6 +162,9 @@ public class Multiplicative implements LabelInference {
     	    		if(v.getType()==Vertex.typeC)
     	        		Gac.set(na,num_c[cnt],u.getEdge(v));
     	    		//set G matrices
+    	    		
+    	    		local_g.addEdge(u, v, u.getEdge(v));
+    	        	//set the edges in the output graph. 
     	    		cnt++;
     			}
     			na++;
@@ -167,6 +178,9 @@ public class Multiplicative implements LabelInference {
     	    		if(v.getType()==Vertex.typeC)
     	        		Gbc.set(nb,num_c[cnt],u.getEdge(v));
     	    		//set G matrices
+    	    		
+    	    		local_g.addEdge(u, v, u.getEdge(v));
+    	        	//set the edges in the output graph. 
     	    		cnt++;
     			}
     			nb++;
@@ -180,13 +194,15 @@ public class Multiplicative implements LabelInference {
     	    		if(v.getType()==Vertex.typeB)
     	        		Gbc.set(num_b[cnt],nc,u.getEdge(v));
     	    		//set G matrices
+
+    	    		local_g.addEdge(u, v, u.getEdge(v));
+    	        	//set the edges in the output graph. 
     	    		cnt++;
     			}
     			nc++;
     		}
     	}
 		Y=Y0.copy();    	
-		local_g=_g;
     }
     
     /*The method updates the matrices */
@@ -275,23 +291,43 @@ public class Multiplicative implements LabelInference {
 	}
     /*The method gets the converge condition */
     @Override
-    public Graph getResult() throws DimensionNotAgreeException, ColumnOutOfRangeException, RowOutOfRangeException {
+    public Graph getResult(){
 
-        for(Vertex v:local_g.getVertices())
-        	System.out.println(v.getLabel());
-        int iter=0;
-    	do
-    	{
-		 	update();
-	        iter++;
-	    }while(!converge());
-    	
-        for(Vertex v:local_g.getVertices())
-            if(!v.isY0())
-            {
-            	v.setLabel(Y.getRow(map.get(v)).transpose());
+            try {
+                for(Vertex v:local_g.getVertices())
+                    System.out.println(v.getLabel());
+                int iter=0;
+                do
+                {
+                    update();
+                    iter++;
+                }while(!converge());
+                //do the cycle until converge
+                
+                /*
+                System.out.println("&&&");
+                //System.out.println("****");
+                System.out.println(Y.toString());
+                */
+                //System.out.println("===");
+                for(Vertex v:local_g.getVertices())
+                    if(!v.isY0())
+                    {
+                        v.setLabel(Y.getRow(map.get(v)).transpose());
+                        //System.out.println(map.get(v));
+                    }/*
+                System.out.println("##");
+                for(Vertex v:local_g.getVertices())
+                {
+                System.out.println(v.getLabel().toString());
+                }*/
+                
+            } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
+                Logger.getLogger(Multiplicative.class.getName()).log(Level.SEVERE, null, ex);
             }
-        return local_g;
+            return local_g;
     }
-}
+
     
+
+}
