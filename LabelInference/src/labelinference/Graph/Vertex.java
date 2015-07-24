@@ -14,16 +14,6 @@ import java.util.Map;
  * @author sailw
  */
 public class Vertex {
-
-    public double getEdge(Vertex vertex) {
-        if(neighbors.containsKey(vertex))return neighbors.get(vertex);
-        return 0;
-    }
-
-    public Iterable<Vertex> getNeighbors() {
-        return neighbors.keySet();
-    }
-    
     public static class Type {}
 
     private Type type;
@@ -33,29 +23,34 @@ public class Vertex {
     private boolean ISY0;
     private double sume;
     private Matrix label;
-
+    private final String id;
+    
     private final Map<Vertex,Double> neighbors;
     
     /**
      * 
+     * @param _id
      * @param _type initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
      * @param _label label vector of this vertex
      * @param _isY0 whether the vertex is prelabeled
      */
     
-    public Vertex(Type _type, Matrix _label,boolean  _isY0){
-        type=_type;                              //initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
-        label=_label;                            //?
-        neighbors=new HashMap<>();               //the edges denote the relationship between the vertex and other vertices
-        ISY0=_isY0;                              //whether the graph is n*k or n*n
+    public Vertex(String _id, Type _type, Matrix _label,boolean  _isY0){
+        type=_type;
+        label=_label;
+        neighbors=new HashMap<>();
+        ISY0=_isY0;
+        id=_id;
     }
 
-    public Vertex(){
+    public Vertex(String _id){
         neighbors=new HashMap<>();
+        id=_id;
     }
     
     /**
      * 
+     * @param _id
      * @param _type initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
      * @param _label label vector of this vertex
      * @param _isY0 whether the vertex is prelabeled
@@ -101,4 +96,16 @@ public class Vertex {
         return sume;
     }
     
+    public double getEdge(Vertex vertex) {
+        if(neighbors.containsKey(vertex))return neighbors.get(vertex);
+        return 0;
+    }
+
+    public Iterable<Vertex> getNeighbors() {
+        return neighbors.keySet();
+    }
+    
+    public String getId() {
+        return id;
+    }
 }
