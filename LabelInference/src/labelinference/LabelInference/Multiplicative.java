@@ -1,4 +1,3 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -26,17 +25,22 @@ import labelinference.exceptions.RowOutOfRangeException;
  */
 
 public class Multiplicative implements LabelInference {
-    private Matrix Ya0,Yb0,Yc0;
-    private Matrix Ya,Yb,Yc;
-    private Matrix Gab,Gbc,Gac;
-    private Matrix Sa,Sb,Sc;
+
     
     private final Graph g;
     private boolean isDone;
     private final double nuance;
-    private final Function<Integer,Matrix> labelInit;
     private final int k;
     private final int maxIter;
+    private Matrix Y0,Y,lastY;
+	//private Matrix Gab,Gbc,Gac;
+	private int N;
+	Map<Vertex.Type,Integer> Ntype=new HashMap<>();
+	Map<Vertex.Type,Matrix> Stype=new HashMap<>();
+	Map<Vertex.Type,Matrix> Ytype=new HashMap<>();
+	Map<Vertex.Type, Map<Vertex.Type,Matrix>> Gtype=new HashMap<>();
+	//Graph local_g;
+    Map<Vertex,Integer> map=new HashMap();
     
 	
     public Multiplicative(Graph _g, int _k) {	
@@ -68,104 +72,182 @@ public class Multiplicative implements LabelInference {
     
     private double update() throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException 
     {
-        MatrixFactory mf;
-        mf=MatrixFactory.getInstance();
-        Matrix Ya_new;
-        Matrix Yb_new;
-        Matrix Yc_new;
+        MatrixFactory F;
+        F=MatrixFactory.getInstance();
+        lastY=F.creatMatrix(N,k);
 
-        Matrix temp_a_up=((Gab.times(Yb)).add(Gac.times(Yc))).add(Sa.times(Ya0));
-        Matrix temp_a_down=Ya.times(Yb.transpose()).times(Yb).add(Ya.times(Yc.transpose()).times(Yc)).add(Sa.times(Ya));
-        Ya_new=Ya.cron(temp_a_up.divide(temp_a_down).sqrt()).transpose().normalize().transpose();
+    	Map<Vertex.Type,Matrix> Ynew_type=new HashMap<>();
+    	
+    	
+    	Map<Vertex.Type,Matrix> temp_up=new HashMap<>();
+    	Map<Vertex.Type,Matrix> temp_down=new HashMap<>();
+        
+    	
+    	for(Vertex.Type type:Ntype.keySet()) 
+        	Ynew_type.put(type, Ytype.get(type).copy());
+        lastY=Y.copy();
 
-        Matrix temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Yb0));
-        Matrix temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Yb));
-        Yb_new=Yb.cron(temp_b_up.divide(temp_b_down).sqrt()).transpose().normalize().transpose();
+        //initialize Ya Yb Yc
+        
+        for(Vertex.Type type:Ntype.keySet()) 
+        {
+			Vertex.Type typeb=null;
+			Vertex.Type typec=null;
+			for(Vertex.Type subtype:Ntype.keySet()) 
+	    		if(type!=subtype)
+	    		{
+	    			if(typeb==null)
+	    				typeb=subtype;
+	    			else
+	    				typec=subtype;
+	        	}
+	    	temp_up.put(type,F.creatMatrix(Ntype.get(type),k));
+        	temp_down.put(type,F.creatMatrix(Ntype.get(type),k));
 
-        Matrix temp_c_up=Gac.transpose().times(Ya).add(Gbc.transpose().times(Yb)).add(Sc.times(Yc0));
-        Matrix temp_c_down=Yc.times(Ya.transpose()).times(Ya).add(Yc.times(Yb.transpose()).times(Yb)).add(Sc.times(Yc));
-        Yc_new=Yc.cron(temp_c_up.divide(temp_c_down).sqrt()).transpose().normalize().transpose();
+        	temp_up.put(type,((Gtype.get(type).get(typeb).times(Ytype.get(typeb))).add(Gtype.get(type).get(typec).times(Ytype.get(typec)))).add(Stype.get(type).times(Y0)));
+        	temp_down.put(type,Ytype.get(type).times(Ytype.get(typeb).transpose()).times(Ytype.get(typeb)).add(Ytype.get(type).times(Ytype.get(typec).transpose()).times(Ytype.get(typec))).add(Stype.get(type).times(Y)));
 
-        double delta=Ya.subtract(Ya_new).norm(Matrix.FROBENIUS_NORM)+Yb.subtract(Yb_new).norm(Matrix.FROBENIUS_NORM)+Yc.subtract(Yc_new).norm(Matrix.FROBENIUS_NORM);
-        Ya=Ya_new.copy();
-        Yb=Yb_new.copy();
-        Yc=Yc_new.copy();
+        	//calculate the numerator and denominator
+        	Ynew_type.put(type,(Ytype.get(type).cron(temp_up.get(type).divide(temp_down.get(type)).sqrt())).copy());
+        	//calculate Ya
+        }
+
+    	for(Vertex.Type type:Ntype.keySet()) 
+    	{
+    		for(int i=0;i<Ntype.get(type);i++)
+    		{
+    			Matrix temp=F.creatMatrix(1,k);
+    			temp=Ynew_type.get(type).getRow(i).orthonormalizeCol();
+    			Ynew_type.get(type).setRow(i, temp);
+    		}
+    	}
+    	for(Vertex.Type type:Ntype.keySet()) 
+    		Ytype.put(type, (Ynew_type.get(type)).copy());
+
+		Y.setM(0,Ntype.get(Vertex.typeA)-1,0,1,Ynew_type.get(Vertex.typeA));
+        Y.setM(Ntype.get(Vertex.typeA),Ntype.get(Vertex.typeA)+Ntype.get(Vertex.typeB)-1,0,1,Ynew_type.get(Vertex.typeB));
+        Y.setM(Ntype.get(Vertex.typeA)+Ntype.get(Vertex.typeB),N-1,0,1,Ynew_type.get(Vertex.typeC));
+        
+        double delta=Ytype.get(Vertex.typeA).subtract(Ynew_type.get(Vertex.typeA)).norm(Matrix.FROBENIUS_NORM)+Ytype.get(Vertex.typeB).subtract(Ynew_type.get(Vertex.typeB)).norm(Matrix.FROBENIUS_NORM)+Ytype.get(Vertex.typeC).subtract(Ynew_type.get(Vertex.typeC)).norm(Matrix.FROBENIUS_NORM);
+        
         return delta;
     }
 
     @Override
     public Graph getResult() {
-        MatrixFactory mf=MatrixFactory.getInstance();
+        MatrixFactory F=MatrixFactory.getInstance();
         try {
-            Map<Vertex,Integer> v2row=new HashMap();
-            int rowA=0,rowB=0,rowC=0;
+        	F=MatrixFactory.getInstance();
+        	
+        	for (Vertex v : g.getVertices())if(!v.isY0())v.setLabel(labelInit.apply(k));
+        	
+        	Ntype.put(Vertex.typeA, new Integer(0));
+        	Ntype.put(Vertex.typeB, new Integer(0));
+        	Ntype.put(Vertex.typeC, new Integer(0));
+
+            N=0;
+
+        	Map<Vertex.Type,Integer> ntype=new HashMap<>();
+        	for(Vertex.Type type:Ntype.keySet()) 
+        		ntype.put(type, new Integer(0));
+        	
+        	int n=0;
             
-            for (Vertex v : g.getVertices())if(!v.isY0())v.setLabel(labelInit.apply(k));
-            for(Vertex u:g.getVertices()) {
-                if(u.getType()==Vertex.typeA)rowA++;
-                if(u.getType()==Vertex.typeB)rowB++;
-                if(u.getType()==Vertex.typeC)rowC++;
-            }
+    		for(Vertex u:g.getVertices()) {
+    			ntype.put(u.getType(),ntype.get(u.getType())+1);
+    			n++;
+    	   	}
+    		
+    		Map<Vertex.Type,int[]> numtype=new HashMap<>();
+    		for(Vertex.Type type:Ntype.keySet()) 
+    			numtype.put(type,new int[n]);
+        	
+    		Y0=F.creatMatrix(n,k);
+    		Y=F.creatMatrix(n,k);
+    		for(Vertex.Type type:Ntype.keySet()) 
+    			Stype.put(type, F.creatMatrix(ntype.get(type),n));
 
-            Sa=mf.creatMatrix(rowA,rowA);
-            Sb=mf.creatMatrix(rowB,rowB);
-            Sc=mf.creatMatrix(rowC,rowC);
-            Ya0=mf.creatMatrix(rowA,k);
-            Yb0=mf.creatMatrix(rowB,k);
-            Yc0=mf.creatMatrix(rowC,k);
-            Ya=mf.creatMatrix(rowA,k);
-            Yb=mf.creatMatrix(rowB,k);
-            Yc=mf.creatMatrix(rowC,k);
-            Gab=mf.creatMatrix(rowA,rowB);
-            Gbc=mf.creatMatrix(rowB,rowC);
-            Gac=mf.creatMatrix(rowA,rowC);
+    		for(Vertex.Type type:Ntype.keySet()) 
+    			Ytype.put(type, F.creatMatrix(ntype.get(type),2));
+        	    		
+    		Map<Vertex.Type,Matrix> mapa=new HashMap<>();
+            mapa.put(Vertex.typeB,F.creatMatrix(ntype.get(Vertex.typeA),ntype.get(Vertex.typeB)));
+    		mapa.put(Vertex.typeC,F.creatMatrix(ntype.get(Vertex.typeA),ntype.get(Vertex.typeC)));
+    		Gtype.put(Vertex.typeA, mapa);
+    		Map<Vertex.Type,Matrix> mapb=new HashMap<Vertex.Type,Matrix>();
+    		mapb.put(Vertex.typeA,F.creatMatrix(ntype.get(Vertex.typeB),ntype.get(Vertex.typeA)));
+    		mapb.put(Vertex.typeC,F.creatMatrix(ntype.get(Vertex.typeB),ntype.get(Vertex.typeC)));
+    		Gtype.put(Vertex.typeB, mapb);
+    		Map<Vertex.Type,Matrix> mapc=new HashMap<Vertex.Type,Matrix>();
+    		mapc.put(Vertex.typeA,F.creatMatrix(ntype.get(Vertex.typeC),ntype.get(Vertex.typeA)));
+    		mapc.put(Vertex.typeB,F.creatMatrix(ntype.get(Vertex.typeC),ntype.get(Vertex.typeB)));
+    		Gtype.put(Vertex.typeC, mapc);
+    			
+            
+    		for(Vertex point:g.getVertices()) {
+    			//map.put(N, point);
+    			Vertex.Type type=point.getType();
+    			
+    				numtype.get(type)[N]=Ntype.get(type);
+                	//System.out.println(map.get(point));
+        			int cnt=0;
+        			if(type==Vertex.typeA)
+        				cnt=Ntype.get(type);
+        			if(type==Vertex.typeB)
+        				cnt=ntype.get(Vertex.typeA)+Ntype.get(type);
+        			if(type==Vertex.typeC)
+        				cnt=ntype.get(Vertex.typeA)+ntype.get(Vertex.typeB)+Ntype.get(type);
+        			//get the No.N Y node's position in Ya/Yb/Yc matrices 
+        			map.put(point,cnt);
+                            
+            		if(point.isY0())
+            		{
+            			Y0.setRow(cnt, point.getLabel().transpose());
+            			Ytype.get(type).setRow(Ntype.get(type), point.getLabel().transpose());
+            			Stype.get(type).set(Ntype.get(type), cnt, 1);//set Sa
+            		}
+            		else
+            		{
+            			Y0.set(cnt,0,0.5);
+            			Y0.set(cnt,1,0.5);
+            			Ytype.get(type).set(Ntype.get(type),0,0.5);
+           		    	Ytype.get(type).set(Ntype.get(type),1,0.5);
+            		}
+            		
+            		Ntype.put(type,Ntype.get(type)+1);
+        		
+        		
+            	g.addVertex(point);
+            	//set the vertices in the output graph. 
+        		N++;
+            }//get Y0,Ya,Yb,Yc,Sa,Sb,Sc
 
-            rowA=0;rowB=0;rowC=0;
-            for(Vertex point:g.getVertices()) {
-                if(point.getType()==Vertex.typeA) {
-                    v2row.put(point,rowA);
-                    Ya0.setRow(rowA, point.getLabel().transpose());
-                    if(point.isY0())Sa.set(rowA, rowA, 1);
-                    rowA++;
-                }
-                if(point.getType()==Vertex.typeB) {
-                    v2row.put(point,rowB);
-                    Yb0.setRow(rowB, point.getLabel().transpose());
-                    if(point.isY0())Sb.set(rowB, rowB, 1);
-                    rowB++;
-                }
-                if(point.getType()==Vertex.typeC) {
-                    v2row.put(point,rowC);
-                    Yc0.setRow(rowC, point.getLabel().transpose());
-                    if(point.isY0())Sc.set(rowC, rowC, 1);
-                    rowC++;
-                }
-            }
-            Ya=Ya0.copy();
-            Yb=Yb0.copy();  
-            Yc=Yc0.copy(); 
+    		for(Vertex.Type type:Ntype.keySet()) 
+        		ntype.put(type, 0);
+    		int tt=0;
+    		for(Vertex u:g.getVertices()) {
+        		
+        		Vertex.Type type=u.getType();
+        		
+        			int cnt=0;
+    		
+        			for(Vertex v:g.getVertices())
+        			{
+        			if(u.getType()!=v.getType())
+       	    		{
+        	    		//System.out.println(v.getNeighbors());
+        	 	           Vertex.Type subtype=v.getType();
+        	    			Gtype.get(type).get(subtype).set(ntype.get(type),numtype.get(subtype)[cnt],u.getEdge(v));
+        	       			Gtype.get(subtype).get(type).set(numtype.get(subtype)[cnt],ntype.get(type),u.getEdge(v));
+        	       }
+    		    	cnt++;
+        			}
+    		    	//set G matrices
+     	    		ntype.put(type,ntype.get(type)+1);
+     	           tt++;
+        	}
+    		Y=Y0.copy();    	
 
-            rowA=0;rowB=0;rowC=0;
-            for(Vertex u:g.getVertices()) {
-                if(u.getType()==Vertex.typeA) {
-                    for(Vertex v:u.getNeighbors())
-                        if(v.getType()==Vertex.typeB)Gab.set(rowA,v2row.get(v),u.getEdge(v));
-                        else Gac.set(rowA,v2row.get(v),u.getEdge(v));
-                    rowA++;
-                }
-                if(u.getType()==Vertex.typeB) {
-                    for(Vertex v:u.getNeighbors())
-                        if(v.getType()==Vertex.typeA)Gab.set(v2row.get(v),rowB,u.getEdge(v));
-                        else Gbc.set(rowB,v2row.get(v),u.getEdge(v));
-                    rowB++;
-                }
-                if(u.getType()==Vertex.typeC) {
-                    for(Vertex v:u.getNeighbors())
-                        if(v.getType()==Vertex.typeA)Gac.set(v2row.get(v),rowC,u.getEdge(v));
-                        else Gbc.set(v2row.get(v),rowC,u.getEdge(v));
-                    rowC++;
-                }
-            }
 
             double delta;
             int iter=0;
@@ -176,15 +258,9 @@ public class Multiplicative implements LabelInference {
             } while(delta>nuance && iter!=maxIter);
 
             for(Vertex v:g.getVertices())
-                if(v.isY0()){
-                    if(v.getType()==Vertex.typeA)v.setLabel(Ya0.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeB)v.setLabel(Yb0.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeC)v.setLabel(Yc0.getRow(v2row.get(v)).transpose());
-                } else {
-                    if(v.getType()==Vertex.typeA)v.setLabel(Ya.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeB)v.setLabel(Yb.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeC)v.setLabel(Yc.getRow(v2row.get(v)).transpose());
-                }
+                if(!v.isY0())
+                	v.setLabel(Y.getRow(map.get(v)).transpose());
+
         } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(Multiplicative.class.getName()).log(Level.SEVERE, null, ex);
         }
