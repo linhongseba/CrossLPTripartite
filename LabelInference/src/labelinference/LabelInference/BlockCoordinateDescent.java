@@ -39,27 +39,27 @@ public class BlockCoordinateDescent implements LabelInference {
     private final int k;
     private final int maxIter;
 	
-    public BlockCoordinateDescent(Graph _g, int _k) {	
+    public BlockCoordinateDescent(Graph _g) {	
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         nuance=1e-4;
         maxIter=100;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
-    public BlockCoordinateDescent(Graph _g, int _k,double  _nuance, int _maxIter) {
+    public BlockCoordinateDescent(Graph _g,double  _nuance, int _maxIter) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         nuance=_nuance;
         maxIter=_maxIter;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
-    public BlockCoordinateDescent(Graph _g, int _k,double  _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
+    public BlockCoordinateDescent(Graph _g,double  _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         nuance=_nuance;
         maxIter=_maxIter;
@@ -110,7 +110,6 @@ public class BlockCoordinateDescent implements LabelInference {
             do {
                 delta=update(Y0)/g.getVertices().size();
                 iter++;
-                System.out.println(delta);
             } while(delta>nuance && iter!=maxIter);
 
             for(Vertex v:g.getVertices())

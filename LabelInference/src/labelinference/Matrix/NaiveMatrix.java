@@ -5,10 +5,7 @@
  */
 package labelinference.Matrix;
 
-import labelinference.Matrix.Matrix;
 import static java.lang.Math.abs;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;

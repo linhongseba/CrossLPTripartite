@@ -8,6 +8,7 @@ package labelinference.Selector;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 /**
@@ -15,8 +16,8 @@ import java.util.Collections;
  * @author sailw
  */
 public class RandomSelector extends ArrayList implements Selector {
-    public RandomSelector(Graph g, int threshold) {
-        ArrayList<Vertex> list=new ArrayList<>(g.getVertices());
+    public RandomSelector(Collection<Vertex> vertices, int threshold) {
+        ArrayList<Vertex> list=new ArrayList<>(vertices);
         Collections.shuffle(list);
         addAll(list.subList(0, threshold));
     }

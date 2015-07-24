@@ -31,9 +31,9 @@ public class LabelPropagation implements LabelInference {
     private final int k;
     private final int maxIter;
     
-    public LabelPropagation(Graph _g, int _k) {
+    public LabelPropagation(Graph _g) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         alpha=0.2;
         nuance=1e-4;
@@ -41,9 +41,9 @@ public class LabelPropagation implements LabelInference {
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
-    public LabelPropagation(Graph _g, int _k, double _alpha,double  _nuance, int _maxIter) {
+    public LabelPropagation(Graph _g, double _alpha,double  _nuance, int _maxIter) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         alpha=_alpha;
         nuance=_nuance;
@@ -51,9 +51,9 @@ public class LabelPropagation implements LabelInference {
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
-    public LabelPropagation(Graph _g, int _k, double _alpha,double _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
+    public LabelPropagation(Graph _g, double _alpha,double _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         alpha=_alpha;
         nuance=_nuance;
@@ -78,7 +78,6 @@ public class LabelPropagation implements LabelInference {
             do {
                 delta=update()/g.getVertices().size();
                 iter++;
-                System.out.println(delta);
             }while(delta>nuance && iter!=maxIter);
             
             for(Vertex v:g.getVertices())v.setLabel(v.getLabel().getCol(0));

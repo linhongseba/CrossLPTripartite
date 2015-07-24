@@ -39,27 +39,27 @@ public class Multiplicative implements LabelInference {
     private final int maxIter;
     
 	
-    public Multiplicative(Graph _g, int _k) {	
+    public Multiplicative(Graph _g) {	
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         nuance=1e-4;
         maxIter=100;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
-    public Multiplicative(Graph _g, int _k,double  _nuance, int _maxIter) {
+    public Multiplicative(Graph _g,double  _nuance, int _maxIter) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         nuance=_nuance;
         maxIter=_maxIter;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
-    public Multiplicative(Graph _g, int _k,double  _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
+    public Multiplicative(Graph _g,double  _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
         g=_g;
-        k=_k;
+        k=g.getNumLabels();
         isDone=false;
         nuance=_nuance;
         maxIter=_maxIter;
@@ -95,6 +95,7 @@ public class Multiplicative implements LabelInference {
 
     @Override
     public Graph getResult() {
+        if(isDone)return g;
         MatrixFactory mf=MatrixFactory.getInstance();
         try {
             Map<Vertex,Integer> v2row=new HashMap();
@@ -172,7 +173,6 @@ public class Multiplicative implements LabelInference {
             do {
                 delta=update()/g.getVertices().size();
                 iter++;
-                System.out.println(delta);
             } while(delta>nuance && iter!=maxIter);
 
             for(Vertex v:g.getVertices())
@@ -188,6 +188,7 @@ public class Multiplicative implements LabelInference {
         } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(Multiplicative.class.getName()).log(Level.SEVERE, null, ex);
         }
+        isDone=true;
         return g;
     }
 }

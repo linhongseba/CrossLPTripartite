@@ -7,15 +7,12 @@ package labelinference.LabelInference;
 
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
-import labelinference.LabelInference.Multiplicative;
 import java.io.FileNotFoundException;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Collection;
+import java.util.function.Function;
 import labelinference.Labor;
-import labelinference.exceptions.ColumnOutOfRangeException;
-import labelinference.exceptions.DimensionNotAgreeException;
-import labelinference.exceptions.RowOutOfRangeException;
+import labelinference.Selector.DegreeSelector;
+import labelinference.Selector.Selector;
 import org.junit.Test;
 
 /**
@@ -23,43 +20,19 @@ import org.junit.Test;
  * @author sailw
  */
 public class MultiplicativeTest {
-    
-    public MultiplicativeTest() {
-    }
-    
-    Map<Integer,Vertex> test(String path) throws ColumnOutOfRangeException, RowOutOfRangeException, FileNotFoundException {
-        Labor labor=Labor.getInstance();
-        Map<Integer,Vertex> graph=labor.readGraph(path);
-        Multiplicative multiplicative=new Multiplicative(new Graph(graph.values()),2);
-        multiplicative.getResult();
-        return graph;
-    }
-    
     /**
      * Test of getResult method, of class Multiplicative.
      * @throws java.io.FileNotFoundException
-     * @throws labelinference.exceptions.ColumnOutOfRangeException
-     * @throws labelinference.exceptions.RowOutOfRangeException
      */
     @Test
-    public void testGetResult() throws FileNotFoundException, ColumnOutOfRangeException, RowOutOfRangeException {
+    public void testGetResult() throws FileNotFoundException {
         System.out.println("\nMultiplicative");
         Labor labor=Labor.getInstance();
-        Map<Integer,Vertex> expResult;
-        Map<Integer,Vertex> result;
-                
-        System.out.println("graph 1,top 5%:");
-        expResult=labor.readGraph("data/1/testGraph.g");
-        result=test("data/1/trainGraph5.g");
-        labor.check(expResult,result);
+        Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
+        Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
+        Function<Graph,LabelInference> labelInference=g->new Multiplicative(g);
         
-        System.out.println("graph 1,top 10%:");
-        result=test("data/1/trainGraph10.g");
-        labor.check(expResult,result);
-        
-        System.out.println("graph 0:");
-        expResult=labor.readGraph("data/0/testGraph.g");
-        result=test("data/0/trainGraph.g");
-        labor.check(expResult,result);
+        labor.testLabelInference("data/graph-1.txt",selector10,labelInference);
+        labor.testLabelInference("data/graph-1.txt",selector5,labelInference);
     }
 }
