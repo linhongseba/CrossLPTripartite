@@ -49,27 +49,27 @@ public class Main {
         inferencers.put("LP", g->new LabelPropagation(g, 0.2,nuance,maxIter));
         
         for(String selector:selectors.keySet()) {
-            System.out.println("Selector="+selector);
+            System.out.print("Selector="+selector+"\n");
             for(String inferencer:inferencers.keySet()) {
-                System.out.println("\tInferencer="+inferencer);
+                System.out.print("\tInferencer="+inferencer+"\n");
                 
-                System.out.println("\tReading graph data...");
+                System.out.print("\tReading graph data..."+"\n");
                 Graph expResult=new Graph(path);
                 Graph result=new Graph(path);
 
-                System.out.println("\tSelecting train set...");
+                System.out.print("\tSelecting train set..."+"\n");
                 Collection<Vertex> Y0=result.getVertices(v->v.isY0());
                 Selector selected=selectors.get(selector).apply(Y0);
                 for(Vertex v:result.getVertices())
                     if(!selected.contains(v))v.init(v.getType(), v.getLabel(), false);
 
-                System.out.println("\tInferencing...");
+                System.out.print("\tInferencing..."+"\n");
                 inferencers.get(inferencer).apply(result).getResult();
 
-                System.out.println("\tChecking result...");
+                System.out.print("\tChecking result..."+"\n");
                 check(expResult,result);
 
-                System.out.println("\tDone.\n");
+                System.out.print("\tDone.\n"+"\n");
             }
         }
     }
@@ -94,6 +94,6 @@ public class Main {
         }
 
         Double acc=correct/totle;
-        System.out.println("\tAccuracy="+acc);
+        System.out.print("\tAccuracy="+acc+"\n");
     }
 }
