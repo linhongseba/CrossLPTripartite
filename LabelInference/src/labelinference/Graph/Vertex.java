@@ -5,9 +5,13 @@
  */
 package labelinference.Graph;
 
+import java.util.Collection;
 import labelinference.Matrix.Matrix;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  *
@@ -20,6 +24,14 @@ public class Vertex {
     public final static Type typeA=new Type();
     public final static Type typeB=new Type();
     public final static Type typeC=new Type();
+    public static final Collection<Type> types=new HashSet<>();
+    
+    static {
+        types.add(typeA);
+        types.add(typeB);
+        types.add(typeC);
+    }
+    
     private boolean ISY0;
     private double sume;
     private Matrix label;

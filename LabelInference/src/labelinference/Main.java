@@ -79,7 +79,7 @@ public class Main {
         double totle=0;
         for(Vertex expV:expResult.getVertices()) {
             Vertex resV=result.findVertexByID(expV.getId());
-            if(expV.isY0()) {
+            if(expV.isY0() && !resV.isY0()) {
                 try {
                     totle+=1;
                     int expLabel=0;

@@ -52,12 +52,7 @@ public class Labor {
         for(Vertex expV:expResult.getVertices()) {
             Vertex resV=result.findVertexByID(expV.getId());
             if(resV==null)System.out.println("null "+expV.getId());
-            if(resV.isY0() && !expV.getLabel().equals(resV.getLabel())) {
-                System.out.println("Y0 cahnged in vertex "+expV.getId());
-                fail("Y0 changed in vertex "+expV.getId());
-            }
-            
-            if(expV.isY0()) {
+            if(expV.isY0() && !resV.isY0()) {
                 try {
                     totle+=1;
                     int expLabel=0;

@@ -68,26 +68,19 @@ public class BlockCoordinateDescent implements LabelInference {
     
     private double update(Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException, IrreversibleException {
         final MatrixFactory mf=MatrixFactory.getInstance();
-        final Map<Vertex.Type,Double> A=new HashMap<>();
-        final Map<Vertex.Type,Double> Ay0=new HashMap<>();
-        A.put(Vertex.typeA, new Double(0));
-        A.put(Vertex.typeB, new Double(0));
-        A.put(Vertex.typeC, new Double(0));
-        
-        for(Vertex.Type type:A.keySet()) {
-            for(Vertex v:g.getVertices()) 
-                if(v.getType()!=type)
-                    A.put(type, A.get(type)+v.getLabel().transpose().times(v.getLabel()).get(0, 0));
-            Ay0.put(type, 1/(A.get(type)+1));	
-            A.put(type, 1/A.get(type));
-        }
+        final Map<Vertex.Type,Matrix> A=new HashMap<>();
+        Matrix emptyMat=mf.creatMatrix(k, k);
+        for(Vertex.Type type:Vertex.types)
+            for(Vertex v:g.getVertices(v->v.getType()!=type))
+                A.put(type, A.getOrDefault(type, emptyMat).add(v.getLabel().times(v.getLabel().transpose())));
         double delta=0;
+        Matrix identity=mf.identityMatrix(k);
         for(Vertex u:g.getVertices()) {
             Matrix label=mf.creatMatrix(k,1);
             for(Vertex v:u.getNeighbors())
                 label=label.add(v.getLabel().timesNum(u.getEdge(v)));
-            if(u.isY0()) label=label.add(Y0.get(u)).times(Ay0.get(u.getType())).normalize();
-            else label=label.times(A.get(u.getType())).normalize();
+            if(u.isY0()) label=A.get(u.getType()).add(identity).times(label.add(Y0.get(u))).normalize();
+            else label=A.get(u.getType()).times(label).normalize();
             delta+=u.getLabel().subtract(label).norm(Matrix.FIRST_NORM);
             u.setLabel(label);
         }
@@ -97,7 +90,6 @@ public class BlockCoordinateDescent implements LabelInference {
     @Override
     public Graph getResult(){
         if(isDone)return g;
-        MatrixFactory mf=MatrixFactory.getInstance();
         try {
             final Map<Vertex,Matrix> Y0=new HashMap<>();
             for (Vertex v : g.getVertices()) {
@@ -110,10 +102,8 @@ public class BlockCoordinateDescent implements LabelInference {
             do {
                 delta=update(Y0)/g.getVertices().size();
                 iter++;
+                System.err.println(delta);
             } while(delta>nuance && iter!=maxIter);
-
-            for(Vertex v:g.getVertices())
-                if(v.isY0())v.setLabel(Y0.get(v));
         } catch (ColumnOutOfRangeException | DimensionNotAgreeException | IrreversibleException | RowOutOfRangeException ex) {
             Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
         }
