@@ -18,7 +18,7 @@ import labelinference.exceptions.RowOutOfRangeException;
  */
 public interface Matrix {
     public class Norm{}
-
+    
     Matrix times(Matrix b) throws DimensionNotAgreeException;
     Matrix times(double lambda);
     Matrix copy();
@@ -38,7 +38,6 @@ public interface Matrix {
     Matrix transpose();
     Matrix normalize() throws DimensionNotAgreeException;
     double norm(Norm normName);
-    Matrix timesNum(double b);
     
     public static final Norm FROBENIUS_NORM=new Norm();
     public static final Norm FIRST_NORM=new Norm();
