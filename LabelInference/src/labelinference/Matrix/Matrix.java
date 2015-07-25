@@ -18,8 +18,7 @@ import labelinference.exceptions.RowOutOfRangeException;
  */
 public interface Matrix {
     public class Norm{}
-    
-    void setM(int topRow,int bottomRow,int leftCol,int rightCol,Matrix b) throws ColumnOutOfRangeException,RowOutOfRangeException;
+
     Matrix times(Matrix b) throws DimensionNotAgreeException;
     Matrix times(double lambda);
     Matrix copy();
@@ -34,7 +33,6 @@ public interface Matrix {
     void set(int row,int col,double x) throws ColumnOutOfRangeException,RowOutOfRangeException;
     void setRow(int row,Matrix b) throws RowOutOfRangeException,DimensionNotAgreeException;
     void setCol(int col,Matrix b) throws ColumnOutOfRangeException,DimensionNotAgreeException;
-    Matrix subMatrix(int topRow,int bottomRow,int leftCol,int rightCol) throws ColumnOutOfRangeException,RowOutOfRangeException;
     double determinant();
     Matrix inverse() throws IrreversibleException;
     Matrix transpose();

@@ -27,6 +27,7 @@ public class NaiveMatrix implements Matrix{
     
     public NaiveMatrix(int dim) {
         A= new Jama.Matrix(dim,dim);
+        for(int row=0;row<dim;row++)A.set(row, row, 1);
     }
     
     @Override
@@ -131,12 +132,6 @@ public class NaiveMatrix implements Matrix{
         if(col>=A.getColumnDimension())throw new ColumnOutOfRangeException();
         A.set(row, col, x);
     }
-    @Override
-    public void setM(int upperrow,int bottomrow, int leftcol,int rightcol, Matrix x) throws ColumnOutOfRangeException, RowOutOfRangeException {
-        if(bottomrow>=A.getRowDimension())throw new RowOutOfRangeException();
-        if(rightcol>=A.getColumnDimension())throw new ColumnOutOfRangeException();
-        A.setMatrix(upperrow, bottomrow, leftcol, rightcol, ((NaiveMatrix)x).A);
-    }
 
     @Override
     public void setRow(int row, Matrix b) throws RowOutOfRangeException, DimensionNotAgreeException {
@@ -148,15 +143,6 @@ public class NaiveMatrix implements Matrix{
     public void setCol(int col, Matrix b) throws ColumnOutOfRangeException, DimensionNotAgreeException {
         if(col>=A.getColumnDimension())throw new ColumnOutOfRangeException();
         A.setMatrix(0,A.getRowDimension()-1,col,col,((NaiveMatrix)b).A);
-    }
-
-    @Override
-    public Matrix subMatrix(int topRow, int bottomRow, int leftCol, int rightCol) throws ColumnOutOfRangeException, RowOutOfRangeException {
-        if(bottomRow>=A.getRowDimension())throw new RowOutOfRangeException();
-        if(rightCol>=A.getColumnDimension())throw new ColumnOutOfRangeException();
-        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        M.A=A.getMatrix(topRow,bottomRow,leftCol,rightCol);
-        return M;
     }
 
     @Override
