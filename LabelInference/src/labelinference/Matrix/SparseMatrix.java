@@ -57,7 +57,7 @@ public class SparseMatrix implements Matrix {
         if(row>=maxRow)throw new RowOutOfRangeException();
         if(col>=maxCol)throw new ColumnOutOfRangeException();
         
-        double temp=A.get(row).get(col);
+        double temp=A.get(row).getOrDefault(col, (double) 0);
         return temp;
     }
 
@@ -68,8 +68,14 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(1,maxCol);
         for(Integer it:A.get(row).keySet())
         {
-            double temp=A.get(row).get(it);
-            M.A.get(0).put(it,temp);
+            double temp;
+			try {
+				temp = this.get(row,it);
+	            M.set(0,it,temp);
+			} catch (ColumnOutOfRangeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         return M;
     }
@@ -81,8 +87,14 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,1);
         for(int r=0;r<maxRow;r++)
         {
-            double temp=A.get(r).get(col);
-            M.A.get(r).put(0,temp);
+            double temp;
+			try {
+				temp = this.get(r,col);
+	            M.set(r,0,temp);
+			} catch (RowOutOfRangeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
         return M;
     }
@@ -91,7 +103,7 @@ public class SparseMatrix implements Matrix {
     public void set(int row, int col, double x) throws ColumnOutOfRangeException, RowOutOfRangeException {
         if(row>=maxRow)throw new RowOutOfRangeException();
         if(col>=maxCol)throw new ColumnOutOfRangeException();
-        A.get(row).put(col,x);
+        if(abs(x)>ZERO)A.get(row).put(col,x);
     }
 
     @Override
@@ -101,8 +113,14 @@ public class SparseMatrix implements Matrix {
         
         for(Integer it:((SparseMatrix)b).A.get(0).keySet())
         {
-            double temp=((SparseMatrix)b).A.get(0).get(it);
-            A.get(row).put(it,temp);
+            double temp;
+			try {
+				temp = ((SparseMatrix)b).get(0,it);
+	            this.set(row,it,temp);
+			} catch (ColumnOutOfRangeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
 
@@ -113,8 +131,14 @@ public class SparseMatrix implements Matrix {
         
         for(int r=0;r<maxRow;r++)
         {
-            double temp=((SparseMatrix)b).A.get(r).get(0);
-            A.get(r).put(col,temp);
+            double temp;
+			try {
+				temp = ((SparseMatrix)b).get(r,0);
+	            this.set(r,col,temp);
+			} catch (RowOutOfRangeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
     
@@ -129,20 +153,17 @@ public class SparseMatrix implements Matrix {
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
             {
-                if(A.get(r).get(c)>ZERO)
-                {
-                    for(Integer k:((SparseMatrix)b).A.get(c).keySet())
-                    {
-                    	//System.out.println(r+","+c+","+k);
-                    	//System.out.println(A.get(r).get(c));
-                    	//System.out.println(((SparseMatrix)b).A.get(c).get(k));
-                    	double temp=A.get(r).get(c)*((SparseMatrix)b).A.get(c).get(k);
-                    	if(M.A.get(r).get(k)==null)
-                            M.A.get(r).put(k,temp);
-                    	else
-                    		M.A.get(r).put(k,M.A.get(r).get(k)+temp);
-                    }
-                }
+                try {
+					if(this.get(r,c)>ZERO)
+					    for(Integer k:((SparseMatrix)b).A.get(c).keySet())
+					    {
+					    	double temp=this.get(r,c)*((SparseMatrix)b).get(c,k);
+				    		M.set(r,k,M.get(r,k)+temp);
+					    }
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
             }
         return M;
     
@@ -153,7 +174,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,A.get(r).get(c)*lambda);
+				try {
+					M.set(r,c,this.get(r,c)*lambda);
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -162,7 +188,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,A.get(r).get(c));
+				try {
+					M.set(r,c,this.get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -172,7 +203,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,A.get(r).get(c)*((SparseMatrix)b).A.get(r).get(c));
+				try {
+					M.set(r,c,this.get(r,c)*((SparseMatrix)b).get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -182,7 +218,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,A.get(r).get(c)+((SparseMatrix)b).A.get(r).get(c));
+				try {
+					M.set(r,c,this.get(r,c)+((SparseMatrix)b).get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -192,7 +233,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,A.get(r).get(c)-((SparseMatrix)b).A.get(r).get(c));
+				try {
+					M.set(r,c,this.get(r,c)-((SparseMatrix)b).get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -202,7 +248,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,A.get(r).get(c)/((SparseMatrix)b).A.get(r).get(c));
+				try {
+					M.set(r,c,this.get(r,c)/((SparseMatrix)b).get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -211,7 +262,12 @@ public class SparseMatrix implements Matrix {
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-                M.A.get(r).put(c,java.lang.Math.sqrt(A.get(r).get(c)));
+				try {
+					M.set(r,c,java.lang.Math.sqrt(this.get(r,c)));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -230,7 +286,12 @@ public class SparseMatrix implements Matrix {
     	SparseMatrix M=new SparseMatrix(maxCol,maxRow);
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
-            	M.A.get(c).put(r,A.get(r).get(c));
+				try {
+					M.set(c,r,this.get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
         return M;
     }
 
@@ -238,15 +299,29 @@ public class SparseMatrix implements Matrix {
     public Matrix normalize() throws DimensionNotAgreeException {
     	NaiveMatrix M=new NaiveMatrix(maxRow,maxCol);
         
+    	System.out.println(A.toString());
     	for(int c=0;c<maxCol;c++)
     	{
     		double sum=0;
 			for(int r=0;r<maxRow;r++)
-            	sum+=abs(A.get(r).get(c));
+				try {
+					sum+=abs(this.get(r,c));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+	    	System.out.println(sum);
             if(abs(sum)<ZERO)
             	sum=ZERO;
-            for(Integer r:A.get(c).keySet())
-            	M.A.set(r, c, A.get(r).get(c)/abs(sum));
+			for(int r=0;r<maxRow;r++)
+				try {
+					M.A.set(r, c, this.get(r,c)/abs(sum));
+				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
     	}
     	return M;
     }
@@ -258,7 +333,12 @@ public class SparseMatrix implements Matrix {
 			double sum=0;
     		for(int r=0;r<maxRow;r++)
                 for(Integer c:A.get(r).keySet())
-                	sum+=A.get(r).get(c);
+					try {
+						sum+=this.get(r,c)*this.get(r,c);
+					} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
     		return java.lang.Math.sqrt(sum);
     	}
     	if(normName==Matrix.FIRST_NORM)
@@ -268,7 +348,12 @@ public class SparseMatrix implements Matrix {
     		{
     			double sum=0;
     			for(int r=0;r<maxRow;r++)
-    				sum+=abs(A.get(r).get(c));
+					try {
+						sum+=abs(this.get(r,c));
+					} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
     			if(sum>max)
     				max=sum;
     		}
