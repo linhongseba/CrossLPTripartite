@@ -297,7 +297,7 @@ public class SparseMatrix implements Matrix {
 
     @Override
     public Matrix normalize() throws DimensionNotAgreeException {
-    	NaiveMatrix M=new NaiveMatrix(maxRow,maxCol);
+    	SparseMatrix M=new SparseMatrix(maxRow,maxCol);
         
     	System.out.println(A.toString());
     	for(int c=0;c<maxCol;c++)
@@ -316,7 +316,7 @@ public class SparseMatrix implements Matrix {
             	sum=ZERO;
 			for(int r=0;r<maxRow;r++)
 				try {
-					M.A.set(r, c, this.get(r,c)/abs(sum));
+					M.set(r, c, this.get(r,c)/abs(sum));
 				} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
