@@ -109,7 +109,7 @@ public class SparseMatrix implements Matrix {
     @Override
     public void setRow(int row, Matrix b) throws RowOutOfRangeException, DimensionNotAgreeException {
         if(row>=maxRow)throw new RowOutOfRangeException();
-        if(((SparseMatrix)b).maxCol!=1||((SparseMatrix)b).maxCol!=maxCol)throw new DimensionNotAgreeException();
+        if(((SparseMatrix)b).maxRow!=1||((SparseMatrix)b).maxCol!=maxCol)throw new DimensionNotAgreeException();
         
         for(Integer it:((SparseMatrix)b).A.get(0).keySet())
         {
@@ -127,7 +127,7 @@ public class SparseMatrix implements Matrix {
     @Override
     public void setCol(int col, Matrix b) throws ColumnOutOfRangeException, DimensionNotAgreeException {
         if(col>=maxCol)throw new ColumnOutOfRangeException();
-        if(((SparseMatrix)b).maxRow!=1||((SparseMatrix)b).maxRow!=maxRow)throw new DimensionNotAgreeException();
+        if(((SparseMatrix)b).maxCol!=1||((SparseMatrix)b).maxRow!=maxRow)throw new DimensionNotAgreeException();
         
         for(int r=0;r<maxRow;r++)
         {
