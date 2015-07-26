@@ -10,6 +10,8 @@ import static java.lang.Math.sqrt;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
+import labelinference.exceptions.RowOutOfRangeException;
+
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -22,6 +24,8 @@ public class SparseMatrixTest {
     double dataB[][]={{5,8,5},{2,3,4}};
     double dataC[][]={{6,4},{3,4},{7,6}};
     double dataD[][]={{2,1,5},{2,4,4},{7,3,1}};
+    double dataG[][]={{2,1,5},{2,4,0},{2,0,1}};
+    double dataF[][]={{9,0,7}};
     
     Matrix mA;
     Matrix mB;
@@ -29,6 +33,8 @@ public class SparseMatrixTest {
     Matrix mD;
     Matrix mE;
     Matrix mF;
+    Matrix mG;
+    Matrix mH;
     
     public SparseMatrixTest() throws DimensionNotAgreeException {
         mA=new SparseMatrix(dataA);
@@ -37,6 +43,8 @@ public class SparseMatrixTest {
         mD=new SparseMatrix(dataD);
         mE=mB.times(mC);
         mF=mC.times(mB);
+        mG=new SparseMatrix(dataG);
+        mH=new SparseMatrix(dataF);
     }
 
     /**
@@ -81,9 +89,10 @@ public class SparseMatrixTest {
         Matrix result = mA.cron(mA);
         assertEquals(expResult, result);
         
-        double expResData2[][]={{4, 1, 25}, {4, 16, 16}, {49, 9, 1}};
+        double expResData2[][]={{4, 1, 25}, {4, 16, 0}, {14, 0, 1}};
         expResult = new SparseMatrix(expResData2);
-        result = mD.cron(mD);
+        result = mG.cron(mD);
+        System.out.println(result.toString());
         assertEquals(expResult, result);
     }
 
@@ -139,6 +148,8 @@ public class SparseMatrixTest {
         expResult = new SparseMatrix(expResData2);
         result = mF.divide(mD);
         assertEquals(expResult, result);
+        result = mF.divide(mG);
+        System.out.println(result);
     }
 
     /**
@@ -151,6 +162,27 @@ public class SparseMatrixTest {
         double expResData2[][]={{sqrt(2), 1, sqrt(5)}, {sqrt(2), 2, 2}, {sqrt(7), sqrt(3), 1}};
         Matrix expResult = new SparseMatrix(expResData2);
         Matrix result = mD.sqrt();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getRow method, of class SparseMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     */
+    @Test
+    public void testGetRow() throws DimensionNotAgreeException {
+        System.out.println("getRow");
+        double expResData2[][]={{2, 1, 5}, {9, 0, 7}, {2, 0, 1}};
+        Matrix expResult = new SparseMatrix(expResData2);
+        Matrix result = mG;
+        try {
+			result.setRow(1,mH);
+		} catch (RowOutOfRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        System.out.println(result.toString());
+        
         assertEquals(expResult, result);
     }
 
@@ -198,14 +230,17 @@ public class SparseMatrixTest {
     @Test
     public void testNorm() throws ColumnOutOfRangeException {
         System.out.println("norm");
-        double result = mA.norm(Matrix.FROBENIUS_NORM);
-        if(abs(result-sqrt(85))>1e-6)fail();
-        
-        result = mD.norm(Matrix.FROBENIUS_NORM);
+        double result = mD.norm(Matrix.FROBENIUS_NORM);
+        System.out.println(result);
         if(abs(result-sqrt(125))>1e-6)fail();
-        
+
         result = mD.getCol(0).norm(Matrix.FIRST_NORM);
         if(abs(result-11)>1e-6)fail();
+        
+        result = mA.norm(Matrix.FROBENIUS_NORM);
+        if(abs(result-sqrt(85))>1e-6)fail();
+        
+        
     }
     
     /**
@@ -219,7 +254,9 @@ public class SparseMatrixTest {
         double expResData[][]={{2/11.0}, {2/11.0}, {7/11.0}};
         Matrix expResult = new SparseMatrix(expResData);
         Matrix result = mD.getCol(0).normalize();
-        assertEquals(expResult, result);
+        System.out.println(result.toString());
+        System.out.println(expResult.toString());
+               assertEquals(expResult, result);
     }
     
     /**

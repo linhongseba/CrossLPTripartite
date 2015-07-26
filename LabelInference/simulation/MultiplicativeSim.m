@@ -17,6 +17,14 @@ Sb=[0 0 1 0 0 0 0 0;
     0 0 0 0 0 0 0 0];
 Sc=[0 0 0 0 0 0 0 0;
     0 0 0 0 0 0 0 1];
+S=[0 0 0 0 0 0 0 0;
+   0 0 0 0 0 0 0 0;
+   0 0 1 0 0 0 0 0;
+   0 0 0 0 0 0 0 0;
+   0 0 0 0 0 0 0 0;
+   0 0 0 0 0 0 0 0;
+   0 0 0 0 0 0 0 0;
+   0 0 0 0 0 0 0 1];
 
 Gab=[1 1 0 0;
      0 1 1 1];
@@ -27,9 +35,10 @@ Gbc=[1 0;
 Gac=[1 0;
      1 1];
 
+
 Y0=Y
 
-for i=1:8
+for i=1:10
 	Ya=Y(1:2,:);
 	Yb=Y(3:6,:);
 	Yc=Y(7:8,:);
@@ -42,6 +51,9 @@ for i=1:8
 	
 	for j=1:8
   		Y(j,:)=Y(j,:)./sum(Y(j,:));
-	end
-	Y
+    end
+    
+    lambda=1;
+    objective=2*(norm(Gab-Ya*Yb','fro')*norm(Gab-Ya*Yb','fro')+norm(Gac-Ya*Yc','fro')*norm(Gac-Ya*Yc','fro')+norm(Gbc-Yb*Yc','fro')*norm(Gbc-Yb*Yc','fro'))+lambda*norm(S*Y-S*Y0,'fro')*norm(S*Y-S*Y0,'fro')
+    	Y
 end

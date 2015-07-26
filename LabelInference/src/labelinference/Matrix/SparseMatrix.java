@@ -111,12 +111,12 @@ public class SparseMatrix implements Matrix {
         if(row>=maxRow)throw new RowOutOfRangeException();
         if(((SparseMatrix)b).maxRow!=1||((SparseMatrix)b).maxCol!=maxCol)throw new DimensionNotAgreeException();
         
-        for(Integer it:((SparseMatrix)b).A.get(0).keySet())
+        for(int it=0;it<maxCol;it++)
         {
             double temp;
 			try {
 				temp = ((SparseMatrix)b).get(0,it);
-	            this.set(row,it,temp);
+	            A.get(row).put(it,temp);
 			} catch (ColumnOutOfRangeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -246,6 +246,15 @@ public class SparseMatrix implements Matrix {
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
     	if(((SparseMatrix)b).maxRow!=maxRow||((SparseMatrix)b).maxCol!=maxCol)throw new DimensionNotAgreeException();
         SparseMatrix M=new SparseMatrix(maxRow,maxCol);
+        try {
+             for(int r=0;r<maxRow;r++)
+                 for(Integer c:A.get(r).keySet())
+    		            if(abs(b.get(r, c))<ZERO) {
+                        if(b.get(r, c)<0)b.set(r, c, -ZERO);
+                        else b.set(r, c, ZERO);
+                    }
+        }
+        catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         for(int r=0;r<maxRow;r++)
             for(Integer c:A.get(r).keySet())
 				try {

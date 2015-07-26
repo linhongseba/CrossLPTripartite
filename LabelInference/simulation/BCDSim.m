@@ -22,7 +22,8 @@ Y0=Y
 I=[1 0;
    0 1];
 
-for i=1:8
+for i=1:10
+    
 	for u=1:8
         A=0;
 		for(v=1:8)
@@ -46,6 +47,21 @@ for i=1:8
 
 		Y(u,:)=(A*I)*temp';
 		Y(u,:)=1/sum(Y(u,:)).*Y(u,:);
-	end
+    end
+    objective=0.0;
+    for u=1:8
+        for v=1:8
+            if(G(u,v)==1)
+               	 objective=objective+(G(u,v)-Y(u,:)*Y(v,:)')*(G(u,v)-Y(u,:)*Y(v,:)');
+            end
+            if(G(u,v)==0&&T(u,v)==1)
+               	 objective=objective+(Y(u,:)*Y(v,:)')*(Y(u,:)*Y(v,:)');
+            end
+        end
+        if(u==3||u==8)
+            objective=objective+norm(Y(u,:)-Y0(u,:),'fro')*norm(Y(u,:)-Y0(u,:),'fro');
+        end
+    end
+    objective
 	Y
 end
