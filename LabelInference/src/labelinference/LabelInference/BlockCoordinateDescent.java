@@ -5,9 +5,16 @@
  */
 package labelinference.LabelInference;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import java.util.Calendar;
+import java.util.Collection;
 import labelinference.Matrix.MatrixFactory;
 import labelinference.Matrix.Matrix;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -44,7 +51,7 @@ public class BlockCoordinateDescent implements LabelInference {
         k=g.getNumLabels();
         isDone=false;
         nuance=1e-4;
-        maxIter=100;
+        maxIter=1000;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
@@ -66,20 +73,25 @@ public class BlockCoordinateDescent implements LabelInference {
         labelInit=_labelInit;
     }
     
-    private double update(Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException, IrreversibleException {
+    private double update(Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException, IrreversibleException {
         final MatrixFactory mf=MatrixFactory.getInstance();
         final Map<Vertex.Type,Matrix> A=new HashMap<>();
+        final Map<Vertex.Type,Matrix> Ay0=new HashMap<>();
         Matrix emptyMat=mf.creatMatrix(k, k);
-        for(Vertex.Type type:Vertex.types)
+        Matrix identity=mf.identityMatrix(k);
+        for(Vertex.Type type:Vertex.types) {
             for(Vertex v:g.getVertices(v->v.getType()!=type))
                 A.put(type, A.getOrDefault(type, emptyMat).add(v.getLabel().times(v.getLabel().transpose())));
+            Ay0.put(type, A.get(type).add(identity).adjoint());
+            A.put(type, A.get(type).adjoint());
+        }
         double delta=0;
-        Matrix identity=mf.identityMatrix(k);
+        
         for(Vertex u:g.getVertices()) {
             Matrix label=mf.creatMatrix(k,1);
             for(Vertex v:u.getNeighbors())
-                label=label.add(v.getLabel().timesNum(u.getEdge(v)));
-            if(u.isY0()) label=A.get(u.getType()).add(identity).times(label.add(Y0.get(u))).normalize();
+                label=label.add(v.getLabel().times(u.getEdge(v)));
+            if(u.isY0()) label=Ay0.get(u.getType()).times(label.add(Y0.get(u))).normalize();
             else label=A.get(u.getType()).times(label).normalize();
             delta+=u.getLabel().subtract(label).norm(Matrix.FIRST_NORM);
             u.setLabel(label);
@@ -88,26 +100,49 @@ public class BlockCoordinateDescent implements LabelInference {
     }
     
     @Override
-    public Graph getResult(){
-        if(isDone)return g;
+    public double getResult(){
+        double timeUsed=0;
+        if(isDone)return 0;
+        double maxE=0;
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                if(v.getEdge(u)>maxE)maxE=v.getEdge(u);
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                u.addEdge(v, u.getEdge(v)/maxE);
+        final Map<Vertex,Matrix> Y0=new HashMap<>();
+        for (Vertex v : g.getVertices()) {
+            if(v.isY0())Y0.put(v, v.getLabel().copy());
+            else v.setLabel(labelInit.apply(k));
+        }
         try {
-            final Map<Vertex,Matrix> Y0=new HashMap<>();
-            for (Vertex v : g.getVertices()) {
-                if(v.isY0())Y0.put(v, v.getLabel().copy());
-                else v.setLabel(labelInit.apply(k));
-            }
-
             double delta;
             int iter=0;
+            System.out.print(String.format("Cycle: %d\n",iter)); 
+            for(Vertex v:g.getVertices()) {
+                //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+            }
             do {
+                long nTime=System.nanoTime();
+                long mTime=System.currentTimeMillis();
                 delta=update(Y0)/g.getVertices().size();
+                nTime=System.nanoTime()-nTime;
+                mTime=System.currentTimeMillis()-mTime;
+                timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                System.err.println(delta);
+                //System.out.print(delta);
+                System.out.print(String.format("Cycle: %d\n",iter));
+                System.out.print(String.format("ObjValue: %f\n",LabelInference.objective(g,Y0,k)));
+                for(Vertex v:g.getVertices()) {
+                    //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+                }
             } while(delta>nuance && iter!=maxIter);
-        } catch (ColumnOutOfRangeException | DimensionNotAgreeException | IrreversibleException | RowOutOfRangeException ex) {
-            Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DimensionNotAgreeException ex) {
+            Logger.getLogger(NewMultiplicative.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException | IrreversibleException ex) {
+            Logger.getLogger(BlockCoordinateDescent.class.getName()).log(Level.SEVERE, null, ex);
         }
         isDone=true;
-        return g;
+        return timeUsed;
     }
 }

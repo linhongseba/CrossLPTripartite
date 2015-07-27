@@ -9,9 +9,7 @@ import java.util.Collection;
 import labelinference.Matrix.Matrix;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  *

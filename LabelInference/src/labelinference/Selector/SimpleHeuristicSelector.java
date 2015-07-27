@@ -33,8 +33,8 @@ public class SimpleHeuristicSelector extends HashSet implements Selector {
                 Vertex w=(Vertex)(new ArrayList(neighbors)).get((int)(random()*(neighbors.size())));
                 add(w);
                 for(Vertex v:w.getNeighbors())H.remove(v);
+                for(Vertex v:u.getNeighbors())H.remove(v);
             }
-            for(Vertex v:u.getNeighbors())H.remove(v);
         }
     }
 }

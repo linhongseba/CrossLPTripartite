@@ -6,6 +6,8 @@
  */
 
 package labelinference.LabelInference;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -94,14 +96,25 @@ public class Multiplicative implements LabelInference {
     }
 
     @Override
-    public Graph getResult() {
-        if(isDone)return g;
+    public double getResult() {
+        double timeUsed=0;
+        if(isDone)return 0;
+        double maxE=0;
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                if(v.getEdge(u)>maxE)maxE=v.getEdge(u);
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                u.addEdge(v, u.getEdge(v)/maxE);
         MatrixFactory mf=MatrixFactory.getInstance();
         try {
             Map<Vertex,Integer> v2row=new HashMap();
             int rowA=0,rowB=0,rowC=0;
             
-            for (Vertex v : g.getVertices())if(!v.isY0())v.setLabel(labelInit.apply(k));
+            final Map<Vertex,Matrix> Y0=new HashMap<>();
+            for(Vertex v:g.getVertices())
+                if(v.isY0())Y0.put(v, v.getLabel().copy());
+            else v.setLabel(labelInit.apply(k));
             for(Vertex u:g.getVertices()) {
                 if(u.getType()==Vertex.typeA)rowA++;
                 if(u.getType()==Vertex.typeB)rowB++;
@@ -167,28 +180,36 @@ public class Multiplicative implements LabelInference {
                     rowC++;
                 }
             }
-
             double delta;
             int iter=0;
+            System.out.print(String.format("Cycle: %d\n",iter)); 
+            for(Vertex v:g.getVertices()) {
+                //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+            }
             do {
+                long nTime=System.nanoTime();
+                long mTime=System.currentTimeMillis();
                 delta=update()/g.getVertices().size();
-                iter++;
-            } while(delta>nuance && iter!=maxIter);
-
-            for(Vertex v:g.getVertices())
-                if(v.isY0()){
-                    if(v.getType()==Vertex.typeA)v.setLabel(Ya0.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeB)v.setLabel(Yb0.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeC)v.setLabel(Yc0.getRow(v2row.get(v)).transpose());
-                } else {
+                nTime=System.nanoTime()-nTime;
+                mTime=System.currentTimeMillis()-mTime;
+                timeUsed+=max(mTime,nTime/1000000.0);
+                for(Vertex v:g.getVertices()){
                     if(v.getType()==Vertex.typeA)v.setLabel(Ya.getRow(v2row.get(v)).transpose());
                     if(v.getType()==Vertex.typeB)v.setLabel(Yb.getRow(v2row.get(v)).transpose());
                     if(v.getType()==Vertex.typeC)v.setLabel(Yc.getRow(v2row.get(v)).transpose());
                 }
-        } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
+                iter++;
+                //System.err.print(delta);
+                System.out.print(String.format("Cycle: %d\n",iter));
+                System.out.print(String.format("ObjValue: %f\n",LabelInference.objective(g,Y0,k)));
+                for(Vertex v:g.getVertices()) {
+                    //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+                }
+            } while(delta>nuance && iter!=maxIter);
+        } catch (DimensionNotAgreeException | RowOutOfRangeException | ColumnOutOfRangeException ex) {
             Logger.getLogger(Multiplicative.class.getName()).log(Level.SEVERE, null, ex);
         }
         isDone=true;
-        return g;
+        return timeUsed;
     }
 }

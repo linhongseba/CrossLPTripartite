@@ -5,11 +5,12 @@
  */
 package labelinference.LabelInference;
 
-import static java.lang.Thread.sleep;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import java.util.Calendar;
 import labelinference.Matrix.MatrixFactory;
 import labelinference.Matrix.Matrix;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -18,6 +19,7 @@ import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
+import labelinference.exceptions.RowOutOfRangeException;
 
 /**
  *
@@ -37,9 +39,9 @@ public class LabelPropagation implements LabelInference {
         g=_g;
         k=g.getNumLabels();
         isDone=false;
-        alpha=0.2;
+        alpha=0.5;
         nuance=1e-4;
-        maxIter=100;
+        maxIter=10000;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
@@ -64,62 +66,76 @@ public class LabelPropagation implements LabelInference {
     }
     
     @Override
-    public Graph getResult() {
-        if(isDone)return g;
-        final MatrixFactory mf=MatrixFactory.getInstance();
+    public double getResult() {
+        double timeUsed=0;
+        if(isDone)return 0;
+        double maxE=0;
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                if(v.getEdge(u)>maxE)maxE=v.getEdge(u);
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                u.addEdge(v, u.getEdge(v)/maxE);
+        final Map<Vertex,Matrix> Y0=new HashMap<>();
+        for (Vertex v : g.getVertices()) {
+            if(v.isY0())Y0.put(v, v.getLabel().copy());
+            else v.setLabel(labelInit.apply(k));
+        }
         try {
-            for(Vertex v:g.getVertices()) {
-                Matrix label=mf.creatMatrix(k, 2);
-                if(v.isY0())label.setCol(0, v.getLabel());
-                else label.setCol(0, labelInit.apply(k));
-                v.setLabel(label);
-            }
-
-            int iter=0;
             double delta;
+            int iter=0;
+            System.out.print(String.format("Cycle: %d\n",iter)); 
+            for(Vertex v:g.getVertices()) {
+                //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+            }
             do {
+                long nTime=System.nanoTime();
+                long mTime=System.currentTimeMillis();
                 delta=update()/g.getVertices().size();
+                nTime=System.nanoTime()-nTime;
+                mTime=System.currentTimeMillis()-mTime;
+                timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                System.err.println(delta);
-            }while(delta>nuance && iter!=maxIter);
-            
-            for(Vertex v:g.getVertices())v.setLabel(v.getLabel().getCol(0));
-        } catch (ColumnOutOfRangeException | DimensionNotAgreeException | InterruptedException ex) {
+                //System.err.print(delta);
+                System.out.print(String.format("Cycle: %d\n",iter));
+                System.out.print(String.format("ObjValue: %f\n",LabelInference.objective(g,Y0,k)));
+                for(Vertex v:g.getVertices()) {
+                    //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+                }
+            } while(delta>nuance && iter!=maxIter);
+        } catch (DimensionNotAgreeException ex) {
+            Logger.getLogger(NewMultiplicative.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(LabelPropagation.class.getName()).log(Level.SEVERE, null, ex);
         }
         isDone=true;
-        return g;
+        return timeUsed;
     }
 
-    private double update() throws DimensionNotAgreeException, ColumnOutOfRangeException, InterruptedException {
+    private double update() throws DimensionNotAgreeException {
         final MatrixFactory mf=MatrixFactory.getInstance();
         final Map<Vertex,Map<Vertex.Type,Matrix>> cache=new HashMap<>();
+        Matrix emptyMat=mf.creatMatrix(k, 1);
         for(Vertex u:g.getVertices()) {
-                Map<Vertex.Type,Matrix> value=new HashMap<>();
-                value.put(Vertex.typeA, mf.creatMatrix(k, 1));
-                value.put(Vertex.typeB, mf.creatMatrix(k, 1));
-                value.put(Vertex.typeC, mf.creatMatrix(k, 1));
-                for(Vertex v:u.getNeighbors())
-                    value.put(v.getType(), value.get(v.getType()).add(v.getLabel().getCol(0).times(v.getEdge(u)/v.sumE())));
+            Map<Vertex.Type,Matrix> value=new HashMap<>();
+            for(Vertex v:u.getNeighbors())
+                value.put(v.getType(), value.getOrDefault(v.getType(), emptyMat).add(v.getLabel().times(v.getEdge(u)/v.sumE())));
             cache.put(u, value);
         }
 
+        double delta=0;
         for(final Vertex u:g.getVertices()) {
             if(u.isY0())continue;
-            Matrix label=u.getLabel();
+            Matrix label=mf.creatMatrix(k, 1);
             Matrix a=mf.creatMatrix(k, 1);
             Matrix b=mf.creatMatrix(k, 1);
             for(Vertex v:u.getNeighbors()) {
-                a=a.add(v.getLabel().getCol(0).times(u.getEdge(v)));
-                b=b.add(cache.get(v).get(u.getType()).subtract(u.getLabel().getCol(0).times(u.getEdge(v)/u.sumE())).times(1.0/v.sumE()));
+                a=a.add(v.getLabel().times(u.getEdge(v)));
+                b=b.add(cache.get(v).get(u.getType()).subtract(u.getLabel().times(u.getEdge(v)/u.sumE())).times(1.0/v.sumE()));
             }
-            label.setCol(1, a.normalize().times(1-alpha).add(b.normalize().times(alpha)));
-        }
-
-        double delta=0;
-        for(Vertex u:g.getVertices())if(!u.isY0()) {
-            delta+=u.getLabel().getCol(1).subtract(u.getLabel().getCol(0)).norm(Matrix.FIRST_NORM);
-            u.getLabel().setCol(0, u.getLabel().getCol(1)); 
+            label=a.normalize().times(1-alpha).add(b.normalize().times(alpha));
+            delta+=label.subtract(u.getLabel()).norm(Matrix.FIRST_NORM);
+            u.setLabel(label); 
         }
         return delta;
     }

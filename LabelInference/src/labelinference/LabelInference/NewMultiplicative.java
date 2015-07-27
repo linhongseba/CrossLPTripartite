@@ -5,6 +5,9 @@
  */
 package labelinference.LabelInference;
 
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -14,7 +17,9 @@ import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.Matrix;
 import labelinference.Matrix.MatrixFactory;
+import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
+import labelinference.exceptions.RowOutOfRangeException;
 
 /**
  *
@@ -33,7 +38,7 @@ public class NewMultiplicative implements LabelInference {
         k=g.getNumLabels();
         isDone=false;
         nuance=1e-4;
-        maxIter=100;
+        maxIter=10000;
         labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
     }
     
@@ -55,35 +60,57 @@ public class NewMultiplicative implements LabelInference {
         labelInit=_labelInit;
     }
     @Override
-    public Graph getResult() {
-        if(isDone)return g;
-        Map<Vertex,Matrix> Y0=new HashMap<>();
+    public double getResult() {
+        double timeUsed=0;
+        if(isDone)return 0;
+        double maxE=0;
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                if(v.getEdge(u)>maxE)maxE=v.getEdge(u);
+        for(Vertex v:g.getVertices())
+            for(Vertex u:v.getNeighbors())
+                u.addEdge(v, u.getEdge(v)/maxE);
+        final Map<Vertex,Matrix> Y0=new HashMap<>();
         for(Vertex v:g.getVertices())
             if(v.isY0())Y0.put(v, v.getLabel().copy());
             else v.setLabel(labelInit.apply(k));
         try {
-        double delta;
-        int iter=0;
+            double delta;
+            int iter=0;
+            System.out.print(String.format("Cycle: %d\n",iter)); 
+            for(Vertex v:g.getVertices()) {
+                //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+            }
             do {
+                long nTime=System.nanoTime();
+                long mTime=System.currentTimeMillis();
                 delta=update(Y0)/g.getVertices().size();
+                nTime=System.nanoTime()-nTime;
+                mTime=System.currentTimeMillis()-mTime;
+                timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                System.err.println(delta);
+                //System.err.print(delta);
+                System.out.print(String.format("Cycle: %d\n",iter));
+                System.out.print(String.format("ObjValue: %f\n",LabelInference.objective(g,Y0,k)));
+                for(Vertex v:g.getVertices()) {
+                    //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+                }
             } while(delta>nuance && iter!=maxIter);
-        } catch (DimensionNotAgreeException ex) {
+        } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(NewMultiplicative.class.getName()).log(Level.SEVERE, null, ex);
         }
         isDone=true;
-        return g;
+        return timeUsed;
     }
 
     private double update(Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
+        final Map<Vertex,Matrix> newLabel=new HashMap<>();
         Map<Vertex.Type,Matrix> A=new HashMap<>();
         Matrix emptyMat=mf.creatMatrix(k, k);
         for(Vertex.Type type:Vertex.types)
             for(Vertex v:g.getVertices(v->v.getType()!=type))
                 A.put(type, A.getOrDefault(type, emptyMat).add(v.getLabel().times(v.getLabel().transpose())));
-            
         double delta=0;
         for(Vertex v:g.getVertices()) {
             Matrix label= mf.creatMatrix(k, 1);

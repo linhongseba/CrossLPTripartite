@@ -6,6 +6,10 @@
 package labelinference.Matrix;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.max;
+import static java.lang.Math.pow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
@@ -69,12 +73,6 @@ public class NaiveMatrix implements Matrix{
         return M;
     }
 
-    @Override
-    public Matrix timesNum(double b) {
-        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
-        M.A=A.times(b);
-        return M;
-    }
     @Override
     public Matrix divide(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
@@ -216,10 +214,30 @@ public class NaiveMatrix implements Matrix{
         final double ZERO=1e-9;
         for(int col=0;col<A.getColumnDimension();col++){
             double sum=0;
-            for(int row=0;row<A.getRowDimension();row++)sum+=abs(A.get(row, col));
+            for(int row=0;row<A.getRowDimension();row++)sum+=max(A.get(row, col),0);
             if(abs(sum)<ZERO)sum=ZERO;
-            for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, A.get(row, col)/abs(sum));
+            for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, max(A.get(row, col),0)/abs(sum));
         }
     	return M;
+    }
+
+    @Override
+    public Matrix adjoint() throws DimensionNotAgreeException {
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+        try {
+            for(int row=0;row<A.getRowDimension();row++)
+                for(int col=0;col<A.getColumnDimension();col++) {
+                    NaiveMatrix T=new NaiveMatrix(A.getRowDimension()-1,A.getColumnDimension()-1);
+                    for(int i=0;i<A.getRowDimension();i++)
+                        for(int j=0;j<A.getColumnDimension();j++) {
+                            if(i<row && j<col)T.set(i, j, get(i,j));
+                            if(i<row && j>col)T.set(i, j-1, get(i,j));
+                            if(i>row && j<col)T.set(i-1, j, get(i,j));
+                            if(i>row && j>col)T.set(i-1, j-1, get(i,j));
+                        }
+                    M.set(col, row, pow(-1,row+col)*T.determinant());
+                }
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+        return M;
     }
 }

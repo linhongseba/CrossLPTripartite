@@ -401,4 +401,9 @@ public class SparseMatrix implements Matrix {
         return ret;
     }
 
+    @Override
+    public Matrix adjoint() throws DimensionNotAgreeException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 }

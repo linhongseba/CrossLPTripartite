@@ -5,8 +5,6 @@
  */
 package labelinference.Matrix;
 
-import labelinference.Matrix.Matrix;
-
 /**
  *
  * @author sailw

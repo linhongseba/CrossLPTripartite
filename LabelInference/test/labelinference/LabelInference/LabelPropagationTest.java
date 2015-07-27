@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.function.Function;
 import labelinference.Labor;
 import labelinference.Selector.DegreeSelector;
+import labelinference.Selector.RandomSelector;
 import labelinference.Selector.Selector;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ public class LabelPropagationTest {
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
         Function<Graph,LabelInference> labelInference=g->new LabelPropagation(g);
         
-        labor.testLabelInference("data/graph-1.txt",selector10,labelInference);
         labor.testLabelInference("data/graph-1.txt",selector5,labelInference);
+        //labor.testLabelInference("data/graph-30.txt",selector5,labelInference);
     }
 }

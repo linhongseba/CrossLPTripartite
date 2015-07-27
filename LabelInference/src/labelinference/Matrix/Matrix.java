@@ -35,6 +35,7 @@ public interface Matrix {
     void setCol(int col,Matrix b) throws ColumnOutOfRangeException,DimensionNotAgreeException;
     double determinant();
     Matrix inverse() throws IrreversibleException;
+    Matrix adjoint () throws DimensionNotAgreeException;
     Matrix transpose();
     Matrix normalize() throws DimensionNotAgreeException;
     double norm(Norm normName);

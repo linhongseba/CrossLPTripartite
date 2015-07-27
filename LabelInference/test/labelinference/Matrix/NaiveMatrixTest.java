@@ -236,4 +236,13 @@ public class NaiveMatrixTest {
         Matrix result = mD.times(0.5);
         assertEquals(expResult, result);
     }
+
+    @Test
+    public void testAdjoint() throws Exception {
+        System.out.println("adjoint");
+        double expResData[][]={{8, -2}, {-4, 1}};
+        Matrix expResult = new NaiveMatrix(expResData);
+        Matrix result = mA.adjoint();
+        assertEquals(expResult, result);
+    }
 }
