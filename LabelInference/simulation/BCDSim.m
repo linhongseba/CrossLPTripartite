@@ -24,30 +24,30 @@ I=[1 0;
 
 for i=1:10
     
+    Ynew=zeros(8,2);
 	for u=1:8
-        A=0;
+        A=zeros(2,2);
 		for(v=1:8)
 			if(T(u,v)==1)
-				A=A+Y(v,:)*Y(v,:)';
+				A=A+Y(v,:)'*Y(v,:);
 			end
 		end
-		temp=zeros(1,2);
+		temp=zeros(2,1);
 		for(v=1:8)
 			if(G(u,v)==1)
-				temp=temp+Y(v,:);
+				temp=temp+Y(v,:)';
 			end
 		end
 		
 		
 		if(u==3||u==8)
-			A=A+1;
-			temp=temp+Y0(u,:);
-        	end
-	        A=(1.0)/A;
-
-		Y(u,:)=(A*I)*temp';
-		Y(u,:)=1/sum(Y(u,:)).*Y(u,:);
+			A=A+I;
+			temp=temp+Y0(u,:)';
+        end
+	    Ynew(u,:)=inv(A)*det(A)*temp;
+		Ynew(u,:)=1/sum(Ynew(u,:)).*Ynew(u,:);
     end
+    Y=Ynew
     objective=0.0;
     for u=1:8
         for v=1:8
