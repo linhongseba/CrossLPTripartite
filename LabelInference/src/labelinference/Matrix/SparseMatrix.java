@@ -6,6 +6,8 @@
 package labelinference.Matrix;
 
 import static java.lang.Math.abs;
+import static java.lang.Math.pow;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -282,7 +284,18 @@ public class SparseMatrix implements Matrix {
 
     @Override
     public double determinant() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    	if(maxRow!=maxCol||maxRow>=3)
+    		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		try {
+	    	if(maxRow==1)
+	    		return this.get(0, 0);
+	    	if(maxRow==2)
+	     	   	return this.get(0, 0)*this.get(1, 1)-this.get(0, 1)*this.get(1, 0);
+		} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+		}
+		return 0;
     }
 
     @Override
@@ -307,8 +320,7 @@ public class SparseMatrix implements Matrix {
     @Override
     public Matrix normalize() throws DimensionNotAgreeException {
     	SparseMatrix M=new SparseMatrix(maxRow,maxCol);
-        
-    	System.out.println(A.toString());
+
     	for(int c=0;c<maxCol;c++)
     	{
     		double sum=0;
@@ -320,7 +332,6 @@ public class SparseMatrix implements Matrix {
 					e.printStackTrace();
 				}
 
-	    	System.out.println(sum);
             if(abs(sum)<ZERO)
             	sum=ZERO;
 			for(int r=0;r<maxRow;r++)
@@ -375,6 +386,7 @@ public class SparseMatrix implements Matrix {
     public boolean equals(Object object) {
         if (!(object instanceof SparseMatrix)) return false;
         SparseMatrix other = (SparseMatrix) object;
+
         if(maxRow!=other.maxRow||maxCol!=other.maxCol)return false;
         for(int row=0;row<maxRow;row++)
             for(int col=0;col<maxCol;col++)
@@ -403,7 +415,22 @@ public class SparseMatrix implements Matrix {
 
     @Override
     public Matrix adjoint() throws DimensionNotAgreeException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        SparseMatrix M=new SparseMatrix(maxRow,maxCol);
+        try {
+            for(int row=0;row<maxRow;row++)
+                for(int col=0;col<maxCol;col++) {
+                    NaiveMatrix T=new NaiveMatrix(maxRow-1,maxCol-1);
+                    for(int i=0;i<maxRow;i++)
+                        for(int j=0;j<maxCol;j++) {
+                            if(i<row && j<col)T.set(i, j, get(i,j));
+                            if(i<row && j>col)T.set(i, j-1, get(i,j));
+                            if(i>row && j<col)T.set(i-1, j, get(i,j));
+                            if(i>row && j>col)T.set(i-1, j-1, get(i,j));
+                        }
+                    M.set(col, row, pow(-1,row+col)*T.determinant());
+                }
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+        return M;
     }
 
 }

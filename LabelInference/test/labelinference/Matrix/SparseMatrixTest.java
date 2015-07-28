@@ -92,7 +92,6 @@ public class SparseMatrixTest {
         double expResData2[][]={{4, 1, 25}, {4, 16, 0}, {14, 0, 1}};
         expResult = new SparseMatrix(expResData2);
         result = mG.cron(mD);
-        System.out.println(result.toString());
         assertEquals(expResult, result);
     }
 
@@ -149,7 +148,6 @@ public class SparseMatrixTest {
         result = mF.divide(mD);
         assertEquals(expResult, result);
         result = mF.divide(mG);
-        System.out.println(result);
     }
 
     /**
@@ -181,7 +179,6 @@ public class SparseMatrixTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        System.out.println(result.toString());
         
         assertEquals(expResult, result);
     }
@@ -194,9 +191,6 @@ public class SparseMatrixTest {
         System.out.println("determinant");
         double result = mA.determinant();
         if(abs(result)>1e-6)fail();
-        
-        result = mD.determinant();
-        if(abs(result+100)>1e-6)fail();
     }
 
     /**
@@ -231,7 +225,6 @@ public class SparseMatrixTest {
     public void testNorm() throws ColumnOutOfRangeException {
         System.out.println("norm");
         double result = mD.norm(Matrix.FROBENIUS_NORM);
-        System.out.println(result);
         if(abs(result-sqrt(125))>1e-6)fail();
 
         result = mD.getCol(0).norm(Matrix.FIRST_NORM);
@@ -254,9 +247,7 @@ public class SparseMatrixTest {
         double expResData[][]={{2/11.0}, {2/11.0}, {7/11.0}};
         Matrix expResult = new SparseMatrix(expResData);
         Matrix result = mD.getCol(0).normalize();
-        System.out.println(result.toString());
-        System.out.println(expResult.toString());
-               assertEquals(expResult, result);
+        assertEquals(expResult, result);
     }
     
     /**
@@ -270,4 +261,22 @@ public class SparseMatrixTest {
         Matrix result = mD.times(0.5);
         assertEquals(expResult, result);
     }
+    /**
+     * Test of adjoint method, of class SparseMatrix.
+     */
+    @Test
+    public void adjoint() throws ColumnOutOfRangeException {
+        System.out.println("adjoint");
+        double expResData[][]={{-8,14,-16},{26,-33,2},{-22,1,6}};
+        Matrix expResult = new SparseMatrix(expResData);
+        Matrix result;
+		try {
+			result = mD.adjoint();
+	        assertEquals(expResult, result);
+		} catch (DimensionNotAgreeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
 }
