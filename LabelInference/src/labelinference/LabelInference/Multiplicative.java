@@ -6,8 +6,6 @@
  */
 
 package labelinference.LabelInference;
-import static java.lang.Math.max;
-import static java.lang.Math.pow;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -27,90 +25,27 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author Tangyiqi
  */
 
-public class Multiplicative implements LabelInference {
+public class Multiplicative extends AbstractLabelInference implements LabelInference {
     private Matrix Ya0,Yb0,Yc0;
     private Matrix Ya,Yb,Yc;
     private Matrix Gab,Gbc,Gac;
     private Matrix Sa,Sb,Sc;
+    private final Map<Vertex,Integer> v2row=new HashMap();
     
-    private final Graph g;
-    private boolean isDone;
-    private final double nuance;
-    private final Function<Integer,Matrix> labelInit;
-    private final int k;
-    private final int maxIter;
-    
-	
     public Multiplicative(Graph _g) {	
-        g=_g;
-        k=g.getNumLabels();
-        isDone=false;
-        nuance=1e-4;
-        maxIter=100;
-        labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
+        super(_g);
+        initMat();
     }
     
-    public Multiplicative(Graph _g,double  _nuance, int _maxIter) {
-        g=_g;
-        k=g.getNumLabels();
-        isDone=false;
-        nuance=_nuance;
-        maxIter=_maxIter;
-        labelInit=(Integer x)->LabelInference.defaultLabelInit(x);
+    public Multiplicative(Graph _g, Function<Integer,Matrix> _labelInit) {
+        super(_g,_labelInit);
+        initMat();
     }
     
-    public Multiplicative(Graph _g,double  _nuance, int _maxIter, Function<Integer,Matrix> _labelInit) {
-        g=_g;
-        k=g.getNumLabels();
-        isDone=false;
-        nuance=_nuance;
-        maxIter=_maxIter;
-        labelInit=_labelInit;
-    }
-    
-    private double update() throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException 
-    {
-        MatrixFactory mf;
-        mf=MatrixFactory.getInstance();
-        Matrix Ya_new;
-        Matrix Yb_new;
-        Matrix Yc_new;
-
-        Matrix temp_a_up=((Gab.times(Yb)).add(Gac.times(Yc))).add(Sa.times(Ya0));
-        Matrix temp_a_down=Ya.times(Yb.transpose()).times(Yb).add(Ya.times(Yc.transpose()).times(Yc)).add(Sa.times(Ya));
-        Ya_new=Ya.cron(temp_a_up.divide(temp_a_down).sqrt()).transpose().normalize().transpose();
-
-        Matrix temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Yb0));
-        Matrix temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Yb));
-        Yb_new=Yb.cron(temp_b_up.divide(temp_b_down).sqrt()).transpose().normalize().transpose();
-
-        Matrix temp_c_up=Gac.transpose().times(Ya).add(Gbc.transpose().times(Yb)).add(Sc.times(Yc0));
-        Matrix temp_c_down=Yc.times(Ya.transpose()).times(Ya).add(Yc.times(Yb.transpose()).times(Yb)).add(Sc.times(Yc));
-        Yc_new=Yc.cron(temp_c_up.divide(temp_c_down).sqrt()).transpose().normalize().transpose();
-
-        double delta=Ya.subtract(Ya_new).norm(Matrix.FROBENIUS_NORM)+Yb.subtract(Yb_new).norm(Matrix.FROBENIUS_NORM)+Yc.subtract(Yc_new).norm(Matrix.FROBENIUS_NORM);
-        Ya=Ya_new.copy();
-        Yb=Yb_new.copy();
-        Yc=Yc_new.copy();
-        return delta;
-    }
-
-    @Override
-    public double getResult() {
-        double timeUsed=0;
-        if(isDone)return 0;
-        double maxE=0;
-        for(Vertex v:g.getVertices())
-            for(Vertex u:v.getNeighbors())
-                if(v.getEdge(u)>maxE)maxE=v.getEdge(u);
-        for(Vertex v:g.getVertices())
-            for(Vertex u:v.getNeighbors())
-                u.addEdge(v, u.getEdge(v)/maxE);
+    private void initMat() {
         MatrixFactory mf=MatrixFactory.getInstance();
         try {
-            Map<Vertex,Integer> v2row=new HashMap();
             int rowA=0,rowB=0,rowC=0;
-            
             final Map<Vertex,Matrix> Y0=new HashMap<>();
             for(Vertex v:g.getVertices())
                 if(v.isY0())Y0.put(v, v.getLabel().copy());
@@ -180,36 +115,40 @@ public class Multiplicative implements LabelInference {
                     rowC++;
                 }
             }
-            double delta;
-            int iter=0;
-            System.out.print(String.format("Cycle: %d\n",iter)); 
-            for(Vertex v:g.getVertices()) {
-                //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
-            }
-            do {
-                long nTime=System.nanoTime();
-                long mTime=System.currentTimeMillis();
-                delta=update()/g.getVertices().size();
-                nTime=System.nanoTime()-nTime;
-                mTime=System.currentTimeMillis()-mTime;
-                timeUsed+=max(mTime,nTime/1000000.0);
-                for(Vertex v:g.getVertices()){
-                    if(v.getType()==Vertex.typeA)v.setLabel(Ya.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeB)v.setLabel(Yb.getRow(v2row.get(v)).transpose());
-                    if(v.getType()==Vertex.typeC)v.setLabel(Yc.getRow(v2row.get(v)).transpose());
-                }
-                iter++;
-                //System.err.print(delta);
-                System.out.print(String.format("Cycle: %d\n",iter));
-                System.out.print(String.format("ObjValue: %f\n",LabelInference.objective(g,Y0,k)));
-                for(Vertex v:g.getVertices()) {
-                    //System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
-                }
-            } while(delta>nuance && iter!=maxIter);
-        } catch (DimensionNotAgreeException | RowOutOfRangeException | ColumnOutOfRangeException ex) {
+        }   catch (RowOutOfRangeException | DimensionNotAgreeException | ColumnOutOfRangeException ex) {
             Logger.getLogger(Multiplicative.class.getName()).log(Level.SEVERE, null, ex);
         }
-        isDone=true;
-        return timeUsed;
+    }
+        
+    protected double update(Collection<Vertex> band, Collection<Vertex> bandS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException 
+    {
+        MatrixFactory mf;
+        mf=MatrixFactory.getInstance();
+        Matrix Ya_new;
+        Matrix Yb_new;
+        Matrix Yc_new;
+
+        Matrix temp_a_up=((Gab.times(Yb)).add(Gac.times(Yc))).add(Sa.times(Ya0));
+        Matrix temp_a_down=Ya.times(Yb.transpose()).times(Yb).add(Ya.times(Yc.transpose()).times(Yc)).add(Sa.times(Ya));
+        Ya_new=Ya.cron(temp_a_up.divide(temp_a_down).sqrt()).transpose().normalize().transpose();
+
+        Matrix temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Yb0));
+        Matrix temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Yb));
+        Yb_new=Yb.cron(temp_b_up.divide(temp_b_down).sqrt()).transpose().normalize().transpose();
+
+        Matrix temp_c_up=Gac.transpose().times(Ya).add(Gbc.transpose().times(Yb)).add(Sc.times(Yc0));
+        Matrix temp_c_down=Yc.times(Ya.transpose()).times(Ya).add(Yc.times(Yb.transpose()).times(Yb)).add(Sc.times(Yc));
+        Yc_new=Yc.cron(temp_c_up.divide(temp_c_down).sqrt()).transpose().normalize().transpose();
+
+        double delta=Ya.subtract(Ya_new).norm(Matrix.FROBENIUS_NORM)+Yb.subtract(Yb_new).norm(Matrix.FROBENIUS_NORM)+Yc.subtract(Yc_new).norm(Matrix.FROBENIUS_NORM);
+        Ya=Ya_new.copy();
+        Yb=Yb_new.copy();
+        Yc=Yc_new.copy();
+        for(Vertex v:g.getVertices()){
+            if(v.getType()==Vertex.typeA)v.setLabel(Ya.getRow(v2row.get(v)).transpose());
+            if(v.getType()==Vertex.typeB)v.setLabel(Yb.getRow(v2row.get(v)).transpose());
+            if(v.getType()==Vertex.typeC)v.setLabel(Yc.getRow(v2row.get(v)).transpose());
+        }
+        return delta;
     }
 }

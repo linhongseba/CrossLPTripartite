@@ -11,10 +11,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.LabelInference.BlockCoordinateDescent;
 import labelinference.LabelInference.LabelInference;
+import static labelinference.LabelInference.LabelInference.*;
 import labelinference.LabelInference.LabelPropagation;
 import labelinference.LabelInference.Multiplicative;
 import labelinference.LabelInference.NewMultiplicative;
@@ -36,63 +39,75 @@ public class Main {
      */
     public static void main(String[] args) throws FileNotFoundException {
         String path=args[0];
-        double ratio=Double.parseDouble(args[1]);
-        double nuance=Double.parseDouble(args[2]);
-        int maxIter=Integer.parseInt(args[3]);
+        String inferencer=args[1];
+        String selector=args[2];
+        double ratio=Double.parseDouble(args[3]);
+        double nuance=Double.parseDouble(args[4]);
+        int maxIter=Integer.parseInt(args[5]);
         
         Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
         Map<String,Function<Graph,LabelInference>> inferencers=new HashMap<>();
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*ratio)));
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*ratio)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*ratio)));
-        inferencers.put("MA", g->new NewMultiplicative(g,nuance,maxIter));
-        inferencers.put("BCD", g->new BlockCoordinateDescent(g,nuance,maxIter));
-        inferencers.put("LP", g->new LabelPropagation(g, 0.5,nuance,maxIter));
+        inferencers.put("MA", g->new NewMultiplicative(g));
+        inferencers.put("BCD", g->new BlockCoordinateDescent(g));
+        inferencers.put("LP", g->new LabelPropagation(g, 0));
         
-        for(String selector:selectors.keySet()) {
-            for(String inferencer:inferencers.keySet()) {
-                System.out.print("Selector="+selector+"\n");
-                System.out.print("Inferencer="+inferencer+"\n");
-                
-                System.out.print("Reading graph data..."+"\n");
-                Graph expResult=new Graph(path);
-                Graph result=new Graph(path);
+        System.out.print("Inferencer="+inferencer+"\n");
+        System.out.print("Selector="+selector+"\n");
 
-                System.out.print("Selecting train set..."+"\n");
-                Selector selected=selectors.get(selector).apply(result.getVertices(v->v.isY0()));
-                for(Vertex v:result.getVertices())
-                    if(!selected.contains(v))v.init(v.getType(), null, false);
+        System.out.print("Reading graph data..."+"\n");
+        Graph expResult=new Graph(path);
+        Graph result=new Graph(path);
 
-                System.out.print("Inferencing..."+"\n");
-                LabelInference li=inferencers.get(inferencer).apply(result);
-                System.out.print(String.format("Processed in %.3f ms\n",li.getResult()));
-
-                System.out.print("Checking result..."+"\n");
-                check(expResult,result);
-            }
+        System.out.print("Selecting train set..."+"\n");
+        Selector selected=selectors.get(selector).apply(result.getVertices(v->v.isY0()));
+        Map<Vertex.Type,Double> tot=new HashMap<>();
+        for(Vertex v:result.getVertices()) {
+            if(!selected.contains(v))v.init(v.getType(), v.getLabel(), false);
+            else tot.put(v.getType(), tot.getOrDefault(v.getType(),0.0)+1);
         }
+        System.out.println("Number of typeA = "+tot.getOrDefault(Vertex.typeA,0.0));
+        System.out.println("Number of typeB = "+tot.getOrDefault(Vertex.typeB,0.0));
+        System.out.println("Number of typeC = "+tot.getOrDefault(Vertex.typeC,0.0));
+        
+        System.out.print("Inferencing..."+"\n");
+        inferencers.get(inferencer).apply(result).getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
+
+        System.out.print("Checking result..."+"\n");
+        check(expResult,result);
     }
     
-    public static void check(Graph expResult, Graph result){
+    static void check(Graph expResult, Graph result){
         double correct=0;
         double totle=0;
+        Map<Vertex.Type,Double> cor=new HashMap<>();
+        Map<Vertex.Type,Double> tot=new HashMap<>();
         for(Vertex expV:expResult.getVertices()) {
             Vertex resV=result.findVertexByID(expV.getId());
             if(expV.isY0() && !resV.isY0()) {
                 try {
                     totle+=1;
+                    tot.put(expV.getType(), tot.getOrDefault(expV.getType(),0.0)+1);
                     int expLabel=0;
                     int resLabel=0;
                     for(int row=0;row<expResult.getNumLabels();row++)
-                        if(expV.getLabel().get(row, 0)>expV.getLabel().get(expLabel, 0))expLabel=row;
+                        if(abs(expV.getLabel().get(row, 0)-1)<1e-9)expLabel=row;
                     for(int row=0;row<result.getNumLabels();row++)
                         if(resV.getLabel().get(row, 0)>resV.getLabel().get(resLabel, 0))resLabel=row;
-                    if(expLabel==resLabel)correct++;
+                    if(expLabel==resLabel) {
+                        correct++;
+                        cor.put(expV.getType(), cor.getOrDefault(expV.getType(),0.0)+1);
+                    }
                 } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
             }
         }
 
         Double acc=correct/totle;
-        System.out.print("Accuracy="+acc+"\n\n");
+        System.out.println("Accuracy = "+acc);
+        System.out.println("Accuracy of typeA = "+cor.get(Vertex.typeA)+"/"+tot.get(Vertex.typeA)+" = "+cor.getOrDefault(Vertex.typeA,0.0)/tot.getOrDefault(Vertex.typeA,0.0));
+        System.out.println("Accuracy of typeB = "+cor.get(Vertex.typeB)+"/"+tot.get(Vertex.typeB)+" = "+cor.getOrDefault(Vertex.typeB,0.0)/tot.getOrDefault(Vertex.typeB,0.0));
+        System.out.println("Accuracy of typeC = "+cor.get(Vertex.typeC)+"/"+tot.get(Vertex.typeC)+" = "+cor.getOrDefault(Vertex.typeC,0.0)/tot.getOrDefault(Vertex.typeC,0.0));
     }
 }

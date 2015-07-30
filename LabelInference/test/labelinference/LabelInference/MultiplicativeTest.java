@@ -10,6 +10,7 @@ import labelinference.Graph.Vertex;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.function.Function;
+import static labelinference.LabelInference.LabelInference.*;
 import labelinference.Labor;
 import labelinference.Selector.DegreeSelector;
 import labelinference.Selector.Selector;
@@ -32,7 +33,7 @@ public class MultiplicativeTest {
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
         Function<Graph,LabelInference> labelInference=g->new Multiplicative(g);
         
-        labor.testLabelInference("data/graph-1.txt",selector10,labelInference);
-        labor.testLabelInference("data/graph-1.txt",selector5,labelInference);
+        labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_LABEL);
     }
 }

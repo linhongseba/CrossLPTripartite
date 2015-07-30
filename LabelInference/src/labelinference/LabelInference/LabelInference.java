@@ -6,8 +6,10 @@
 package labelinference.LabelInference;
 
 import static java.lang.Math.pow;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.MatrixFactory;
@@ -21,7 +23,8 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author sailw
  */
 public interface LabelInference {
-    double getResult();
+    void getResult(int maxIter, double nuance, int disp);
+    void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp);
     
     public static Matrix defaultLabelInit(Integer k) {
         final MatrixFactory mf=MatrixFactory.getInstance();
@@ -32,25 +35,37 @@ public interface LabelInference {
         return label;
     }
     
-    public static double objective(Graph g, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+    public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
         Double obj=0.0;
         for(int i=0;i<k;i++)
             for(int j=0;j<k;j++) {
                 Map<Vertex.Type,Double> sumij=new HashMap<>();
-                for(Vertex v:g.getVertices())sumij.put(v.getType(), sumij.getOrDefault(v.getType(), 0.0)+v.getLabel().get(i, 0)*v.getLabel().get(j, 0));
+                for(Vertex v:candS)sumij.put(v.getType(), sumij.getOrDefault(v.getType(), 0.0)+v.getLabel().get(i, 0)*v.getLabel().get(j, 0));
                 obj+=2*(sumij.get(Vertex.typeA)*sumij.get(Vertex.typeB)+sumij.get(Vertex.typeA)*sumij.get(Vertex.typeC)+sumij.get(Vertex.typeC)*sumij.get(Vertex.typeB));
             }
-        for(Vertex v:g.getVertices()) {
+        for(Vertex v:cand) {
             for(Vertex u:v.getNeighbors())
                 obj+=pow(v.getEdge(u)-v.getLabel().transpose().times(u.getLabel()).get(0, 0),2)-pow(v.getLabel().transpose().times(u.getLabel()).get(0, 0),2);
             if(v.isY0())obj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
         }
-        /*for(Vertex v:g.getVertices()) {
-            for(Vertex u:g.getVertices()) 
-                if(v.getType()!=u.getType())
-                    obj+=pow(v.getEdge(u)-v.getLabel().transpose().times(u.getLabel()).get(0, 0),2);
-            if(v.isY0())obj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
-        }*/
         return obj;
+    }
+
+    final int DISP_ITER=1;
+    final int DISP_DELTA=2;
+    final int DISP_OBJ=4;
+    final int DISP_TIME=8;
+    final int DISP_LABEL=16;
+    final int DISP_ALL=255;
+    final int DISP_NONE=0;
+    
+    public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+        if((disp&DISP_ITER)!=0)System.out.print(String.format("Iter = %d\n",iter));
+        if((disp&DISP_DELTA)!=0)System.out.print(String.format("Delta = %.6f\n",delta));
+        if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,k)));
+        if((disp&DISP_LABEL)!=0)for(Vertex v:cand) {
+            System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+        }
+        if((disp&DISP_TIME)!=0)System.out.print(String.format("Processed in %.3f ms\n",time));
     }
 }
