@@ -50,7 +50,12 @@ public class SparseMatrix implements Matrix {
         A=new ArrayList<>();
         for(int r=0;r<dim;r++) {
             A.add(new HashMap<Integer,Double>());
-            A.get(r).put(r, 1.0);
+            try {
+				this.set(r,r,1.0);
+			} catch (ColumnOutOfRangeException | RowOutOfRangeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         }
     }
     
@@ -390,7 +395,7 @@ public class SparseMatrix implements Matrix {
         if(maxRow!=other.maxRow||maxCol!=other.maxCol)return false;
         for(int row=0;row<maxRow;row++)
             for(int col=0;col<maxCol;col++)
-                try {
+				try {
                     if(abs(get(row,col)-other.get(row,col))>1e-6)return false;
                 } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         return true;
@@ -419,7 +424,7 @@ public class SparseMatrix implements Matrix {
         try {
             for(int row=0;row<maxRow;row++)
                 for(int col=0;col<maxCol;col++) {
-                    NaiveMatrix T=new NaiveMatrix(maxRow-1,maxCol-1);
+                	SparseMatrix T=new SparseMatrix(maxRow-1,maxCol-1);
                     for(int i=0;i<maxRow;i++)
                         for(int j=0;j<maxCol;j++) {
                             if(i<row && j<col)T.set(i, j, get(i,j));
