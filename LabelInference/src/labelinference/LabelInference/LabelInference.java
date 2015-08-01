@@ -22,21 +22,29 @@ import labelinference.exceptions.RowOutOfRangeException;
  *
  * @author sailw
  */
+
+/*
+ * This class is the abstract class giving methods inplementing initializations, counting the objective and writing the information of iteration procedure.
+ */
 public interface LabelInference {
     void getResult(int maxIter, double nuance, int disp);
+    //declare the getResult function
     void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp);
+    //declare the increase function
     
     public static Matrix defaultLabelInit(Integer k) {
+    //this method giving a unified initialization of label
         final MatrixFactory mf=MatrixFactory.getInstance();
         Matrix label=mf.creatMatrix(k,1);
         for(int i=0;i<k;i++)try {
-            label.set(i, 0, 1.0/k);
+            label.set(i, 0, 1.0/k);//set the label to (1/k .... 1/k)
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         return label;
     }
     
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
-        Double obj=0.0;
+    //this method counts the objective number
+    	Double obj=0.0;
         for(int i=0;i<k;i++)
             for(int j=0;j<k;j++) {
                 Map<Vertex.Type,Double> sumij=new HashMap<>();
@@ -58,8 +66,11 @@ public interface LabelInference {
     final int DISP_LABEL=16;
     final int DISP_ALL=255;
     final int DISP_NONE=0;
+    //define all possible situation for displaying
     
     public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+    //disp selects which of the outputs would be chose to write, other parameter are for displaying
+    //this method displays all the needed information
         if((disp&DISP_ITER)!=0)System.out.print(String.format("Iter = %d\n",iter));
         if((disp&DISP_DELTA)!=0)System.out.print(String.format("Delta = %.6f\n",delta));
         if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,k)));
