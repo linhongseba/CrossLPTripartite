@@ -42,15 +42,18 @@ public interface LabelInference {
         return label;
     }
     
-    public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+    public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     //this method counts the objective number
     	Double obj=0.0;
+        Map<Vertex.Type,Double>[][] sum=new Map[k][k];
         for(int i=0;i<k;i++)
             for(int j=0;j<k;j++) {
-                Map<Vertex.Type,Double> sumij=new HashMap<>();
-                for(Vertex v:candS)sumij.put(v.getType(), sumij.getOrDefault(v.getType(), 0.0)+v.getLabel().get(i, 0)*v.getLabel().get(j, 0));
-                obj+=2*(sumij.get(Vertex.typeA)*sumij.get(Vertex.typeB)+sumij.get(Vertex.typeA)*sumij.get(Vertex.typeC)+sumij.get(Vertex.typeC)*sumij.get(Vertex.typeB));
+                sum[i][j]=new HashMap<>();
+                for(Vertex v:candS)sum[i][j].put(v.getType(), sum[i][j].getOrDefault(v.getType(), 0.0)+v.getLabel().get(i, 0)*v.getLabel().get(j, 0)); 
             }
+        for(int i=0;i<k;i++)for(int j=0;j<k;j++)for(int m=0;m<k;m++)for(int n=0;n<k;n++)for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
+            obj+=sum[i][m].get(t0)*sum[j][n].get(t1)*B.get(t0).get(t1).get(i,j)*B.get(t0).get(t1).get(m,n);
+
         for(Vertex v:cand) {
             for(Vertex u:v.getNeighbors())
                 obj+=pow(v.getEdge(u)-v.getLabel().transpose().times(u.getLabel()).get(0, 0),2)-pow(v.getLabel().transpose().times(u.getLabel()).get(0, 0),2);
@@ -68,12 +71,12 @@ public interface LabelInference {
     final int DISP_NONE=0;
     //define all possible situation for displaying
     
-    public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+    public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     //disp selects which of the outputs would be chose to write, other parameter are for displaying
     //this method displays all the needed information
         if((disp&DISP_ITER)!=0)System.out.print(String.format("Iter = %d\n",iter));
         if((disp&DISP_DELTA)!=0)System.out.print(String.format("Delta = %.6f\n",delta));
-        if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,k)));
+        if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,B,k)));
         if((disp&DISP_LABEL)!=0)for(Vertex v:cand) {
             System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
         }

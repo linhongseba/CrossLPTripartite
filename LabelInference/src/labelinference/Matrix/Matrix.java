@@ -39,6 +39,7 @@ public interface Matrix {
     Matrix transpose();
     Matrix normalize() throws DimensionNotAgreeException;
     double norm(Norm normName);
+    double trace() throws DimensionNotAgreeException;
     
     public static final Norm FROBENIUS_NORM=new Norm();
     public static final Norm FIRST_NORM=new Norm();

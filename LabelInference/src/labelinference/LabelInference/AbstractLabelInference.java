@@ -23,6 +23,7 @@ import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
 import static labelinference.LabelInference.LabelInference.*;
+import labelinference.Matrix.MatrixFactory;
 
 /**
  *
@@ -38,13 +39,10 @@ public abstract class AbstractLabelInference implements LabelInference{
     protected final Function<Integer,Matrix> labelInit;     //the function denote
     protected final int k;                                  //the variable denotes the number of clusters
     protected double maxE=0;                                //the variable denotes the max number of edges
+    protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
     
     public AbstractLabelInference(Graph _g) {	
-    //this method deviced for default initialization
-        g=_g;
-        k=g.getNumLabels();
-        isDone=false;
-        labelInit=LabelInference::defaultLabelInit;
+        this(_g,LabelInference::defaultLabelInit);
     }
     
     public AbstractLabelInference(Graph _g, Function<Integer,Matrix> _labelInit) {
@@ -53,6 +51,11 @@ public abstract class AbstractLabelInference implements LabelInference{
         k=g.getNumLabels();
         isDone=false;
         labelInit=_labelInit;
+        for(Vertex.Type t0:Vertex.types) {
+            B.put(t0, new HashMap<>());
+            for(Vertex.Type t1:Vertex.types)
+                B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
+        }
     }
     
     @Override
@@ -65,7 +68,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             double timeUsed=0;                                                                //the variable counts the total used time.
             double delta;                                                                     //the variable denotes the difference between Y and last produced Y.
             int iter=0;                                                                       //the variable controls the iteration times.
-            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_LABEL|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,k);
+            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_LABEL|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k);
             do {
                 long nTime=System.nanoTime();
                 long mTime=System.currentTimeMillis();
@@ -74,10 +77,10 @@ public abstract class AbstractLabelInference implements LabelInference{
                 mTime=System.currentTimeMillis()-mTime;
                 timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                LabelInference.infoDisplay(disp&~DISP_TIME, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,k);//write the infomation
+                LabelInference.infoDisplay(disp&~DISP_TIME, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k);//write the infomation
             } while(delta>nuance && iter!=maxIter);
             //iterates until converge or iter>maxIter
-            LabelInference.infoDisplay(disp&DISP_TIME, iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,k);
+            LabelInference.infoDisplay(disp&DISP_TIME, iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k);
             //write the final state
         } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(BlockCoordinateDescent.class.getName()).log(Level.SEVERE, null, ex);
@@ -143,7 +146,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             int iter=0;                                                               //the variable controls the iteration times.     
             
             //the following do the iteration and expand the cand set
-            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_LABEL|DISP_OBJ), iter, 0, 0, cand,candS, Y0,k);
+            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_LABEL|DISP_OBJ), iter, 0, 0, cand,candS, Y0,B,k);
             do {
                 long nTime=System.nanoTime();
                 long mTime=System.currentTimeMillis();
@@ -163,10 +166,10 @@ public abstract class AbstractLabelInference implements LabelInference{
                 mTime=System.currentTimeMillis()-mTime;
                 timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                LabelInference.infoDisplay(disp&~DISP_TIME, iter, delta, timeUsed, cand,candS, Y0,k);
+                LabelInference.infoDisplay(disp&~DISP_TIME, iter, delta, timeUsed, cand,candS, Y0,B,k);
             } while(delta>nuance && iter!=maxIter);
             //iterates until converge or iter>maxIter
-            LabelInference.infoDisplay(disp&DISP_TIME, iter, delta, timeUsed, cand,candS, Y0,k);
+            LabelInference.infoDisplay(disp&DISP_TIME, iter, delta, timeUsed, cand,candS, Y0,B,k);
         } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(BlockCoordinateDescent.class.getName()).log(Level.SEVERE, null, ex);
         }

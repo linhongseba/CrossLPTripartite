@@ -218,6 +218,7 @@ public class NaiveMatrix implements Matrix{
             if(abs(sum)<ZERO)sum=ZERO;
             for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, max(A.get(row, col),0)/abs(sum));
         }
+        if(M.norm(FIRST_NORM)<0.9)return M.normalize();
     	return M;
     }
 
@@ -239,5 +240,13 @@ public class NaiveMatrix implements Matrix{
                 }
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         return M;
+    }
+
+    @Override
+    public double trace() throws DimensionNotAgreeException {
+        if(A.getColumnDimension()!=A.getRowDimension())throw new DimensionNotAgreeException();
+        double ret=0;
+        for(int r=0;r<A.getColumnDimension();r++)ret+=A.get(r, r);
+        return ret;
     }
 }
