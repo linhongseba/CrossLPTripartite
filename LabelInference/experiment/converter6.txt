@@ -32,15 +32,16 @@ x=2;
 y=2;
 
 for g in range(0,3):
+    figureNum=g+1;
+    plt.figure(figureNum)
     for t in range(0,2):
         sheet.write(x,0,'graph'+str(g+1)+'-'+training[t])
         sheet.write(x,1,'Accuracy')
         sheet.write(x+1,1,'Objective')
         sheet.write(x+2,1,'Time comsuming')
         for a in range(0,3):
-            figureNum=g*2*3+t*3+a+1;
-            plt.figure(figureNum)
-            plt.suptitle('graph-'+graph[g]+'.'+training[t]+'.'+algorithm[a])
+            pnow = plt.subplot(2,3,t*3+a+1)
+            pnow.set_title('graph-'+graph[g]+'.'+training[t]+'.'+algorithm[a])
             maxobj=0.0;
             minobj=10000000.0;
             for p in range(0,3):
@@ -73,20 +74,19 @@ for g in range(0,3):
                         sheet.write(x+2,y,time)
                         y+=1;
                         break
-                ax = plt.subplot(1,1,1)
-                lines,=ax.plot(y_list,label=preprocessing[p])
+                lines,=pnow.plot(y_list,label=preprocessing[p])
                 ##if p==0:
                 #    plt.setp(lines, color='r')
                 #if p==1:
                 #    plt.setp(lines, color='g')
                 #if p==2:
                 #    plt.setp(lines, color='b')
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend(handles[::-1], labels[::-1])
+                handles, labels = pnow.get_legend_handles_labels()
+                pnow.legend(handles[::-1], labels[::-1])
                 plt.axis([0, i, minobj, maxobj])
-                plt.savefig('figures/'+'graph-'+graph[g]+'.'+training[t]+'.'+algorithm[a]+'.pdf')  
         x+=3
         y=2
+    plt.savefig('figures/'+'graph-'+graph[g]+'.png')  
 #plt.show()
 xls.save('result.xls')
 x.input('haha');
