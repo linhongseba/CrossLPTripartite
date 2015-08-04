@@ -1,154 +1,79 @@
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package labelinference.LabelInference;
-import java.util.*;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.Matrix;
 import labelinference.Matrix.MatrixFactory;
-
-import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
-import labelinference.exceptions.RowOutOfRangeException;
-
 
 /**
  *
- * @author Tangyiqi
+ * @author sailw
  */
-
 public class Multiplicative extends AbstractLabelInference implements LabelInference {
-    private Matrix Ya0,Yb0,Yc0;
-    private Matrix Ya,Yb,Yc;
-    private Matrix Gab,Gbc,Gac;
-    private Matrix Sa,Sb,Sc;
-    private final Map<Vertex,Integer> v2row=new HashMap();
-    
     public Multiplicative(Graph _g) {	
         super(_g);
-        initMat();
     }
     
     public Multiplicative(Graph _g, Function<Integer,Matrix> _labelInit) {
         super(_g,_labelInit);
-        initMat();
+    }
+
+    @Override
+    protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
+        MatrixFactory mf=MatrixFactory.getInstance();
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBdown=new HashMap<>();
+        Map<Vertex.Type,Matrix> proc=new HashMap<>();
+        for(Vertex.Type t0:Vertex.types) {
+            dBup.put(t0, new HashMap<>());
+            dBdown.put(t0, new HashMap<>());
+            proc.put(t0, mf.creatMatrix(k,k));
+            for(Vertex.Type t1:Vertex.types) {
+                dBup.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+                dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+            }
+        }
+        
+        for(Vertex u:cand)for(Vertex v:u.getNeighbors())
+            dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
+
+        
+        for(Vertex u:candS)proc.put(u.getType(), proc.get(u.getType()).add(u.getLabel().times(u.getLabel().transpose())));
+
+        for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
+            B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1))).times(1.0/maxE).sqrt()));
     }
     
-    private void initMat() {
+    @Override
+    protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        try {
-            int rowA=0,rowB=0,rowC=0;
-            final Map<Vertex,Matrix> Y0=new HashMap<>();
-            for(Vertex v:g.getVertices())
-                if(v.isY0())Y0.put(v, v.getLabel().copy());
-            else v.setLabel(labelInit.apply(k));
-            for(Vertex u:g.getVertices()) {
-                if(u.getType()==Vertex.typeA)rowA++;
-                if(u.getType()==Vertex.typeB)rowB++;
-                if(u.getType()==Vertex.typeC)rowC++;
-            }
+        Map<Vertex.Type,Matrix> A=new HashMap<>();
+        Matrix emptyMat=mf.creatMatrix(k, k);
+        for(Vertex.Type type:Vertex.types)
+            for(Vertex u:candS)
+                if(u.getType()!=type)
+                    A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
 
-            Sa=mf.creatMatrix(rowA,rowA);
-            Sb=mf.creatMatrix(rowB,rowB);
-            Sc=mf.creatMatrix(rowC,rowC);
-            Ya0=mf.creatMatrix(rowA,k);
-            Yb0=mf.creatMatrix(rowB,k);
-            Yc0=mf.creatMatrix(rowC,k);
-            Ya=mf.creatMatrix(rowA,k);
-            Yb=mf.creatMatrix(rowB,k);
-            Yc=mf.creatMatrix(rowC,k);
-            Gab=mf.creatMatrix(rowA,rowB);
-            Gbc=mf.creatMatrix(rowB,rowC);
-            Gac=mf.creatMatrix(rowA,rowC);
-
-            rowA=0;rowB=0;rowC=0;
-            for(Vertex point:g.getVertices()) {
-                if(point.getType()==Vertex.typeA) {
-                    v2row.put(point,rowA);
-                    Ya0.setRow(rowA, point.getLabel().transpose());
-                    if(point.isY0())Sa.set(rowA, rowA, 1);
-                    rowA++;
-                }
-                if(point.getType()==Vertex.typeB) {
-                    v2row.put(point,rowB);
-                    Yb0.setRow(rowB, point.getLabel().transpose());
-                    if(point.isY0())Sb.set(rowB, rowB, 1);
-                    rowB++;
-                }
-                if(point.getType()==Vertex.typeC) {
-                    v2row.put(point,rowC);
-                    Yc0.setRow(rowC, point.getLabel().transpose());
-                    if(point.isY0())Sc.set(rowC, rowC, 1);
-                    rowC++;
-                }
-            }
-            Ya=Ya0.copy();
-            Yb=Yb0.copy();  
-            Yc=Yc0.copy(); 
-
-            rowA=0;rowB=0;rowC=0;
-            for(Vertex u:g.getVertices()) {
-                if(u.getType()==Vertex.typeA) {
-                    for(Vertex v:u.getNeighbors())
-                        if(v.getType()==Vertex.typeB)Gab.set(rowA,v2row.get(v),u.getEdge(v));
-                        else Gac.set(rowA,v2row.get(v),u.getEdge(v));
-                    rowA++;
-                }
-                if(u.getType()==Vertex.typeB) {
-                    for(Vertex v:u.getNeighbors())
-                        if(v.getType()==Vertex.typeA)Gab.set(v2row.get(v),rowB,u.getEdge(v));
-                        else Gbc.set(rowB,v2row.get(v),u.getEdge(v));
-                    rowB++;
-                }
-                if(u.getType()==Vertex.typeC) {
-                    for(Vertex v:u.getNeighbors())
-                        if(v.getType()==Vertex.typeA)Gac.set(v2row.get(v),rowC,u.getEdge(v));
-                        else Gbc.set(v2row.get(v),rowC,u.getEdge(v));
-                    rowC++;
-                }
-            }
-        }   catch (RowOutOfRangeException | DimensionNotAgreeException | ColumnOutOfRangeException ex) {
-            Logger.getLogger(Multiplicative.class.getName()).log(Level.SEVERE, null, ex);
+        Map<Vertex, Matrix> Y=new HashMap<>();
+        for(Vertex u:cand) {
+            Matrix label= mf.creatMatrix(k, 1);
+            for(Vertex v:u.getNeighbors())
+                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
+            if(u.isY0())label=label.times(1.0/maxE).add(Y0.get(u)).divide(A.get(u.getType()).times(u.getLabel()).add(u.getLabel()));
+            else label=label.times(1.0/maxE).divide(A.get(u.getType()).times(u.getLabel()));
+            label=u.getLabel().cron(label.sqrt()).normalize();
+            Y.put(u, label);
         }
-    }
-        
-    protected double update(Collection<Vertex> band, Collection<Vertex> bandS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException,ColumnOutOfRangeException, RowOutOfRangeException 
-    {
-        MatrixFactory mf;
-        mf=MatrixFactory.getInstance();
-        Matrix Ya_new;
-        Matrix Yb_new;
-        Matrix Yc_new;
-
-        Matrix temp_a_up=((Gab.times(Yb)).add(Gac.times(Yc))).add(Sa.times(Ya0));
-        Matrix temp_a_down=Ya.times(Yb.transpose()).times(Yb).add(Ya.times(Yc.transpose()).times(Yc)).add(Sa.times(Ya));
-        Ya_new=Ya.cron(temp_a_up.divide(temp_a_down).sqrt()).transpose().normalize().transpose();
-
-        Matrix temp_b_up=((Gab.transpose()).times(Ya)).add(Gbc.times(Yc)).add(Sb.times(Yb0));
-        Matrix temp_b_down=Yb.times(Ya.transpose()).times(Ya).add(Yb.times(Yc.transpose()).times(Yc)).add(Sb.times(Yb));
-        Yb_new=Yb.cron(temp_b_up.divide(temp_b_down).sqrt()).transpose().normalize().transpose();
-
-        Matrix temp_c_up=Gac.transpose().times(Ya).add(Gbc.transpose().times(Yb)).add(Sc.times(Yc0));
-        Matrix temp_c_down=Yc.times(Ya.transpose()).times(Ya).add(Yc.times(Yb.transpose()).times(Yb)).add(Sc.times(Yc));
-        Yc_new=Yc.cron(temp_c_up.divide(temp_c_down).sqrt()).transpose().normalize().transpose();
-
-        double delta=Ya.subtract(Ya_new).norm(Matrix.FROBENIUS_NORM)+Yb.subtract(Yb_new).norm(Matrix.FROBENIUS_NORM)+Yc.subtract(Yc_new).norm(Matrix.FROBENIUS_NORM);
-        Ya=Ya_new.copy();
-        Yb=Yb_new.copy();
-        Yc=Yc_new.copy();
-        for(Vertex v:g.getVertices()){
-            if(v.getType()==Vertex.typeA)v.setLabel(Ya.getRow(v2row.get(v)).transpose());
-            if(v.getType()==Vertex.typeB)v.setLabel(Yb.getRow(v2row.get(v)).transpose());
-            if(v.getType()==Vertex.typeC)v.setLabel(Yc.getRow(v2row.get(v)).transpose());
-        }
-        return delta;
+        return Y;
     }
 }

@@ -6,11 +6,12 @@
 package labelinference.Selector;
 
 import java.util.Collection;
+import labelinference.Graph.Vertex;
 
 /**
  *
  * @author sailw
  */
-public interface Selector extends Collection{
+public interface Selector extends Collection<Vertex>{
     
 }

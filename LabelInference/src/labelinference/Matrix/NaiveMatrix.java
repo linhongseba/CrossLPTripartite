@@ -209,14 +209,19 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public Matrix normalize() throws DimensionNotAgreeException {
+    public Matrix normalize(){
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         final double ZERO=1e-9;
+        double min=0;
         for(int col=0;col<A.getColumnDimension();col++){
             double sum=0;
-            for(int row=0;row<A.getRowDimension();row++)sum+=max(A.get(row, col),0);
-            if(abs(sum)<ZERO)sum=ZERO;
-            for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, max(A.get(row, col),0)/abs(sum));
+            for(int row=0;row<A.getRowDimension();row++)
+                if(A.get(row, col)<min)min=A.get(row, col);
+            for(int row=0;row<A.getRowDimension();row++) {
+                A.set(row, col, A.get(row, col)-min+ZERO);
+                sum+=A.get(row, col);
+            }
+            for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, A.get(row, col)/sum);
         }
         if(M.norm(FIRST_NORM)<0.9)return M.normalize();
     	return M;

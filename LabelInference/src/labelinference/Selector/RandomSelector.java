@@ -15,7 +15,7 @@ import java.util.Collections;
  *
  * @author sailw
  */
-public class RandomSelector extends ArrayList implements Selector {
+public class RandomSelector extends ArrayList<Vertex> implements Selector {
     public RandomSelector(Collection<Vertex> vertices, int threshold) {
         ArrayList<Vertex> list=new ArrayList<>(vertices);
         Collections.shuffle(list);

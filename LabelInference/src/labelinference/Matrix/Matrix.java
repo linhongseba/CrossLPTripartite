@@ -37,7 +37,7 @@ public interface Matrix {
     Matrix inverse() throws IrreversibleException;
     Matrix adjoint () throws DimensionNotAgreeException;
     Matrix transpose();
-    Matrix normalize() throws DimensionNotAgreeException;
+    Matrix normalize();
     double norm(Norm normName);
     double trace() throws DimensionNotAgreeException;
     

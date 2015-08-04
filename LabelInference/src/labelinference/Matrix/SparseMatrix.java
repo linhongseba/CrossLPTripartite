@@ -323,7 +323,7 @@ public class SparseMatrix implements Matrix {
     }
 
     @Override
-    public Matrix normalize() throws DimensionNotAgreeException {
+    public Matrix normalize() {
     	SparseMatrix M=new SparseMatrix(maxRow,maxCol);
 
     	for(int c=0;c<maxCol;c++)

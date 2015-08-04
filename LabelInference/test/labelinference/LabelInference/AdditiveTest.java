@@ -20,7 +20,7 @@ import static labelinference.LabelInference.LabelInference.*;
  *
  * @author sailw
  */
-public class BlockCoordinateDescentTest {
+public class AdditiveTest {
     /**
      * Test of getResult method, of class BlockCoordinateDescent.
      * @throws java.io.FileNotFoundException
@@ -31,9 +31,9 @@ public class BlockCoordinateDescentTest {
         Labor labor=Labor.getInstance();
         Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
-        Function<Graph,LabelInference> labelInference=g->new BlockCoordinateDescent(g);
+        Function<Graph,LabelInference> labelInference=g->new Additive(g,1e-5,LabelInference::randomLabelInit);
         
-        labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        //labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
         labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
     }
 }

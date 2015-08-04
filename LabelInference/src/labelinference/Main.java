@@ -15,12 +15,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
-import labelinference.LabelInference.BlockCoordinateDescent;
+import labelinference.LabelInference.Additive;
 import labelinference.LabelInference.LabelInference;
 import static labelinference.LabelInference.LabelInference.*;
 import labelinference.LabelInference.LabelPropagation;
 import labelinference.LabelInference.Multiplicative;
-import labelinference.LabelInference.NewMultiplicative;
 import labelinference.Selector.DegreeSelector;
 import labelinference.Selector.RandomSelector;
 import labelinference.Selector.Selector;
@@ -50,8 +49,8 @@ public class Main {
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*ratio)));
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*ratio)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*ratio)));
-        inferencers.put("MA", g->new NewMultiplicative(g));
-        inferencers.put("BCD", g->new BlockCoordinateDescent(g));
+        inferencers.put("MA", g->new Multiplicative(g));
+        inferencers.put("BCD", g->new Additive(g,1e-5));
         inferencers.put("LP", g->new LabelPropagation(g, 0));
         
         System.out.print("Inferencer="+inferencer+"\n");

@@ -31,8 +31,10 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
         alpha=_alpha;
     }
 
+    protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {}
+    
     @Override
-    protected double update(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
+    protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
         final MatrixFactory mf=MatrixFactory.getInstance();
         final Map<Vertex,Map<Vertex.Type,Matrix>> cache=new HashMap<>();
         Matrix emptyMat=mf.creatMatrix(k, 1);
@@ -43,7 +45,6 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
             cache.put(u, value);
         }
 
-        double delta=0;
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(final Vertex u:cand) {
             if(u.isY0())continue;
@@ -55,10 +56,9 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
                 b=b.add(cache.get(v).get(u.getType()).subtract(u.getLabel().times(u.getEdge(v)/u.sumE())).times(u.getEdge(v)/v.sumE()));
             }
             label=a.normalize().times(1-alpha).add(b.normalize().times(alpha));
-            delta+=label.subtract(u.getLabel()).norm(Matrix.FIRST_NORM);
             Y.put(u, label);
         }
         for(Vertex v:cand)if(!v.isY0())v.setLabel(Y.get(v));
-        return delta;
+        return Y;
     }
 }

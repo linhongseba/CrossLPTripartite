@@ -15,7 +15,7 @@ import java.util.TreeSet;
  *
  * @author sailw
  */
-public class DegreeSelector extends HashSet implements Selector {
+public class DegreeSelector extends HashSet<Vertex> implements Selector {
     public DegreeSelector(Collection<Vertex> vertices, int threshold) {
         TreeSet<Vertex> H=new TreeSet<>((Vertex x,Vertex y)->{
             if(y.degree()!=x.degree())return y.degree()-x.degree();

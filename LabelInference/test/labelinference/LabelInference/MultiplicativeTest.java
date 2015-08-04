@@ -33,7 +33,7 @@ public class MultiplicativeTest {
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
         Function<Graph,LabelInference> labelInference=g->new Multiplicative(g);
         
-        labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
-        labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_LABEL);
+        labor.testLabelInference("data/graph-1.txt",selector10,labelInference,1000,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        //labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_LABEL);
     }
 }
