@@ -43,14 +43,21 @@ public class Main {
         double ratio=Double.parseDouble(args[3]);
         double nuance=Double.parseDouble(args[4]);
         int maxIter=Integer.parseInt(args[5]);
-        
+        double eta1=0.0001;
+        double eta2=0.000001;
+        if(args.length>=7){
+            eta1=Double.parseDouble(args[6]);
+        }
+        if(args.length>=8){
+             eta2=Double.parseDouble(args[7]);
+        }
         Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
         Map<String,Function<Graph,LabelInference>> inferencers=new HashMap<>();
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*ratio)));
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*ratio)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*ratio)));
         inferencers.put("MA", g->new Multiplicative(g));
-        inferencers.put("BCD", g->new Additive(g,1e-5));
+        inferencers.put("BCD", g->new Additive(g,0.001,0.000001));
         inferencers.put("LP", g->new LabelPropagation(g, 0));
         
         System.out.print("Inferencer="+inferencer+"\n");

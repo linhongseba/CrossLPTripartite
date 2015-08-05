@@ -25,14 +25,17 @@ import labelinference.exceptions.RowOutOfRangeException;
  */
 public class Additive extends AbstractLabelInference implements LabelInference {
     double eta;
-    public Additive(Graph _g,double _eta) {	
+    double etab;
+    public Additive(Graph _g,double _eta,double _etab) {	
         super(_g);
         eta=_eta;
+        etab=_etab;
     }
     
-    public Additive(Graph _g,double _eta, Function<Integer,Matrix> _labelInit) {
+    public Additive(Graph _g,double _eta, double _etab, Function<Integer,Matrix> _labelInit) {
         super(_g,_labelInit);
         eta=_eta;
+        etab=_etab;
     }
     
     @Override
@@ -43,11 +46,9 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         Map<Vertex.Type,Matrix> proc=new HashMap<>();
         for(Vertex.Type t0:Vertex.types) {
             dBleft.put(t0, new HashMap<>());
-            dBdown.put(t0, new HashMap<>());
             proc.put(t0, mf.creatMatrix(k,k));
             for(Vertex.Type t1:Vertex.types) {
                 dBleft.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-                dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
             }
         }
         
@@ -58,19 +59,23 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         for(Vertex u:candS)proc.put(u.getType(), proc.get(u.getType()).add(u.getLabel().times(u.getLabel().transpose())));
 
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
-            Matrix dB=dBleft.get(t0).get(t1).times(1/maxE).subtract(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1)));
+            //Matrix dB=dBleft.get(t0).get(t1).times(1/maxE).subtract(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1)));
+            Matrix dB=dBleft.get(t0).get(t1).subtract(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1)));
             //System.out.println(dBleft.get(t0).get(t1).times(1/maxE));
-            B.get(t0).put(t1, B.get(t0).get(t1).add(dB.times(eta/B.get(t0).get(t1).norm(Matrix.FIRST_NORM))));
+            //B.get(t0).put(t1, B.get(t0).get(t1).add(dB.times(eta/B.get(t0).get(t1).norm(Matrix.FIRST_NORM))));
+            B.get(t0).put(t1, B.get(t0).get(t1).add(dB.times(etab)));
             double min=0;
             try {
                 for(int row=0;row<k;row++)
                     for(int col=0;col<k;col++) {
                         if(B.get(t0).get(t1).get(row, col)<min)min=B.get(t0).get(t1).get(row, col);
                     }
-                if(min<1e-9)
+                if(min<1e-9){
                     for(int row=0;row<k;row++)
                         for(int col=0;col<k;col++)
-                            B.get(t0).get(t1).set(row, col, B.get(t0).get(t1).get(row, col)-min);
+                            B.get(t0).get(t1).set(row, col, B.get(t0).get(t1).get(row, col)-2*min);
+                }
+                //B.get(t0).get(t1).normalize();
             } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
             System.out.println(B.get(t0).get(t1));
         }

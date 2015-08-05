@@ -15,7 +15,7 @@ import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.LabelInference.Additive;
 import labelinference.LabelInference.LabelInference;
-import static labelinference.LabelInference.LabelInference.*;
+import static labelinference.LabelInference.LabelInference.DISP_ALL;
 import labelinference.LabelInference.LabelPropagation;
 import labelinference.LabelInference.Multiplicative;
 
@@ -27,7 +27,7 @@ public class Experiment {
     public static void main(String args[]) throws FileNotFoundException {
         Map<String,Function<Graph,LabelInference>> inferencers=new HashMap<>();
         //inferencers.put("MA", g->new Multiplicative(g));
-        inferencers.put("BCD", g->new Additive(g,1e-5));
+        inferencers.put("BCD", g->new Additive(g,1e-5,1e-3));
         inferencers.put("LP", g->new LabelPropagation(g,0));
         inferencers.put("MA", g->new Multiplicative(g));
         
