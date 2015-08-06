@@ -37,20 +37,28 @@ public class Main {
      * @throws java.io.FileNotFoundException
      */
     public static void main(String[] args) throws FileNotFoundException {
-        String path=args[0];
-        String inferencer=args[1];
-        String selector=args[2];
-        double ratio=Double.parseDouble(args[3]);
-        double nuance=Double.parseDouble(args[4]);
-        int maxIter=Integer.parseInt(args[5]);
-        double eta1=0.0001;
-        double eta2=0.000001;
-        if(args.length>=7){
-            eta1=Double.parseDouble(args[6]);
-        }
-        if(args.length>=8){
-             eta2=Double.parseDouble(args[7]);
-        }
+		if(args.length<4){
+			System.out.println("Usage: Java -jar [graph path] [inference algorithm] [selector algorithm] options");
+			System.out.println("graph path (string type)");
+			System.out.println("inference algorithm (string type): MA, BCD, LP");
+			System.out.println("selector algorithm (string type): RND, DEG, SHR");
+			System.out.println("option1: (double type): percentage of labeled data, default 0.05");
+			System.out.println("option2: (double type): LP parameter");
+			System.out.println("option3: (integer type): maximum number of iterations");
+			System.exit(2);
+		}
+        String path=args[0]; //graph data directory
+        String inferencer=args[1]; //the inference algorithm option
+        String selector=args[2]; //the algorithm options to select seed nodes
+        double ratio=0.05; //default ratio=5%
+		double nuance=0.0; //default 0.0
+		int maxIter=100; //default maximum number of iteration
+		if(args.length>=4)
+			ratio=Double.parseDouble(args[3]);
+		if(args.length>=5)
+			nuance=Double.parseDouble(args[4]);
+		if(args.length>=6)
+			maxIter=Integer.parseInt(args[5]);
         Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
         Map<String,Function<Graph,LabelInference>> inferencers=new HashMap<>();
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*ratio)));
