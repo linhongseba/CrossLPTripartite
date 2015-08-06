@@ -24,18 +24,17 @@ import labelinference.exceptions.RowOutOfRangeException;
  * @author Hermes777, SailWhite
  */
 public class Additive extends AbstractLabelInference implements LabelInference {
-    double eta;
-    double etab;
-    public Additive(Graph _g,double _eta,double _etab) {	
+
+    double alpha;
+    
+    public Additive(Graph _g) {	
         super(_g);
-        eta=_eta;
-        etab=_etab;
+        alpha=0.0000001;
     }
     
-    public Additive(Graph _g,double _eta, double _etab, Function<Integer,Matrix> _labelInit) {
+    public Additive(Graph _g, Function<Integer,Matrix> _labelInit) {
         super(_g,_labelInit);
-        eta=_eta;
-        etab=_etab;
+        alpha=0.0000001;
     }
     
     @Override
@@ -44,6 +43,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBleft=new HashMap<>();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBdown=new HashMap<>();
         Map<Vertex.Type,Matrix> proc=new HashMap<>();
+
         for(Vertex.Type t0:Vertex.types) {
             dBleft.put(t0, new HashMap<>());
             proc.put(t0, mf.creatMatrix(k,k));
@@ -59,11 +59,19 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         for(Vertex u:candS)proc.put(u.getType(), proc.get(u.getType()).add(u.getLabel().times(u.getLabel().transpose())));
 
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
+
+        	
+            double L=(proc.get(t1).times(proc.get(t0))).norm(Matrix.FROBENIUS_NORM);
+            double alphaNext=(1+java.lang.Math.sqrt(4*alpha*alpha+1))/2;
+            double etab=(alphaNext+alpha-1)/alphaNext/L;
+            
             //Matrix dB=dBleft.get(t0).get(t1).times(1/maxE).subtract(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1)));
             Matrix dB=dBleft.get(t0).get(t1).subtract(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1)));
             //System.out.println(dBleft.get(t0).get(t1).times(1/maxE));
             //B.get(t0).put(t1, B.get(t0).get(t1).add(dB.times(eta/B.get(t0).get(t1).norm(Matrix.FIRST_NORM))));
             B.get(t0).put(t1, B.get(t0).get(t1).add(dB.times(etab)));
+
+
             double min=0;
             try {
                 for(int row=0;row<k;row++)
@@ -78,6 +86,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                 //B.get(t0).get(t1).normalize();
             } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
             System.out.println(B.get(t0).get(t1));
+            System.out.println("etab="+etab);
         }
     }
     
@@ -91,9 +100,15 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                 if(u.getType()!=type)
                     A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
 
+        double alphaNext=(1+java.lang.Math.sqrt(4*alpha*alpha+1))/2;
+        
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
+            
+            double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
+            double eta=(alphaNext+alpha-1)/alphaNext/L;
+            
             for(Vertex v:u.getNeighbors())
                 label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
             Matrix t=A.get(u.getType()).times(u.getLabel()).times(2);
@@ -103,7 +118,9 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             label=u.getLabel().add(label.times(2*eta)).normalize();
             Y.put(u, label);
         }
+        alpha=alphaNext;
         //eta*=0.95;
+        System.out.println("alpha="+alpha);
         return Y;
     }
 }

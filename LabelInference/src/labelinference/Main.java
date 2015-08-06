@@ -57,7 +57,7 @@ public class Main {
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*ratio)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*ratio)));
         inferencers.put("MA", g->new Multiplicative(g));
-        inferencers.put("BCD", g->new Additive(g,0.001,0.000001));
+        inferencers.put("BCD", g->new Additive(g));
         inferencers.put("LP", g->new LabelPropagation(g, 0));
         
         System.out.print("Inferencer="+inferencer+"\n");
