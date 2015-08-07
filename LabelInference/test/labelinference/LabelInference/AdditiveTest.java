@@ -15,6 +15,11 @@ import labelinference.Selector.DegreeSelector;
 import labelinference.Selector.Selector;
 import org.junit.Test;
 import static labelinference.LabelInference.LabelInference.*;
+import labelinference.Selector.RandomSelector;
+import labelinference.Selector.SimpleHeuristicSelector;
+import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
+import labelinference.exceptions.RowOutOfRangeException;
 
 /**
  *
@@ -26,14 +31,14 @@ public class AdditiveTest {
      * @throws java.io.FileNotFoundException
      */
     @Test
-    public void testGetResult() throws FileNotFoundException{
+    public void testGetResult() throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException{
         System.out.println("\nBlockCoordinateDescent");
         Labor labor=Labor.getInstance();
         Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
-        Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
-        Function<Graph,LabelInference> labelInference=g->new Additive(g,1e-5,LabelInference::randomLabelInit);
+        Function<Collection<Vertex>,Selector> selector5=g->new RandomSelector(g,g.size()/20);
+        Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::randomLabelInit);
         
         //labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
-        labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        labor.testLabelInferenceLP("data/graph-1.txt",selector5,labelInference,300,0,DISP_OBJ);
     }
 }

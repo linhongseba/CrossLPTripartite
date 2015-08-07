@@ -8,6 +8,7 @@ package labelinference.LabelInference;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
@@ -24,7 +25,7 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         super(_g);
     }
     
-    public Multiplicative(Graph _g, Function<Integer,Matrix> _labelInit) {
+    public Multiplicative(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
         super(_g,_labelInit);
     }
 
@@ -33,25 +34,19 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBdown=new HashMap<>();
-        Map<Vertex.Type,Matrix> proc=new HashMap<>();
+        Map<Vertex.Type,Matrix> product=new HashMap<>();
         for(Vertex.Type t0:Vertex.types) {
             dBup.put(t0, new HashMap<>());
-            dBdown.put(t0, new HashMap<>());
-            proc.put(t0, mf.creatMatrix(k,k));
-            for(Vertex.Type t1:Vertex.types) {
+            product.put(t0, mf.creatMatrix(k,k));
+            for(Vertex.Type t1:Vertex.types)
                 dBup.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-                dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-            }
         }
         
         for(Vertex u:cand)for(Vertex v:u.getNeighbors())
             dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
-
-        
-        for(Vertex u:candS)proc.put(u.getType(), proc.get(u.getType()).add(u.getLabel().times(u.getLabel().transpose())));
-
+        for(Vertex u:candS)product.put(u.getType(), product.get(u.getType()).add(u.getLabel().times(u.getLabel().transpose())));
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
-            B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(proc.get(t0).times(B.get(t0).get(t1)).times(proc.get(t1))).times(1.0/maxE).sqrt()));
+            B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(product.get(t0).times(B.get(t0).get(t1)).times(product.get(t1))).times(1.0/maxE).sqrt()));
     }
     
     @Override

@@ -16,8 +16,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.LabelInference.LabelInference;
+import static labelinference.LabelInference.LabelInference.DISP_NONE;
+import labelinference.LabelInference.LabelPropagation;
 import labelinference.Selector.Selector;
 import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
 import static org.junit.Assert.fail;
 
@@ -35,7 +38,7 @@ public class Labor {
         return instance;
     }
     
-    public void testLabelInference(String path, Function<Collection<Vertex>,Selector> selector, Function<Graph,LabelInference> labelInference,int maxIter, double nuance, int disp) throws FileNotFoundException{
+    public void testLabelInference(String path, Function<Collection<Vertex>,Selector> selector, Function<Graph,LabelInference> labelInference,int maxIter, double nuance, int disp) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException{
         System.out.println("\n"+path);
         Labor labor=Labor.getInstance();
         Graph expResult=new Graph(path);
@@ -50,6 +53,26 @@ public class Labor {
         System.out.println("Number of typeA = "+tot.getOrDefault(Vertex.typeA,0.0));
         System.out.println("Number of typeB = "+tot.getOrDefault(Vertex.typeB,0.0));
         System.out.println("Number of typeC = "+tot.getOrDefault(Vertex.typeC,0.0));
+        labelInference.apply(graph).getResult(maxIter, nuance, disp);
+        check(expResult,graph);
+    }
+    
+    public void testLabelInferenceLP(String path, Function<Collection<Vertex>,Selector> selector, Function<Graph,LabelInference> labelInference,int maxIter, double nuance, int disp) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException{
+        System.out.println("\n"+path);
+        Labor labor=Labor.getInstance();
+        Graph expResult=new Graph(path);
+        Graph graph=new Graph(path);
+        Collection<Vertex> Y0=graph.getVertices(v->v.isY0());
+        Selector selected=selector.apply(Y0);
+        Map<Vertex.Type,Double> tot=new HashMap<>();
+        for(Vertex v:graph.getVertices()) {
+            if(!selected.contains(v))v.init(v.getType(), v.getLabel(), false);
+            else tot.put(v.getType(), tot.getOrDefault(v.getType(),0.0)+1);
+        }
+        System.out.println("Number of typeA = "+tot.getOrDefault(Vertex.typeA,0.0));
+        System.out.println("Number of typeB = "+tot.getOrDefault(Vertex.typeB,0.0));
+        System.out.println("Number of typeC = "+tot.getOrDefault(Vertex.typeC,0.0));
+        new LabelPropagation(graph,1).getResult(maxIter/10, nuance, DISP_NONE);
         labelInference.apply(graph).getResult(maxIter, nuance, disp);
         check(expResult,graph);
     }

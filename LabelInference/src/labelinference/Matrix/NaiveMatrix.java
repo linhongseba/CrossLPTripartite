@@ -217,13 +217,14 @@ public class NaiveMatrix implements Matrix{
             double sum=0;
             for(int row=0;row<A.getRowDimension();row++)
                 if(A.get(row, col)<min)min=A.get(row, col);
-            for(int row=0;row<A.getRowDimension();row++) {
-                A.set(row, col, A.get(row, col)-min+ZERO);
-                sum+=A.get(row, col);
-            }
+            
+                for(int row=0;row<A.getRowDimension();row++) {
+                    if(min<0)A.set(row, col, A.get(row, col)-2*min);
+                    if(A.get(row, col)<ZERO)A.set(row, col, ZERO);
+                    sum+=A.get(row, col);
+                }
             for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, A.get(row, col)/sum);
         }
-        if(M.norm(FIRST_NORM)<0.9)return M.normalize();
     	return M;
     }
 

@@ -11,8 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.LabelInference.Additive;
@@ -25,6 +23,7 @@ import labelinference.Selector.RandomSelector;
 import labelinference.Selector.Selector;
 import labelinference.Selector.SimpleHeuristicSelector;
 import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
 
 /**
@@ -36,7 +35,7 @@ public class Main {
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
 		if(args.length<4){
 			System.out.println("Usage: Java -jar [graph path] [inference algorithm] [selector algorithm] options");
 			System.out.println("graph path (string type)");
@@ -48,27 +47,27 @@ public class Main {
 			System.exit(2);
 		}
         String path=args[0]; //graph data directory
-        String inferencer=args[1]; //the inference algorithm option
+        String inference=args[1]; //the inference algorithm option
         String selector=args[2]; //the algorithm options to select seed nodes
-        double ratio=0.05; //default ratio=5%
-		double nuance=0.0; //default 0.0
-		int maxIter=100; //default maximum number of iteration
-		if(args.length>=4)
-			ratio=Double.parseDouble(args[3]);
-		if(args.length>=5)
-			nuance=Double.parseDouble(args[4]);
-		if(args.length>=6)
-			maxIter=Integer.parseInt(args[5]);
+        double nuance=0.0; //default 0.0
+        int maxIter=100; //default maximum number of iteration
+        final double ratio=args.length>=4?Double.parseDouble(args[3]):0.05; //default ratio=5%
+        if(args.length>=5)
+                nuance=Double.parseDouble(args[4]);
+        if(args.length>=6)
+                maxIter=Integer.parseInt(args[5]);
         Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
-        Map<String,Function<Graph,LabelInference>> inferencers=new HashMap<>();
+        Map<String,Function<Graph,LabelInference>> inferences=new HashMap<>();
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*ratio)));
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*ratio)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*ratio)));
-        inferencers.put("MA", g->new Multiplicative(g));
-        inferencers.put("BCD", g->new Additive(g));
-        inferencers.put("LP", g->new LabelPropagation(g, 0));
+        inferences.put("MAR", g->new Multiplicative(g,LabelInference::randomLabelInit));
+        inferences.put("GDR", g->new Additive(g,LabelInference::randomLabelInit));
+        inferences.put("MAG", g->new Multiplicative(g,LabelInference::LPInit));
+        inferences.put("GDG", g->new Additive(g,LabelInference::LPInit));
+        inferences.put("LP", g->new LabelPropagation(g, 0));
         
-        System.out.print("Inferencer="+inferencer+"\n");
+        System.out.print("Inferencer="+inference+"\n");
         System.out.print("Selector="+selector+"\n");
 
         System.out.print("Reading graph data..."+"\n");
@@ -82,12 +81,13 @@ public class Main {
             if(!selected.contains(v))v.init(v.getType(), v.getLabel(), false);
             else tot.put(v.getType(), tot.getOrDefault(v.getType(),0.0)+1);
         }
-        System.out.println("Number of typeA = "+tot.getOrDefault(Vertex.typeA,0.0));
-        System.out.println("Number of typeB = "+tot.getOrDefault(Vertex.typeB,0.0));
-        System.out.println("Number of typeC = "+tot.getOrDefault(Vertex.typeC,0.0));
+        System.out.print("Number of typeA = "+tot.getOrDefault(Vertex.typeA,0.0)+"\n");
+        System.out.print("Number of typeB = "+tot.getOrDefault(Vertex.typeB,0.0)+"\n");
+        System.out.print("Number of typeC = "+tot.getOrDefault(Vertex.typeC,0.0)+"\n");
         
         System.out.print("Inferencing..."+"\n");
-        inferencers.get(inferencer).apply(result).getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
+        if(inference.charAt(inference.length()-1)=='G')new LabelPropagation(result,1).getResult(maxIter/10, nuance, DISP_NONE);
+        inferences.get(inference).apply(result).getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
 
         System.out.print("Checking result..."+"\n");
         check(expResult,result);
@@ -119,9 +119,9 @@ public class Main {
         }
 
         Double acc=correct/totle;
-        System.out.println("Accuracy = "+acc);
-        System.out.println("Accuracy of typeA = "+cor.get(Vertex.typeA)+"/"+tot.get(Vertex.typeA)+" = "+cor.getOrDefault(Vertex.typeA,0.0)/tot.getOrDefault(Vertex.typeA,0.0));
-        System.out.println("Accuracy of typeB = "+cor.get(Vertex.typeB)+"/"+tot.get(Vertex.typeB)+" = "+cor.getOrDefault(Vertex.typeB,0.0)/tot.getOrDefault(Vertex.typeB,0.0));
-        System.out.println("Accuracy of typeC = "+cor.get(Vertex.typeC)+"/"+tot.get(Vertex.typeC)+" = "+cor.getOrDefault(Vertex.typeC,0.0)/tot.getOrDefault(Vertex.typeC,0.0));
+        System.out.print("Accuracy = "+acc+"\n");
+        System.out.print("Accuracy of typeA = "+cor.get(Vertex.typeA)+"/"+tot.get(Vertex.typeA)+" = "+cor.getOrDefault(Vertex.typeA,0.0)/tot.getOrDefault(Vertex.typeA,0.0)+"\n");
+        System.out.print("Accuracy of typeB = "+cor.get(Vertex.typeB)+"/"+tot.get(Vertex.typeB)+" = "+cor.getOrDefault(Vertex.typeB,0.0)/tot.getOrDefault(Vertex.typeB,0.0)+"\n");
+        System.out.print("Accuracy of typeC = "+cor.get(Vertex.typeC)+"/"+tot.get(Vertex.typeC)+" = "+cor.getOrDefault(Vertex.typeC,0.0)/tot.getOrDefault(Vertex.typeC,0.0)+"\n");
     }
 }

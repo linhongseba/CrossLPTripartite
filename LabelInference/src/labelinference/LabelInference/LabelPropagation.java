@@ -10,7 +10,7 @@ import labelinference.Matrix.MatrixFactory;
 import labelinference.Matrix.Matrix;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiConsumer;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.exceptions.DimensionNotAgreeException;
@@ -26,7 +26,7 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
         super(_g);
     }
 
-    public LabelPropagation(Graph _g, double _alpha, Function<Integer,Matrix> _labelInit) {
+    public LabelPropagation(Graph _g, double _alpha, BiConsumer<Matrix,Integer> _labelInit) {
         super(_g,_labelInit);
         alpha=_alpha;
     }
@@ -47,7 +47,10 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
 
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(final Vertex u:cand) {
-            if(u.isY0())continue;
+            if(u.isY0()) {
+                Y.put(u, u.getLabel());
+                continue;
+            }
             Matrix label;
             Matrix a=mf.creatMatrix(k, 1);
             Matrix b=mf.creatMatrix(k, 1);
@@ -58,7 +61,6 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
             label=a.normalize().times(1-alpha).add(b.normalize().times(alpha));
             Y.put(u, label);
         }
-        for(Vertex v:cand)if(!v.isY0())v.setLabel(Y.get(v));
         return Y;
     }
 }

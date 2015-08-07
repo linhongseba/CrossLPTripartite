@@ -18,16 +18,19 @@ import labelinference.LabelInference.LabelInference;
 import static labelinference.LabelInference.LabelInference.DISP_ALL;
 import labelinference.LabelInference.LabelPropagation;
 import labelinference.LabelInference.Multiplicative;
+import labelinference.exceptions.ColumnOutOfRangeException;
+import labelinference.exceptions.DimensionNotAgreeException;
+import labelinference.exceptions.RowOutOfRangeException;
 
 /**
  *
  * @author sailw
  */
 public class Experiment {
-    public static void main(String args[]) throws FileNotFoundException {
+    public static void main(String args[]) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
         Map<String,Function<Graph,LabelInference>> inferencers=new HashMap<>();
         //inferencers.put("MA", g->new Multiplicative(g));
-        inferencers.put("BCD", g->new Additive(g,1e-5,1e-3));
+        inferencers.put("BCD", g->new Additive(g));
         inferencers.put("LP", g->new LabelPropagation(g,0));
         inferencers.put("MA", g->new Multiplicative(g));
         
