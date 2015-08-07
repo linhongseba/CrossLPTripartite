@@ -4,6 +4,7 @@ import os
 import sys
 import xlwt 
 import numpy
+import math
 import matplotlib.pyplot as plt
 
 print 'converting xls ... '
@@ -17,7 +18,7 @@ sheet.write(0,2,"GDG")
 sheet.write(0,5,"GDR")
 sheet.write(0,8,"MAG")
 sheet.write(0,11,"MAR")
-for i in range(0,3):
+for i in range(0,4):
     sheet.write(1,2+3*i,"Degree")
     sheet.write(1,3+3*i,"Random")
     sheet.write(1,4+3*i,"Heuristic")
@@ -40,8 +41,10 @@ for g in range(0,3):
         figureNum=g*4+a+1;
         plt.figure(figureNum)
         plt.suptitle('graph-'+graph[g]+'.'+algorithm[a])
+        plt.xlabel(u'iteration times')
+        plt.ylabel(u'lg(objective)')
         maxobj=0.0;
-        minobj=0.0;
+        minobj=10000000.0;
         for p in range(0,3):
             filename='graph-'+graph[g]+'.'+algorithm[a]+'.'+preprocessing[p]+'.05.result.txt';
             f = open('results/'+filename)
@@ -58,10 +61,13 @@ for g in range(0,3):
                 if line.find('ObjValue')>=0:
                     i+=1
                     obj=line[11:]
-                    x_list.append(float(i));
-                    y_list.append(float(obj));
-                    if float(obj)>maxobj:
-                        maxobj=float(obj)
+                    obj_now=math.log(float(obj),10);
+                    x_list.append(obj_now);
+                    y_list.append(obj_now);
+                    if obj_now>maxobj:
+                        maxobj=obj_now
+                    if obj_now<minobj:
+                        minobj=obj_now
                 if line.find('Processed in ')>=0:
                     time=line[16:]
                 if line.find('Accuracy ')>=0:
@@ -73,9 +79,10 @@ for g in range(0,3):
             ax = plt.subplot(1,1,1)
             lines,=ax.plot(y_list,label=preprocessing[p])
 
+
             handles, labels = ax.get_legend_handles_labels()
             ax.legend(handles[::-1], labels[::-1])
-            plt.axis([0, i, 0.0, maxobj])
+            plt.axis([0, i, minobj, maxobj])
             plt.savefig('figures/'+'graph-'+graph[g]+'.'+algorithm[a]+'.05.pdf')  
     x+=3
     y=2
