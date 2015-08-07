@@ -101,7 +101,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 sigma.put(type, new HashMap<>());
                 tot.put(type, new HashMap<>());
             }
-            for(Vertex u:g.getVertices()) {
+            for(Vertex u:cand) {
                 for(Vertex v:u.getNeighbors()) {
                     sigma.get(u.getType()).put(v.getType(), sigma.get(u.getType()).getOrDefault(v.getType(),0.0)+pow(u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).get(0, 0),2));
                     w.get(u.getType()).put(v.getType(), w.get(u.getType()).getOrDefault(v.getType(),0.0)+u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).get(0, 0));
@@ -126,8 +126,8 @@ public abstract class AbstractLabelInference implements LabelInference{
             }
             //add related vertices to candS
             
-            cand.addAll(candS);
-            for(Vertex u:cand)u.getNeighbors().forEach(candS::add);
+            //cand.addAll(candS);
+            //for(Vertex u:cand)u.getNeighbors().forEach(candS::add);
             double timeUsed=0;                                                        //the variable counts the total used time.
             double delta;                                                             //the variable denotes the difference between Y and last produced Y.
             int iter=0;                                                               //the variable controls the iteration times.     
@@ -137,7 +137,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 long mTime=System.currentTimeMillis();
                 delta=0;
                 Map<Vertex, Matrix> Y=updateY(cand,candS,Y0);
-                for(Vertex u:g.getVertices()) {
+                for(Vertex u:cand) {
                     delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
                     u.setLabel(Y.get(u));
                 }

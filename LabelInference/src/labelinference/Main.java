@@ -34,6 +34,9 @@ public class Main {
     /**
      * @param args the command line arguments
      * @throws java.io.FileNotFoundException
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     * @throws labelinference.exceptions.RowOutOfRangeException
+     * @throws labelinference.exceptions.ColumnOutOfRangeException
      */
     public static void main(String[] args) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
 		if(args.length<4){
@@ -61,8 +64,8 @@ public class Main {
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*ratio)));
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*ratio)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*ratio)));
-        inferences.put("MAR", g->new Multiplicative(g,LabelInference::randomLabelInit));
-        inferences.put("GDR", g->new Additive(g,LabelInference::randomLabelInit));
+        inferences.put("MAR", g->new Multiplicative(g,LabelInference::defaultLabelInit));
+        inferences.put("GDR", g->new Additive(g,LabelInference::defaultLabelInit));
         inferences.put("MAG", g->new Multiplicative(g,LabelInference::LPInit));
         inferences.put("GDG", g->new Additive(g,LabelInference::LPInit));
         inferences.put("LP", g->new LabelPropagation(g, 0));

@@ -5,7 +5,6 @@
  */
 package labelinference.LabelInference;
 
-import static java.lang.Math.min;
 import static java.lang.Math.sqrt;
 import java.util.Collection;
 import labelinference.Matrix.MatrixFactory;
@@ -39,25 +38,30 @@ public class Additive extends AbstractLabelInference implements LabelInference {
     @Override
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBleft=new HashMap<>();
-        Map<Vertex.Type,Matrix> product=new HashMap<>();
-
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBdown=new HashMap<>();
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> L=new HashMap<>();
         for(Vertex.Type t0:Vertex.types) {
-            dBleft.put(t0, new HashMap<>());
-            product.put(t0, mf.creatMatrix(k,k));
-            for(Vertex.Type t1:Vertex.types)
-                dBleft.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+            dBup.put(t0, new HashMap<>());
+            dBdown.put(t0, new HashMap<>());
+            L.put(t0, new HashMap<>());
+            for(Vertex.Type t1:Vertex.types) {
+                dBup.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+                dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+                L.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+            }
         }
-        for(Vertex u:cand)for(Vertex v:u.getNeighbors())
-            dBleft.get(u.getType()).put(v.getType(), dBleft.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
+        
+        for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
+            dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
+            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose())));
+            L.get(u.getType()).put(v.getType(), L.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(v.getLabel()).times(v.getLabel().transpose())));
+        }
 
-        for(Vertex u:candS)product.put(u.getType(), product.get(u.getType()).add(u.getLabel().times(u.getLabel().transpose())));
         alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
-            double L=(product.get(t1).times(product.get(t0))).norm(Matrix.FROBENIUS_NORM);
-            double etab=(alphaNext+alpha-1)/alphaNext/L;
-            Matrix dB=dBleft.get(t0).get(t1).times(1/maxE).subtract(product.get(t0).times(B.get(t0).get(t1)).times(product.get(t1)));
-            B.get(t0).put(t1, B.get(t0).get(t1).add(dB.times(etab)));
+            double etab=(alphaNext+alpha-1)/alphaNext/L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
+            B.get(t0).put(t1, B.get(t0).get(t1).add(dBup.get(t0).get(t1).times(1/maxE).subtract(dBdown.get(t0).get(t1)).times(etab)));
         }
     }
     
@@ -74,7 +78,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM)+u.sumE()/maxE;
+            double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
             double eta=(alphaNext+alpha-1)/alphaNext/L;
             for(Vertex v:u.getNeighbors())
                 label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)/maxE));
