@@ -40,21 +40,6 @@ for g in range(0,3):
             i_accu_list=[];
             x_list=[];
 
-            filename='graph-'+graph[g]+'.'+algorithm[a]+'.'+preprocessing[p]+'.05.0.result.txt';
-            f = open('results/'+filename)
-            i=0
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-                if line.find('Processed in ')>=0:
-                    for j in range(1,10):
-                        sheet.write(j,1,line[13:])
-                if line.find('Accuracy ')>=0:
-                    for j in range(1,10):
-                        sheet.write(j,3,line[11:])
-                    break
-            f.close()
             for i in range(1,10):
                 filename='graph-'+graph[g]+'.'+algorithm[a]+'.'+preprocessing[p]+'.05.'+str(i)+'.result.txt';
                 f = open('results/'+filename)
