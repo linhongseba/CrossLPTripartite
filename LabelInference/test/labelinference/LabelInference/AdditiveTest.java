@@ -36,9 +36,9 @@ public class AdditiveTest {
         Labor labor=Labor.getInstance();
         Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
-        Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::defaultLabelInit);
+        Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::randomLabelInit);
         
         //labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
-        labor.testLabelInferenceLP("data/graph-30.txt",selector5,labelInference,30,0,DISP_OBJ);
+        labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_OBJ);
     }
 }

@@ -53,19 +53,9 @@ public interface LabelInference {
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     //this method counts the objective number
     	Double obj=0.0;
-        
-        Map<Vertex.Type,Double>[][] sum=new Map[k][k];
-        for(int i=0;i<k;i++)
-            for(int j=0;j<k;j++) {
-                sum[i][j]=new HashMap<>();
-                for(Vertex v:candS)sum[i][j].put(v.getType(), sum[i][j].getOrDefault(v.getType(), 0.0)+v.getLabel().get(i, 0)*v.getLabel().get(j, 0)); 
-            }
-        for(int i=0;i<k;i++)for(int j=0;j<k;j++)for(int m=0;m<k;m++)for(int n=0;n<k;n++)for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
-            obj+=sum[i][m].get(t0)*sum[j][n].get(t1)*B.get(t0).get(t1).get(i,j)*B.get(t0).get(t1).get(m,n);
-        
         for(Vertex v:cand) {
             for(Vertex u:v.getNeighbors())
-                obj+=pow(v.getEdge(u)-v.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(u.getLabel()).get(0, 0),2)-pow(v.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(u.getLabel()).get(0, 0),2);
+                obj+=pow(v.getEdge(u)-v.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(u.getLabel()).get(0, 0),2);
             if(v.isY0())obj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
         }
         return obj;
@@ -76,6 +66,7 @@ public interface LabelInference {
     final int DISP_OBJ=4;
     final int DISP_TIME=8;
     final int DISP_LABEL=16;
+    final int DISP_SIZE=32;
     final int DISP_ALL=255;
     final int DISP_NONE=0;
     //define all possible situation for displaying
@@ -84,6 +75,7 @@ public interface LabelInference {
     //disp selects which of the outputs would be chose to write, other parameter are for displaying
     //this method displays all the needed information
         if((disp&DISP_ITER)!=0)System.out.print(String.format("Iter = %d\n",iter));
+        if((disp&DISP_SIZE)!=0)System.out.print(String.format("Size = %d\n",cand.size()));
         if((disp&DISP_DELTA)!=0)System.out.print(String.format("Delta = %.6f\n",delta));
         if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,B,k)));
         if((disp&DISP_LABEL)!=0)for(Vertex v:cand) {

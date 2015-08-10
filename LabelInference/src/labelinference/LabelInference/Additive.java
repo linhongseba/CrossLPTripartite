@@ -54,14 +54,15 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
             dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
-            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose())));
-            L.get(u.getType()).put(v.getType(), L.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(v.getLabel()).times(v.getLabel().transpose())));
+            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
+            L.get(u.getType()).put(v.getType(), L.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
         }
 
         alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
             double etab=(alphaNext+alpha-1)/alphaNext/L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
-            B.get(t0).put(t1, B.get(t0).get(t1).add(dBup.get(t0).get(t1).times(1/maxE).subtract(dBdown.get(t0).get(t1)).times(etab)));
+            B.get(t0).put(t1, B.get(t0).get(t1).add(dBup.get(t0).get(t1).subtract(dBdown.get(t0).get(t1)).times(etab/maxE)));
+            System.out.println(B.get(t0).get(t1));
         }
     }
     
@@ -81,9 +82,9 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
             double eta=(alphaNext+alpha-1)/alphaNext/L;
             for(Vertex v:u.getNeighbors())
-                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)/maxE));
+                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
             Matrix t=A.get(u.getType()).times(u.getLabel()).times(2);
-            label=label.subtract(t.times(label.norm(Matrix.FIRST_NORM)/t.norm(Matrix.FIRST_NORM)));
+            label=label.subtract(t.times(label.norm(Matrix.FIRST_NORM)/t.norm(Matrix.FIRST_NORM))).times(1/maxE);
             if(u.isY0())label=label.add(Y0.get(u)).subtract(u.getLabel());
             label=u.getLabel().add(label.times(2*eta)).normalize();
             Y.put(u, label);

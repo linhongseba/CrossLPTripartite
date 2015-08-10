@@ -101,8 +101,10 @@ public abstract class AbstractLabelInference implements LabelInference{
                 sigma.put(type, new HashMap<>());
                 tot.put(type, new HashMap<>());
             }
-            for(Vertex u:cand) {
+            for(Vertex u:g.getVertices()) {
+                if(cand.contains(u))continue;
                 for(Vertex v:u.getNeighbors()) {
+                    if(cand.contains(v))continue;
                     sigma.get(u.getType()).put(v.getType(), sigma.get(u.getType()).getOrDefault(v.getType(),0.0)+pow(u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).get(0, 0),2));
                     w.get(u.getType()).put(v.getType(), w.get(u.getType()).getOrDefault(v.getType(),0.0)+u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).get(0, 0));
                     tot.get(u.getType()).put(v.getType(), tot.get(u.getType()).getOrDefault(v.getType(),0.0)+1);
@@ -145,7 +147,9 @@ public abstract class AbstractLabelInference implements LabelInference{
                 Collection deltaCand=new HashSet<>();
                 for(Vertex u:cand)
                     for(Vertex v:u.getNeighbors()) if(!cand.contains(v)) {
-                        if(abs(u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(u.getLabel()).get(0, 0)-w.get(u.getType()).get(v.getType()))>sigma.get(u.getType()).get(v.getType())) {
+                        
+                        if(abs(u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(u.getLabel()).get(0, 0)
+                                -w.get(u.getType()).get(v.getType()))>sigma.get(u.getType()).get(v.getType())) {
                             deltaCand.add(v);
                             v.getNeighbors().forEach(candS::add);
                             if(v.isY0())Y0.put(v, v.getLabel().copy());

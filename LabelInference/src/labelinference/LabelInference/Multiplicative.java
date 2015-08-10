@@ -44,11 +44,11 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
             dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
-            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose())));
+            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
         }
 
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
-            B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(dBdown.get(t0).get(t1)).times(1.0/maxE).sqrt()));
+            B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(dBdown.get(t0).get(t1)).sqrt()));
     }
     
     @Override

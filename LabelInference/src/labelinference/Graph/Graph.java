@@ -61,6 +61,12 @@ public class Graph {
         numLabels=_numLabels;
     }
     
+    public Graph(int _numLabels, Collection<Vertex> _vertices) {
+        vertices=new HashMap<>();
+        numLabels=_numLabels;
+        _vertices.forEach(this::addVertex);
+    }
+    
     public int getNumLabels() {
         return numLabels;
     }
