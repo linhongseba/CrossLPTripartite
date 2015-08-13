@@ -16,19 +16,35 @@ import labelinference.Matrix.MatrixFactory;
 import labelinference.exceptions.DimensionNotAgreeException;
 
 /**
- *
- * @author sailw
- */
+*
+* @author sailw
+* 
+* @since 1.8
+* 
+* TODO To implement the update of Y and B matrix in MR
+* 
+**/
 public class Multiplicative extends AbstractLabelInference implements LabelInference {
+	/**
+     * @param _g:initial graph g with _g
+	 */	
     public Multiplicative(Graph _g) {	
         super(_g);
     }
     
+    /**
+     * @param _g:initial graph g with _g
+	 * @param _labelInit: initial labeled vertices
+	 */	    
     public Multiplicative(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
         super(_g,_labelInit);
     }
 
     @Override
+    /**
+     * @param cand:the candidate graph
+	 * @param candS:the next state of candidate graph
+	 */
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
@@ -46,12 +62,20 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
             dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
             dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
         }
+        //dBup_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
+        //dBdown_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
 
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
             B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(dBdown.get(t0).get(t1)).sqrt()));
+        //B_{tt'}=B_{tt'}\circ\sqrt{\frac{dBup_{tt'}}{dBdown_{tt'}}}
     }
     
     @Override
+    /**
+     * @param cand:the candidate graph
+	 * @param candS:the next state of candidate graph
+	 * @param Y0: the initialized label
+	 */
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Matrix> A=new HashMap<>();
@@ -60,7 +84,8 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
             for(Vertex u:candS)
                 if(u.getType()!=type)
                     A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
-
+        //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
+        
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
@@ -70,6 +95,7 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
             else label=label.times(1.0/maxE).divide(A.get(u.getType()).times(u.getLabel()));
             label=u.getLabel().cron(label.sqrt()).normalize();
             Y.put(u, label);
+            //Y(u)=Y(u)\circ\sqrt{\frac{\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}/maxE+1_{YL}*Y0(u)}{A_{t(u)}+1_{YL}*Y(u)}}
         }
         return Y;
     }
