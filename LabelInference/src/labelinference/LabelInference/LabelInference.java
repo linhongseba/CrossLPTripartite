@@ -29,7 +29,7 @@ import labelinference.exceptions.RowOutOfRangeException;
 */
 public interface LabelInference {
 	
-	/** TODO To declare the getResult function*/	
+    /** TODO To declare the getResult function*/	
     void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     /** TODO To declare the increase function */	
     void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
@@ -53,9 +53,8 @@ public interface LabelInference {
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         label=label.normalize();
     }
-    
-    /** TODO To initialize the Y matrix with label propagation algorithm*/	
-    public static void LPInit(Matrix label, Integer k) {}
+    	
+    public static void NoneInit(Matrix label, Integer k) {}
     
     /** TODO To count the objective number*/	
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
@@ -69,7 +68,6 @@ public interface LabelInference {
         return obj;
     }
 
-    /**define all possible situation for displaying*/
     final int DISP_ITER=1;
     final int DISP_DELTA=2;
     final int DISP_OBJ=4;

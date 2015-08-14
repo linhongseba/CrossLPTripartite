@@ -69,8 +69,8 @@ public class Main {
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*rol)));
         inferences.put("MAR", g->new Multiplicative(g,LabelInference::defaultLabelInit));
         inferences.put("GDR", g->new Additive(g,LabelInference::defaultLabelInit));
-        inferences.put("MAG", g->new Multiplicative(g,LabelInference::LPInit));
-        inferences.put("GDG", g->new Additive(g,LabelInference::LPInit));
+        inferences.put("MAG", g->new Multiplicative(g,LabelInference::NoneInit));
+        inferences.put("GDG", g->new Additive(g,LabelInference::NoneInit));
         inferences.put("LP", g->new LabelPropagation(g, 0));
         
         System.out.print("Inferencer="+inference+"\n");

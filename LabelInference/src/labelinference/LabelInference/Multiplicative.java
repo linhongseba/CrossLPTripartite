@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference.LabelInference;
 
 import java.util.Collection;
@@ -33,18 +28,19 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
     }
     
     /**
-     * @param _g:initial graph g with _g
-	 * @param _labelInit: initial labeled vertices
-	 */	    
+    * @param _g:initial graph g with _g
+    * @param _labelInit: initial labeled vertices
+    */	    
     public Multiplicative(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
         super(_g,_labelInit);
     }
 
-    @Override
     /**
-     * @param cand:the candidate graph
-	 * @param candS:the next state of candidate graph
-	 */
+    * @param cand:the candidate graph
+    * @param candS:the next state of candidate graph
+    * @throws labelinference.exceptions.DimensionNotAgreeException
+    */
+    @Override
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
@@ -70,12 +66,14 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         //B_{tt'}=B_{tt'}\circ\sqrt{\frac{dBup_{tt'}}{dBdown_{tt'}}}
     }
     
-    @Override
     /**
-     * @param cand:the candidate graph
-	 * @param candS:the next state of candidate graph
-	 * @param Y0: the initialized label
-	 */
+    * @param cand:the candidate graph
+    * @param candS:the next state of candidate graph
+    * @param Y0: the initialized label
+    * @return 
+    * @throws labelinference.exceptions.DimensionNotAgreeException
+    */
+     @Override
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Matrix> A=new HashMap<>();

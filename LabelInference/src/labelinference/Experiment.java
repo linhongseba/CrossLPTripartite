@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference;
 
 import java.io.FileNotFoundException;
@@ -30,11 +25,10 @@ import labelinference.exceptions.RowOutOfRangeException;
 public class Experiment {
     public static void main(String args[]) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
         Map<String,Function<Graph,LabelInference>> inferences=new HashMap<>();
-        //inferences.put("MA", g->new Multiplicative(g));
         inferences.put("MAR", g->new Multiplicative(g,LabelInference::defaultLabelInit));
         inferences.put("GDR", g->new Additive(g,LabelInference::defaultLabelInit));
-        inferences.put("MAG", g->new Multiplicative(g,LabelInference::LPInit));
-        inferences.put("GDG", g->new Additive(g,LabelInference::LPInit));
+        inferences.put("MAG", g->new Multiplicative(g,LabelInference::NoneInit));
+        inferences.put("GDG", g->new Additive(g,LabelInference::NoneInit));
         inferences.put("LP", g->new LabelPropagation(g, 0));
         
         for(String inference:inferences.keySet()) {

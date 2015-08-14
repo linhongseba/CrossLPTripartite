@@ -31,6 +31,7 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
         alpha=_alpha;
     }
 
+    @Override
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {}
     
     @Override

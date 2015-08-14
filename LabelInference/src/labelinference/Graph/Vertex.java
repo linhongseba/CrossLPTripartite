@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference.Graph;
 
 import java.util.Collection;
@@ -34,7 +29,6 @@ public class Vertex {
     private double sume;
     private Matrix label;
     private final String id;
-    
     private final Map<Vertex,Double> neighbors;
     
     /**
@@ -44,7 +38,6 @@ public class Vertex {
      * @param _label label vector of this vertex
      * @param _isY0 whether the vertex is prelabeled
      */
-    
     public Vertex(String _id, Type _type, Matrix _label,boolean  _isY0){
         type=_type;
         label=_label;
@@ -60,7 +53,6 @@ public class Vertex {
     
     /**
      * 
-     * @param _id
      * @param _type initialize what the type is of this vertex: typeA(user),typeB(tweet),typeC(word)
      * @param _label label vector of this vertex
      * @param _isY0 whether the vertex is prelabeled
