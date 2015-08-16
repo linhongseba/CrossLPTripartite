@@ -1,15 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference.Matrix;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.max;
 import static java.lang.Math.pow;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
@@ -18,6 +10,8 @@ import labelinference.exceptions.RowOutOfRangeException;
 /**
  *
  * @author sailw,Tangyiqi
+ * @since 1.8
+ * the class implements the general matrix computing by jama
  */
 public class NaiveMatrix implements Matrix{
     Jama.Matrix A; 

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference.Matrix;
 
 import static java.lang.Math.abs;
@@ -17,9 +12,11 @@ import labelinference.exceptions.IrreversibleException;
 import labelinference.exceptions.RowOutOfRangeException;
 
 /**
- *
- * @author 
- */
+*
+* @author sailw,Tangyiqi
+* @since 1.8
+* the class implements the sparse matrix computing, and thus improves it.
+*/
 public class SparseMatrix implements Matrix {
     private final ArrayList<Map<Integer,Double>> A;
     private final int maxRow;

@@ -16,7 +16,7 @@ import labelinference.exceptions.DimensionNotAgreeException;
 * 
 * @since 1.8
 
-* TODO To implement initializations, counting the objective and writing the information of iteration procedure.
+* initializations with label propagation algorithms
 
 * @see labelinference.AbstractLabelInference.AbstractLabelInference(Graph _g)
 */

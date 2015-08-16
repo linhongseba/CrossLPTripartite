@@ -9,9 +9,12 @@ import java.util.HashSet;
 import java.util.TreeSet;
 
 /**
- *
- * @author sailw
- */
+*
+* @author sailw
+
+* @since 1.8
+
+*/
 public class SimpleHeuristicSelector extends HashSet<Vertex> implements Selector {
     public SimpleHeuristicSelector(Collection<Vertex> vertices, int threshold) {
         TreeSet<Vertex> H=new TreeSet<>((Vertex x,Vertex y)->{
