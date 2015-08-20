@@ -1,14 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference.Matrix;
 
 /**
- *
- * @author sailw
- */
+*
+* @author sailw
+
+* @since 1.8
+* 
+* a class packing all initializations
+*/
 public class MatrixFactory {
     private static MatrixFactory instance=null;
     
