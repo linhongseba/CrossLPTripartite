@@ -1,5 +1,6 @@
 package labelinference.LabelInference;
 
+import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
 import java.util.Collection;
 import labelinference.Matrix.MatrixFactory;
@@ -23,8 +24,8 @@ import labelinference.exceptions.RowOutOfRangeException;
 public class Additive extends AbstractLabelInference implements LabelInference {
     
 	/** alpha:the step size of learning*/	    
-    private double alpha;
-    private double alphaNext;
+    protected double alpha;
+    protected double alphaNext;
     
     /**
      * @param _g:initial graph g with _g
@@ -60,7 +61,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             for(Vertex.Type t1:Vertex.types) {
                 dBup.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
                 dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-                L.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+                L.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
             }
         }
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
@@ -72,13 +73,13 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         //dBdown_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
         //L_{tt'}=\Sigma{Y(u)*Y(u)^T*Y(v)*Y(v)^T*G(u,v)}(u\in t,v\in t')
 
-        alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
+        double alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
             double etab=(alphaNext+alpha-1)/alphaNext/L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*L_{tt'}}
             B.get(t0).put(t1, B.get(t0).get(t1).add(dBup.get(t0).get(t1).subtract(dBdown.get(t0).get(t1)).times(etab/maxE)));
             //B_{tt'}=B_{tt'}+\eta_b(dBup_{tt'}-dBdown_{tt'})/maxE
-            System.out.println(B.get(t0).get(t1));
+            //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
         }
     }
     
@@ -99,10 +100,12 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
         
         Map<Vertex, Matrix> Y=new HashMap<>();
+        alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
             double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
             double eta=(alphaNext+alpha-1)/alphaNext/L;
+            //System.out.println(A.get(u.getType()));
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
             
             for(Vertex v:u.getNeighbors())
@@ -120,8 +123,8 @@ public class Additive extends AbstractLabelInference implements LabelInference {
     
     @Override
     /**
-     * TODO To initialize alpha and alphaNext in every increment procedure
-	 */
+     * initialize alpha and alphaNext in every increment procedure
+     */
     public void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
         alpha=1;
         alphaNext=1;

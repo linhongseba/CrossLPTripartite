@@ -25,10 +25,10 @@ import labelinference.exceptions.RowOutOfRangeException;
 public class Experiment {
     public static void main(String args[]) throws FileNotFoundException, DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
         Map<String,Function<Graph,LabelInference>> inferences=new HashMap<>();
-        inferences.put("MAR", g->new Multiplicative(g,LabelInference::defaultLabelInit));
-        inferences.put("GDR", g->new Additive(g,LabelInference::defaultLabelInit));
-        inferences.put("MAG", g->new Multiplicative(g,LabelInference::NoneInit));
-        inferences.put("GDG", g->new Additive(g,LabelInference::NoneInit));
+        inferences.put("MAR", g->new Multiplicative(g,LabelInference.defaultLabelInit));
+        inferences.put("GDR", g->new Additive(g,LabelInference.defaultLabelInit));
+        inferences.put("MAG", g->new Multiplicative(g,LabelInference.noneInit));
+        inferences.put("GDG", g->new Additive(g,LabelInference.noneInit));
         inferences.put("LP", g->new LabelPropagation(g, 0));
         
         for(String inference:inferences.keySet()) {

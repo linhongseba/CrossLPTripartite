@@ -206,17 +206,16 @@ public class NaiveMatrix implements Matrix{
     public Matrix normalize(){
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         final double ZERO=1e-9;
-        double min=0;
         for(int col=0;col<A.getColumnDimension();col++){
             double sum=0;
+            double min=0;
             for(int row=0;row<A.getRowDimension();row++)
                 if(A.get(row, col)<min)min=A.get(row, col);
-            
-                for(int row=0;row<A.getRowDimension();row++) {
-                    if(min<0)A.set(row, col, A.get(row, col)-2*min);
-                    if(A.get(row, col)<ZERO)A.set(row, col, ZERO);
-                    sum+=A.get(row, col);
-                }
+            for(int row=0;row<A.getRowDimension();row++) {
+                if(min<0)A.set(row, col, A.get(row, col)-2*min);
+                if(A.get(row, col)<ZERO)A.set(row, col, ZERO);
+                sum+=A.get(row, col);
+            }
             for(int row=0;row<A.getRowDimension();row++)M.A.set(row, col, A.get(row, col)/sum);
         }
     	return M;

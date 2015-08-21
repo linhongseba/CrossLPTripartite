@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package labelinference.LabelInference;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.random;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.MatrixFactory;
 import labelinference.Matrix.Matrix;
@@ -23,7 +18,7 @@ import labelinference.exceptions.RowOutOfRangeException;
 * 
 * @since 1.8
 
-* TODO To implement initializations, counting the objective and writing the information of iteration procedure.
+* implement initializations, counting the objective and writing the information of iteration procedure
 
 * @see labelinference.AbstractLabelInference.AbstractLabelInference(Graph _g)
 */
@@ -44,6 +39,7 @@ public interface LabelInference {
             label.set(i, 0, 1.0/k);//set the label to (1/k .... 1/k)
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
+    public static BiConsumer<Matrix,Integer> defaultLabelInit=LabelInference::defaultLabelInit;
     
     /** TODO To initialize the Y matrix with random numbers*/	
     public static void randomLabelInit(Matrix label, Integer k) {
@@ -53,8 +49,10 @@ public interface LabelInference {
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         label=label.normalize();
     }
-    	
-    public static void NoneInit(Matrix label, Integer k) {}
+    public static BiConsumer<Matrix,Integer> randomLabelInit=LabelInference::randomLabelInit;
+    
+    public static void noneInit(Matrix label, Integer k) {}
+    public static BiConsumer<Matrix,Integer> noneInit=LabelInference::noneInit;
     
     /** TODO To count the objective number*/	
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
@@ -90,6 +88,6 @@ public interface LabelInference {
         if((disp&DISP_LABEL)!=0)for(Vertex v:cand) {
             System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
         }
-        if((disp&DISP_TIME)!=0)System.out.print(String.format("Processed in %.3f ms\n",time));
+        if((disp&DISP_TIME)!=0)System.out.print(String.format("Processed in %.3f ms(update only)\n",time));
     }
 }
