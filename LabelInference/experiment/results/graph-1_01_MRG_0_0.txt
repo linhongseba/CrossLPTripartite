@@ -321,15 +321,15 @@ Iter = 100
 Size = 961
 Delta = 0.001692
 ObjValue = 158614.448486
-Processed in 4754.298 ms(update only)
-Processed in 5249 ms(total)
+Processed in 4920.370 ms(update only)
+Processed in 5436 ms(total)
 Iter = 0
 ObjValue = 0.000000
 Iter = 1
 Size = 0
 Delta = NaN
 ObjValue = 0.000000
-Processed in 0.038 ms(update only)
+Processed in 0.042 ms(update only)
 Processed in 51 ms(total)
 Incremental accuracy = NaN
 Global accuracy = 0.7676767676767676

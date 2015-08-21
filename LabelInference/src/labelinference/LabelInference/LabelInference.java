@@ -1,12 +1,11 @@
 package labelinference.LabelInference;
 
 import static java.lang.Math.pow;
-import static java.lang.Math.random;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.BiConsumer;
 import labelinference.Graph.Vertex;
-import labelinference.Matrix.MatrixFactory;
 import labelinference.Matrix.Matrix;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
@@ -34,18 +33,17 @@ public interface LabelInference {
      * TODO To give a unified initialization of label 
      */	
     public static void defaultLabelInit(Matrix label, Integer k) {
-        final MatrixFactory mf=MatrixFactory.getInstance();
         for(int i=0;i<k;i++)try {
             label.set(i, 0, 1.0/k);//set the label to (1/k .... 1/k)
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     public static BiConsumer<Matrix,Integer> defaultLabelInit=LabelInference::defaultLabelInit;
     
-    /** TODO To initialize the Y matrix with random numbers*/	
+    /** TODO To initialize the Y matrix with random numbers*/
+    static Random random=new Random(1008611);
     public static void randomLabelInit(Matrix label, Integer k) {
-        final MatrixFactory mf=MatrixFactory.getInstance();
         for(int i=0;i<k;i++)try {
-            label.set(i, 0, random());//set the label to a random number
+            label.set(i, 0, random.nextDouble());//set the label to a random number
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         label=label.normalize();
     }

@@ -7,12 +7,14 @@ package labelinference;
 
 import java.io.FileNotFoundException;
 import static java.lang.Math.abs;
-import static java.lang.Math.random;
-import static java.lang.Math.sqrt;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
@@ -87,19 +89,17 @@ public class Main {
         Graph expResult=new Graph(path);
         Graph result=new Graph(path);
         Collection<Vertex> deltaGraph=new HashSet<>();
+        List<String> list=new ArrayList<>(expResult.getIDs());
+        list.sort(String::compareTo);
+        Collections.shuffle(list, new Random(1008611));
         
         Selector selected=selectors.get(selector).apply(result.getVertices(v->v.isY0()));
         Map<Vertex.Type,Double> nY0Inf=new HashMap<>();
         Map<Vertex.Type,Double> nY0Inc=new HashMap<>();
-        for(Vertex v:result.getVertices()) {
+        for(Vertex v:result.getVertices())
             if(!selected.contains(v))v.init(v.getType(), v.getLabel(), false);
-            if(random()<roi) {
-                nY0Inc.put(v.getType(), nY0Inc.getOrDefault(v.getType(),0.0)+1);
-                deltaGraph.add(v);
-            } else {
-                nY0Inf.put(v.getType(), nY0Inf.getOrDefault(v.getType(),0.0)+1);
-            }
-        }
+        
+        for(int i=0;i<roi*result.getVertices().size();i++)deltaGraph.add(result.findVertexByID(list.get(i)));
         
         for(Vertex u:deltaGraph) {
             for(Vertex v:u.getNeighbors())

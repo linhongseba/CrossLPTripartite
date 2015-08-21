@@ -15,8 +15,8 @@ algorithms={
     'ARR':{'IFR':'MR','SLT':'DEG','INIT':'RND'},
     'GRF':{'IFR':'LP','SLT':'DEG','INIT':'DFT'},
     #'MAD':{'IFR':'MR','SLT':'DEG','INIT':'GRP'},
-    'MRO':{'IFR':'MRO','SLT':'DEG','INIT':'DFT'},
-    'ARO':{'IFR':'ARO','SLT':'DEG','INIT':'DFT'},
+    'MRO':{'IFR':'MRO','SLT':'DEG','INIT':'RND'},
+    'ARO':{'IFR':'ARO','SLT':'DEG','INIT':'RND'},
     }
 
 def experiment(graph,rol,algo,roi,cfd):
@@ -49,10 +49,10 @@ for graph in graphs:
     for rol in rols:
         for algo in algorithms:
             threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,'0.0','0.0',))]
-            for roi in rois:
-                threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,roi,'0.5',))]
-            for cfd in cfds:
-                threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,'0.1',cfd,))]
+        for roi in rois:
+            threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG',roi,'0.5',))]
+        for cfd in cfds:
+            threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1',cfd,))]
                     
 for t in threads:
     t.start()

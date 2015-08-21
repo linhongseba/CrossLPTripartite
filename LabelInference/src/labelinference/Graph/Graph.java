@@ -21,6 +21,8 @@ import labelinference.exceptions.RowOutOfRangeException;
 public class Graph {
     private final Map<String, Vertex> vertices;
     private final int numLabels;
+    private final Map<Vertex, Matrix> RINIT=new HashMap<>();
+    private final Map<Vertex, Matrix> GINIT=new HashMap<>();
     
     public Graph(String path) throws FileNotFoundException {
         vertices=new HashMap<>();
@@ -31,24 +33,58 @@ public class Graph {
         c2type.put((int)'A', Vertex.typeA);
         c2type.put((int)'B', Vertex.typeB);
         c2type.put((int)'C', Vertex.typeC);
-        
-        while(in.hasNext()) {
-            try {
-                String vid=in.next();
-                int nNei=in.nextInt();
-                Matrix label=matrixFactory.creatMatrix(numLabels, 1);
-                for(int row=0;row<numLabels;row++)label.set(row, 0, in.nextDouble());
-                if(findVertexByID(vid)==null)addVertex(new Vertex(vid));
-                Vertex vertex=findVertexByID(vid);
-                vertex.init(c2type.get((int)vid.charAt(0)),label,label.norm(Matrix.FIRST_NORM)>0.5);
-                for(int j=0;j<nNei;j++) {
-                    String nid=in.next();
-                    double weight=in.nextDouble();
-                    if(findVertexByID(nid)==null)addVertex(new Vertex(nid));
-                    vertex.addEdge(findVertexByID(nid), weight);
+        try {
+            while(in.hasNext()) {
+                    String vid=in.next();
+                    int nNei=in.nextInt();
+                    Matrix label=matrixFactory.creatMatrix(numLabels, 1);
+                    for(int row=0;row<numLabels;row++)label.set(row, 0, in.nextDouble());
+                    if(findVertexByID(vid)==null)addVertex(new Vertex(vid));
+                    Vertex vertex=findVertexByID(vid);
+                    vertex.init(c2type.get((int)vid.charAt(0)),label,label.norm(Matrix.FIRST_NORM)>0.5);
+                    for(int j=0;j<nNei;j++) {
+                        String nid=in.next();
+                        double weight=in.nextDouble();
+                        if(findVertexByID(nid)==null)addVertex(new Vertex(nid));
+                        vertex.addEdge(findVertexByID(nid), weight);
+                    }
+            }
+
+            /*File file=new File(path+".RINIT");
+            if(file.exists()) {
+                in=new Scanner(new FileReader(file));
+                for(int i=0;i<vertices.size();i++) {
+                    Matrix label=matrixFactory.creatMatrix(numLabels,1);
+                    String id=in.next();
+                    for(int j=0;j<numLabels;j++)label.set(j, 0, in.nextDouble());
+                    RINIT.put(findVertexByID(id),label);
                 }
-            } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
-        }
+            } else {
+                final Map<Vertex,Matrix> Y0=new HashMap<>();
+                Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
+                for(Vertex.Type t0:Vertex.types) {
+                    B.put(t0, new HashMap<>());
+                    for(Vertex.Type t1:Vertex.types)
+                        B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(numLabels));
+                }
+                for (Vertex v:getVertices())
+                    if(v.isY0()) {
+                        v.setLabel(v.getLabel().normalize());
+                        Y0.put(v, v.getLabel().copy());
+                    } else LabelInference.randomLabelInit(v.getLabel(),numLabels);
+                final Map<Vertex,Matrix> best=new HashMap<>();
+                for(Vertex v:getVertices())best.put(v, v.getLabel());
+                double minObj=LabelInference.objective(getVertices(), getVertices(), Y0, B, numLabels);
+                for(int i=0;i<100;i++) {
+                    for (Vertex v:getVertices())if(!v.isY0())LabelInference.randomLabelInit(v.getLabel(),numLabels);
+                    double obj=LabelInference.objective(getVertices(), getVertices(), Y0, B, numLabels);
+                    if(obj<minObj) {
+                        for(Vertex v:getVertices())best.put(v, v.getLabel());
+                        minObj=obj;
+                    }
+                }
+            }*/
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     
     public Graph(int _numLabels) {
@@ -86,6 +122,10 @@ public class Graph {
 
     public Collection<Vertex> getVertices() {
         return vertices.values();
+    }
+    
+    public Collection<String> getIDs() {
+        return vertices.keySet();
     }
 
     public Collection<Vertex> getVertices(Predicate<Vertex> p) {
