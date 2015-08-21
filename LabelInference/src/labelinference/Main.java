@@ -60,10 +60,11 @@ public class Main {
         final double rol=Double.parseDouble(args[1]);
         final String inference=args[2]; //the inference algorithm option
         final String selector=args[3]; //the algorithm options to select seed nodes
-        final double roi=args.length>=5?Double.parseDouble(args[4]):0; //default ratio=0
-        final double a=args.length>=6?Double.parseDouble(args[5]):0.9;
-        final double nuance=args.length>=6?Double.parseDouble(args[6]):0;//default 0.0
-        final int maxIter=args.length>=7?Integer.parseInt(args[7]):100;//default maximum number of iteration
+        final double roi=Double.parseDouble(args[4]); //default ratio=0
+        final double a0=Double.parseDouble(args[5]);
+        final double a1=Double.parseDouble(args[6]);
+        final double nuance=args.length>=8?Double.parseDouble(args[7]):0;//default 0.0
+        final int maxIter=args.length>=9?Integer.parseInt(args[8]):100;//default maximum number of iteration
         
         
         final Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
@@ -88,6 +89,7 @@ public class Main {
 
         Graph expResult=new Graph(path);
         Graph result=new Graph(path);
+        Graph backup=new Graph(path);
         Collection<Vertex> deltaGraph=new HashSet<>();
         List<String> list=new ArrayList<>(expResult.getIDs());
         list.sort(String::compareTo);
@@ -114,20 +116,33 @@ public class Main {
         li.getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         
-        mTime=System.currentTimeMillis();
-        if(inference.charAt(inference.length()-1)=='G'){
-            lp.increase(deltaGraph,maxIter/10, nuance,a, DISP_NONE);
+        for(Vertex v:result.getVertices())
+            backup.findVertexByID(v.getId()).setLabel(v.getLabel().copy());
+        
+        for(double a=a0;a<=a1;a+=0.1) {
+            System.out.print("confidence="+a+"\n");
             for(Vertex u:deltaGraph) {
                 for(Vertex v:u.getNeighbors())
                     if(!deltaGraph.contains(v))v.removeEdge(u);
                 result.removeVertex(u);
             }
+            for(Vertex v:backup.getVertices())
+                if(result.findVertexByID(v.getId())!=null)
+                    result.findVertexByID(v.getId()).setLabel(v.getLabel().copy());
+            mTime=System.currentTimeMillis();
+            if(inference.charAt(inference.length()-1)=='G')
+                lp.increase(deltaGraph,maxIter/10, nuance,a, DISP_NONE);
+            for(Vertex u:deltaGraph) {
+                for(Vertex v:u.getNeighbors())
+                    if(!deltaGraph.contains(v))v.removeEdge(u);
+                result.removeVertex(u);
+            }
+            li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
+            System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
+
+            System.out.print("Incremental accuracy = "+check(expResult,deltaGraph)+"\n");
+            System.out.print("Global accuracy = "+check(expResult,result.getVertices())+"\n");
         }
-        li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
-        System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
-        
-        System.out.print("Incremental accuracy = "+check(expResult,deltaGraph)+"\n");
-        System.out.print("Global accuracy = "+check(expResult,result.getVertices())+"\n");
         System.out.print("Done.\n");
     }
     
