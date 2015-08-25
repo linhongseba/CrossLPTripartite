@@ -1,0 +1,3 @@
+rating_counter.py用于生成ratings_avg.txt为每部电影的编号与其对应平均分
+
+tool_for_IMDB_data.py为数据生成器，以3.5分为好片和烂片的分界进行label标记
