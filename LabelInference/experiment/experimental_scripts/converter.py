@@ -1,90 +1,136 @@
-import datetime
-import time
-import os
-import sys
-import xlwt 
-import numpy
+import xlwt
 import math
-import matplotlib.pyplot as plt
 
-print 'converting xls ... '
+def find_xls(filename,_type):
+    f = open('results/'+filename)
+    obj=''
+    time=''
+    obj_list=[]
+    while True:
+        line = f.readline()
+        if not line:
+            break
+        if line.find('ObjValue')>=0 and line.find('0.000000')<0 and _type==2:
+            obj_list+=[line[11:]]
+        if line.find('Processed in ')>=0 and line.find('total')>=0 and _type==3:
+            return line[13:]
+        if line.find('Global accuracy ')>=0 and _type==1:
+            return float(line[18:])
+    if _type==2:
+        return obj_list
 
-x = 0       
-y = 0       
 
 xls=xlwt.Workbook()
-sheet = xls.add_sheet('sheet1',cell_overwrite_ok=True)
-sheet.write(0,2,"GDG")
-sheet.write(0,5,"GDR")
-sheet.write(0,8,"MAG")
-sheet.write(0,11,"MAR")
-for i in range(0,4):
-    sheet.write(1,2+3*i,"Degree")
-    sheet.write(1,3+3*i,"Random")
-    sheet.write(1,4+3*i,"Heuristic")
 
+#================================================================================
+sheet = xls.add_sheet('accuracy',cell_overwrite_ok=True)
 
-#graph-1.BCD.DEG.05.result.txt
-graph=['1','30','37'];
-algorithm=['GDG','GDR','MAG','MAR'];
-preprocessing=['DEG','RND','SHR'];
+graph=['graph-1','graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+training=['01','05','10'];
 
-x=2;
-y=2;
+for i in range(0,7):
+    sheet.write(0,1+i,algorithm[i])
 
-for g in range(0,3):
-    sheet.write(x,0,'graph'+graph[g])
-    sheet.write(x,1,'Accuracy')
-    sheet.write(x+1,1,'Objective')
-    sheet.write(x+2,1,'Time comsuming')
-    for a in range(0,4):
-        figureNum=g*4+a+1;
-        plt.figure(figureNum)
-        plt.suptitle('graph-'+graph[g]+'.'+algorithm[a])
-        plt.xlabel(u'iteration times')
-        plt.ylabel(u'lg(objective)')
-        maxobj=0.0;
-        minobj=10000000.0;
-        for p in range(0,3):
-            filename='graph-'+graph[g]+'.'+algorithm[a]+'.'+preprocessing[p]+'.05.result.txt';
-            f = open('results/'+filename)
-            #print filename;
-            i=0
-            obj=''
-            time=''
-            x_list=[]
-            y_list=[]
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-                if line.find('ObjValue')>=0:
-                    i+=1
-                    obj=line[11:]
-                    obj_now=math.log(float(obj),10);
-                    x_list.append(obj_now);
-                    y_list.append(obj_now);
-                    if obj_now>maxobj:
-                        maxobj=obj_now
-                    if obj_now<minobj:
-                        minobj=obj_now
-                if line.find('Processed in ')>=0:
-                    time=line[16:]
-                if line.find('Accuracy ')>=0:
-                    sheet.write(x,y,line[11:])
-                    sheet.write(x+1,y,obj)
-                    sheet.write(x+2,y,time)
-                    y+=1;
-                    break
-            ax = plt.subplot(1,1,1)
-            lines,=ax.plot(y_list,label=preprocessing[p])
+x=0
+for g in graph:
+    x+=1
+    sheet.write(x,0,g)
+    y=0
+    for a in algorithm:
+        y+=1
+        tot=0;
+        accu_list=[]
+        for t in training:
+            filename=g+'_'+t+'_'+a+'_0_0.txt';
+            accu_list+=[find_xls(filename,1)]
+        sheet.write(x,y,sum(accu_list)/3.0)
+#================================================================================
+#================================================================================
+sheet = xls.add_sheet('converge',cell_overwrite_ok=True)
 
+graph=['graph-1','graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+training=['01','05','10'];
+iteration=range(0,11)+[20,30,40,50,60,70,80,90,100]
 
-            handles, labels = ax.get_legend_handles_labels()
-            ax.legend(handles[::-1], labels[::-1])
-            plt.axis([0, i, minobj, maxobj])
-            plt.savefig('figures/'+'graph-'+graph[g]+'.'+algorithm[a]+'.05.pdf')  
-    x+=3
-    y=2
-#plt.show()
+sheet.write(0,0,'#iteration')
+for i in range(0,7):
+    sheet.write(0,1+i,algorithm[i])
+x=0
+for i in iteration:
+    x+=1
+    sheet.write(x,0,i)
+    
+g='graph-1'
+y=0
+for a in algorithm:
+    y+=1
+    #obj=[]
+    filename=g+'_01_'+a+'_0_0.txt';
+    obj=find_xls(filename,2)
+
+    x=0
+    for o in obj:
+        x+=1
+        sheet.write(x,y,o)
+#================================================================================
+#================================================================================
+sheet = xls.add_sheet('running_time',cell_overwrite_ok=True)
+
+graph=['graph-1','graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+training=['01','05','10'];
+
+sheet.write(0,0,'running time (sec)')
+for i in range(0,7):
+    sheet.write(0,1+i,algorithm[i])
+
+x=0
+for g in graph:
+    x+=1
+    sheet.write(x,0,g)
+    y=0
+    for a in algorithm:
+        y+=1
+        tot=0;
+        filename=g+'_01_'+a+'_0_0.txt';
+        sheet.write(x,y,find_xls(filename,3))
+#================================================================================
+#================================================================================
+sheet = xls.add_sheet('sensitivity',cell_overwrite_ok=True)
+
+graph=['graph-1','graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+training=['01','05','10'];
+
+sheet.write(0,0,'standard deviation')
+sheet.write(7,0,'difference')
+for i in range(0,7):
+    sheet.write(0,1+i,algorithm[i])
+    sheet.write(7,1+i,algorithm[i])
+
+x=0
+for g in graph:
+    x+=1
+    sheet.write(x,0,g)
+    sheet.write(x+7,0,g)
+    y=0
+    for a in algorithm:
+        y+=1
+        tot=0;
+        accu_list=[]
+        dev=0.0
+        for t in training:
+            filename=g+'_'+t+'_'+a+'_0_0.txt';
+            accu_list+=[find_xls(filename,1)]
+        ave=sum(accu_list)/3.0
+        for accu in accu_list:
+            dev+=(accu-ave)*(accu-ave)
+        dev=dev/3.0
+        dev=math.sqrt(dev)
+        sheet.write(x,y,dev)
+        sheet.write(x+7,y,max(accu_list)-min(accu_list))
+
+#================================================================================
 xls.save('result.xls')
