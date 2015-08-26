@@ -47,33 +47,33 @@ for g in graph:
         sheet.write(x,y,sum(accu_list)/3.0)
 #================================================================================
 #================================================================================
-sheet = xls.add_sheet('converge',cell_overwrite_ok=True)
 
 graph=['graph-1','graph-30','graph-37','graph_imdb_10M','graph_paper'];
 algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
 training=['01','05','10'];
 iteration=range(0,11)+[20,30,40,50,60,70,80,90,100]
 
-sheet.write(0,0,'#iteration')
-for i in range(0,7):
-    sheet.write(0,1+i,algorithm[i])
-x=0
-for i in iteration:
-    x+=1
-    sheet.write(x,0,i)
-    
-g='graph-1'
-y=0
-for a in algorithm:
-    y+=1
-    #obj=[]
-    filename=g+'_01_'+a+'_0_0.txt';
-    obj=find_xls(filename,2)
-
+for g in graph:
+    sheet = xls.add_sheet('converge'+g,cell_overwrite_ok=True)
+    sheet.write(0,0,'#iteration')
+    for i in range(0,7):
+        sheet.write(0,1+i,algorithm[i])
     x=0
-    for o in obj:
+    for i in iteration:
         x+=1
-        sheet.write(x,y,o)
+        sheet.write(x,0,i)
+    
+    y=0
+    for a in algorithm:
+        y+=1
+        #obj=[]
+        filename=g+'_01_'+a+'_0_0.txt';
+        obj=find_xls(filename,2)
+    
+        x=0
+        for o in obj:
+            x+=1
+            sheet.write(x,y,o)
 #================================================================================
 #================================================================================
 sheet = xls.add_sheet('running_time',cell_overwrite_ok=True)
