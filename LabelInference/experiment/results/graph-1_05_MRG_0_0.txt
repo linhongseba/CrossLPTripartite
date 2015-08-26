@@ -321,16 +321,41 @@ Iter = 100
 Size = 961
 Delta = 0.001418
 ObjValue = 157845.829626
-Processed in 4813.869 ms(update only)
-Processed in 5323 ms(total)
+B =
+{{7.866548178023411, 0.0}, {0.0, 1.0178801720402235}}
+{{1.226763770637838, 0.0}, {0.0, 1.068043030973445}}
+{{7.8665481780234074, 0.0}, {0.0, 1.0178801720402233}}
+{{1.210112349590551, 0.0}, {0.0, 1.1449978706968182}}
+{{1.226763770637839, 0.0}, {0.0, 1.0680430309734457}}
+{{1.2101123495905493, 0.0}, {0.0, 1.144997870696816}}
+Processed in 12098.465 ms(update only)
+Processed in 13723 ms(total)
+confidence=0.0
 Iter = 0
 ObjValue = 0.000000
 Iter = 1
 Size = 0
 Delta = NaN
 ObjValue = 0.000000
-Processed in 0.046 ms(update only)
-Processed in 52 ms(total)
-Incremental accuracy = NaN
-Global accuracy = 0.9421052631578948
+B =
+{{7.866548178023411, 0.0}, {0.0, 1.0178801720402235}}
+{{1.226763770637838, 0.0}, {0.0, 1.068043030973445}}
+{{7.8665481780234074, 0.0}, {0.0, 1.0178801720402233}}
+{{1.210112349590551, 0.0}, {0.0, 1.1449978706968182}}
+{{1.226763770637839, 0.0}, {0.0, 1.0680430309734457}}
+{{1.2101123495905493, 0.0}, {0.0, 1.144997870696816}}
+Processed in 0.054 ms(update only)
+Processed in 94 ms(total)
+Incremental
+Totle = 0(A), 0(B), 0(C), 0(all)
+Labeled = 0(A), 0(B), 0(C), 0(all)
+AllLabels : [0, 0]
+TrainLabels : [0, 0]
+Accuracy = NaN(A), NaN(B), NaN(C), NaN(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [4, 5]
+Accuracy = 1.000000(A), 0.940217(B), NaN(C), 0.942105(all)
 Done.

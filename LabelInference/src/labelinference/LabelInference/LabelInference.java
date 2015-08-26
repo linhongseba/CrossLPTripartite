@@ -70,6 +70,7 @@ public interface LabelInference {
     final int DISP_TIME=8;
     final int DISP_LABEL=16;
     final int DISP_SIZE=32;
+    final int DISP_B=64;
     final int DISP_ALL=255;
     final int DISP_NONE=0;
     
@@ -85,6 +86,12 @@ public interface LabelInference {
         if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,B,k)));
         if((disp&DISP_LABEL)!=0)for(Vertex v:cand) {
             System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
+        }
+        if((disp&DISP_B)!=0) {
+            System.out.print("B =\n");
+            for(Vertex.Type t0:Vertex.types)
+                for(Vertex.Type t1:Vertex.types)if(t0!=t1)
+                    System.out.print(B.get(t0).get(t1).toString()+"\n");
         }
         if((disp&DISP_TIME)!=0)System.out.print(String.format("Processed in %.3f ms(update only)\n",time));
     }

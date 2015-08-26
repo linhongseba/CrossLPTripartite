@@ -89,9 +89,9 @@ public abstract class AbstractLabelInference implements LabelInference{
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
             iter++;
-            LabelInference.infoDisplay(disp&~DISP_TIME&~(iter<10||iter%10==0?0:DISP_OBJ), iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k);
+            LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~(iter<10||iter%10==0?0:DISP_OBJ), iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k);
         } while(delta>nuance && iter!=maxIter);
-        LabelInference.infoDisplay(disp&DISP_TIME, iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k);
+        LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k);
         isDone=true;
     }
     
@@ -175,9 +175,9 @@ public abstract class AbstractLabelInference implements LabelInference{
                 mTime=System.currentTimeMillis()-mTime;
                 timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                LabelInference.infoDisplay(disp&~DISP_TIME&~(iter<10||iter%10==0?0:DISP_OBJ), iter, delta, timeUsed, cand,candS, Y0,B,k);
+                LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~(iter<10||iter%10==0?0:DISP_OBJ), iter, delta, timeUsed, cand,candS, Y0,B,k);
             } while(delta>nuance && iter!=maxIter);
-            LabelInference.infoDisplay(disp&DISP_TIME, iter, delta, timeUsed, cand,candS, Y0,B,k);
+            LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B), iter, delta, timeUsed, cand,candS, Y0,B,k);
         }
     }
     

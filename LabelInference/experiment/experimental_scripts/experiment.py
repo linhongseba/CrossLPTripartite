@@ -6,18 +6,8 @@ cfds=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 nuance='-1'
 maxIter='100'
 graphs=['graph-1','graph_paper','graph_imdb_10M']
-thr=5
-
-algorithms={
-    'MRG':{'IFR':'MR','SLT':'DEG','INIT':'GRP'},
-    'ARG':{'IFR':'AR','SLT':'DEG','INIT':'GRP'},
-    'MRR':{'IFR':'MR','SLT':'DEG','INIT':'RND'},
-    'ARR':{'IFR':'MR','SLT':'DEG','INIT':'RND'},
-    'GRF':{'IFR':'LP','SLT':'DEG','INIT':'DFT'},
-    #'MAD':{'IFR':'MR','SLT':'DEG','INIT':'GRP'},
-    'MRO':{'IFR':'MRO','SLT':'DEG','INIT':'RND'},
-    'ARO':{'IFR':'ARO','SLT':'DEG','INIT':'RND'},
-    }
+algorithms=['MRG','MRR','MRO','ARG','ARR','ARO','GRF']
+thr=4
 
 def experiment(graph,rol,algo,roi,cfd0,cfd1):
     if cfd0==cfd1:
@@ -28,7 +18,6 @@ def experiment(graph,rol,algo,roi,cfd0,cfd1):
     sys.stdout.write(fileName+'\n')
     f=open('results/'+fileName+'.txt','wb')
     f.close()
-    #startTime=time.clock()
     p=subprocess.Popen(['java','-jar','LabelInference.jar',path.format(graph),rol,algo,'DEG',roi,cfd0,cfd1,nuance,maxIter], stdout=subprocess.PIPE)
     while p.poll() == None:
         f=open('results/'+fileName+'.txt','ab')
@@ -41,8 +30,6 @@ def experiment(graph,rol,algo,roi,cfd0,cfd1):
     for s in last:
         f.write(s)
         sys.stdout.write(fileName+': '+str(s,encoding='utf8')+'\n')
-    #timeUsed=time.clock()-startTime
-    #f.write('Processed in {<3}')
     f.close()
 
 
@@ -57,5 +44,6 @@ for graph in graphs:
         threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1','0.1','0.9',))]      
 for t in threads:
     t.start()
-    t.join()
-    #while(len(threading.enumerate())>thr):time.sleep(1)
+    x=0.001
+    while(len(threading.enumerate())>thr):
+        time.sleep(x)

@@ -8,6 +8,7 @@ package labelinference;
 import java.io.FileNotFoundException;
 import static java.lang.Math.abs;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -72,15 +73,15 @@ public class Main {
         selectors.put("RND", g->new RandomSelector(g, (int)(g.size()*rol)));
         selectors.put("DEG", g->new DegreeSelector(g, (int)(g.size()*rol)));
         selectors.put("SHR", g->new SimpleHeuristicSelector(g, (int)(g.size()*rol)));
-        inferences.put("MRR", g->new Multiplicative(g,LabelInference.randomLabelInit));
-        inferences.put("ARR", g->new Additive(g,LabelInference.randomLabelInit));
+        inferences.put("MRR", g->new Multiplicative(g,LabelInference.defaultLabelInit));
+        inferences.put("ARR", g->new Additive(g,LabelInference.defaultLabelInit));
         inferences.put("MRG", g->new Multiplicative(g,LabelInference.noneInit));
         inferences.put("ARG", g->new Additive(g,LabelInference.noneInit));
         inferences.put("GRF", g->new LabelPropagation(g, 0));
-        inferences.put("MRO", g->new Multiplicative(g,LabelInference.randomLabelInit){
+        inferences.put("MRO", g->new Multiplicative(g,LabelInference.defaultLabelInit){
             protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS){}
         });
-        inferences.put("ARO", g->new Additive(g,LabelInference.randomLabelInit){
+        inferences.put("ARO", g->new Additive(g,LabelInference.defaultLabelInit){
             protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS){}
         });
         
@@ -140,28 +141,62 @@ public class Main {
             li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
             System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
 
-            System.out.print("Incremental accuracy = "+check(expResult,deltaGraph)+"\n");
-            System.out.print("Global accuracy = "+check(expResult,result.getVertices())+"\n");
+            System.out.print("Incremental\n");
+            check(expResult,deltaGraph);
+            System.out.print("Global\n");
+            check(expResult,result.getVertices());
         }
         System.out.print("Done.\n");
     }
     
-    static double check(Graph expResult, Collection<Vertex> result){
-        double correct=0;
-        double totle=0;
-        int k=expResult.getNumLabels();
-        double k1=1.0/k;
-        for(Vertex resV:result) {
-            Vertex expV=expResult.findVertexByID(resV.getId());
-            if(expV.isY0() && !resV.isY0()) {
-                try {
-                    totle+=k;
+    static void check(Graph expResult, Collection<Vertex> result){
+        Map<Vertex.Type,Integer> totle=new HashMap<>();
+        Map<Vertex.Type,Integer> num=new HashMap<>();
+        Map<Vertex.Type,Double> correct=new HashMap<>();
+        Map<Vertex.Type,Integer> labeled=new HashMap<>();
+        int nol[]=new int[expResult.getNumLabels()];
+        int nor[]=new int[expResult.getNumLabels()];
+        try {
+            int k=expResult.getNumLabels();
+            double k1=1.0/k;
+            for(Vertex resV:result) {
+                Vertex expV=expResult.findVertexByID(resV.getId());
+                num.put(expV.getType(), num.getOrDefault(expV.getType(),0)+1);
+                if(resV.isY0()) {
+                    labeled.put(resV.getType(),labeled.getOrDefault(resV.getType(), 0)+1);
+                    for(int row=0;row<k;row++)if(resV.getLabel().get(row, 0)>k1)nor[row]++;
+                }
+                if(expV.isY0())for(int row=0;row<k;row++)if(expV.getLabel().get(row, 0)>k1)nol[row]++;
+                if(expV.isY0() && !resV.isY0()) {
+                    totle.put(expV.getType(), totle.getOrDefault(expV.getType(),0)+k);
                     for(int row=0;row<k;row++)
-                        if(abs(expV.getLabel().get(row, 0))<1e-9^resV.getLabel().get(row, 0)>k1)correct++;
-                } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+                        if(abs(expV.getLabel().get(row, 0))<1e-9^resV.getLabel().get(row, 0)>k1)
+                            correct.put(expV.getType(), correct.getOrDefault(expV.getType(),0.0)+1);
+                }
             }
-        }
-        Double acc=correct/totle;
-        return acc;
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+        System.out.print(String.format("Totle = %d(A), %d(B), %d(C), %d(all)\n",num.getOrDefault(Vertex.typeA,0),
+                                                                                num.getOrDefault(Vertex.typeB,0),
+                                                                                num.getOrDefault(Vertex.typeC,0),
+                                                                                num.getOrDefault(Vertex.typeA,0)+
+                                                                                num.getOrDefault(Vertex.typeB,0)+
+                                                                                num.getOrDefault(Vertex.typeC,0)));
+        System.out.print(String.format("Labeled = %d(A), %d(B), %d(C), %d(all)\n",labeled.getOrDefault(Vertex.typeA,0),
+                                                                                labeled.getOrDefault(Vertex.typeB,0),
+                                                                                labeled.getOrDefault(Vertex.typeC,0),
+                                                                                labeled.getOrDefault(Vertex.typeA,0)+
+                                                                                labeled.getOrDefault(Vertex.typeB,0)+
+                                                                                labeled.getOrDefault(Vertex.typeC,0)));
+        System.out.print("AllLabels : "+Arrays.toString(nol)+"\n");
+        System.out.print("TrainLabels : "+Arrays.toString(nor)+"\n");
+        System.out.print(String.format("Accuracy = %.6f(A), %.6f(B), %.6f(C), %.6f(all)\n",correct.getOrDefault(Vertex.typeA,0.0)/totle.getOrDefault(Vertex.typeA,0),
+                                                                                            correct.getOrDefault(Vertex.typeB,0.0)/totle.getOrDefault(Vertex.typeB,0),
+                                                                                            correct.getOrDefault(Vertex.typeC,0.0)/totle.getOrDefault(Vertex.typeC,0),
+                                                                                            (correct.getOrDefault(Vertex.typeA,0.0)+
+                                                                                            correct.getOrDefault(Vertex.typeB,0.0)+
+                                                                                            correct.getOrDefault(Vertex.typeC,0.0))/
+                                                                                            (totle.getOrDefault(Vertex.typeA,0)+
+                                                                                            totle.getOrDefault(Vertex.typeB,0)+
+                                                                                            totle.getOrDefault(Vertex.typeC,0))));
     }
 }

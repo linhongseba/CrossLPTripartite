@@ -321,8 +321,15 @@ Iter = 100
 Size = 864
 Delta = 0.000461
 ObjValue = 127962.827119
-Processed in 4231.307 ms(update only)
-Processed in 4681 ms(total)
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 9510.615 ms(update only)
+Processed in 10609 ms(total)
 confidence=0.1
 Iter = 0
 ObjValue = 16122.189159
@@ -645,10 +652,27 @@ Iter = 100
 Size = 721
 Delta = 0.000032
 ObjValue = 138015.662123
-Processed in 1908.298 ms(update only)
-Processed in 2328 ms(total)
-Incremental accuracy = 1.0
-Global accuracy = 0.9421052631578948
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 5128.107 ms(update only)
+Processed in 5742 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [2, 0]
+Accuracy = 1.000000(A), 1.000000(B), NaN(C), 1.000000(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [4, 5]
+Accuracy = 1.000000(A), 0.940217(B), NaN(C), 0.942105(all)
 confidence=0.2
 Iter = 0
 ObjValue = 16215.840675
@@ -971,10 +995,27 @@ Iter = 100
 Size = 320
 Delta = 0.000014
 ObjValue = 76615.110846
-Processed in 1909.209 ms(update only)
-Processed in 2207 ms(total)
-Incremental accuracy = 1.0
-Global accuracy = 0.9315789473684211
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 3280.391 ms(update only)
+Processed in 4304 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [2, 0]
+Accuracy = 1.000000(A), 1.000000(B), NaN(C), 1.000000(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [4, 5]
+Accuracy = 1.000000(A), 0.929348(B), NaN(C), 0.931579(all)
 confidence=0.30000000000000004
 Iter = 0
 ObjValue = 16255.050859
@@ -1297,10 +1338,27 @@ Iter = 100
 Size = 97
 Delta = 0.000006
 ObjValue = 16125.417349
-Processed in 719.839 ms(update only)
-Processed in 871 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 1235.717 ms(update only)
+Processed in 1544 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 confidence=0.4
 Iter = 0
 ObjValue = 16426.733819
@@ -1623,10 +1681,27 @@ Iter = 100
 Size = 97
 Delta = 0.000031
 ObjValue = 16139.869965
-Processed in 609.965 ms(update only)
-Processed in 816 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 1232.622 ms(update only)
+Processed in 2021 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 confidence=0.5
 Iter = 0
 ObjValue = 16443.172140
@@ -1949,10 +2024,27 @@ Iter = 100
 Size = 97
 Delta = 0.000006
 ObjValue = 16161.910318
-Processed in 526.130 ms(update only)
-Processed in 695 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 1186.527 ms(update only)
+Processed in 1984 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 confidence=0.6
 Iter = 0
 ObjValue = 16469.102213
@@ -2275,10 +2367,27 @@ Iter = 100
 Size = 97
 Delta = 0.000006
 ObjValue = 16168.191505
-Processed in 505.866 ms(update only)
-Processed in 1143 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 829.795 ms(update only)
+Processed in 1453 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 confidence=0.7
 Iter = 0
 ObjValue = 16476.408739
@@ -2601,10 +2710,27 @@ Iter = 100
 Size = 97
 Delta = 0.000006
 ObjValue = 16169.947535
-Processed in 542.165 ms(update only)
-Processed in 1139 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 1286.012 ms(update only)
+Processed in 3138 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 confidence=0.7999999999999999
 Iter = 0
 ObjValue = 16478.442707
@@ -2927,10 +3053,27 @@ Iter = 100
 Size = 97
 Delta = 0.000006
 ObjValue = 16170.435459
-Processed in 492.513 ms(update only)
-Processed in 1154 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 1294.456 ms(update only)
+Processed in 5683 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 confidence=0.8999999999999999
 Iter = 0
 ObjValue = 16477.987746
@@ -3253,8 +3396,25 @@ Iter = 100
 Size = 97
 Delta = 0.000006
 ObjValue = 16170.362613
-Processed in 476.218 ms(update only)
-Processed in 1130 ms(total)
-Incremental accuracy = 0.9130434782608695
-Global accuracy = 0.9210526315789473
+B =
+{{5.425743741108717, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1991371922385585, 0.0}, {0.0, 1.0633871686462966}}
+{{5.4257437411087075, 0.0}, {0.0, 1.0305687504575642}}
+{{1.1986075221741026, 0.0}, {0.0, 1.1598106242318096}}
+{{1.1991371922385587, 0.0}, {0.0, 1.0633871686462963}}
+{{1.1986075221741024, 0.0}, {0.0, 1.1598106242318102}}
+Processed in 1263.922 ms(update only)
+Processed in 2210 ms(total)
+Incremental
+Totle = 3(A), 22(B), 72(C), 97(all)
+Labeled = 2(A), 0(B), 0(C), 2(all)
+AllLabels : [11, 14]
+TrainLabels : [1, 1]
+Accuracy = 1.000000(A), 0.909091(B), NaN(C), 0.913043(all)
+Global
+Totle = 18(A), 184(B), 759(C), 961(all)
+Labeled = 9(A), 0(B), 0(C), 9(all)
+AllLabels : [55, 144]
+TrainLabels : [3, 6]
+Accuracy = 1.000000(A), 0.918478(B), NaN(C), 0.921053(all)
 Done.

@@ -59,9 +59,9 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             dBdown.put(t0, new HashMap<>());
             L.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types) {
-                dBup.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-                dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-                L.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
+                dBup.get(t0).put(t1,mf.creatMatrix(k,k));
+                dBdown.get(t0).put(t1,mf.creatMatrix(k,k));
+                L.get(t0).put(t1,mf.creatMatrix(k,k));
             }
         }
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
