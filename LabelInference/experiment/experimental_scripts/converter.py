@@ -2,10 +2,11 @@ import xlwt
 import math
 
 def find_xls(filename,_type):
-    f = open('results/'+filename)
+    f = open('../results/'+filename)
     obj=''
     time=''
     obj_list=[]
+    label=0
     while True:
         line = f.readline()
         if not line:
@@ -14,8 +15,10 @@ def find_xls(filename,_type):
             obj_list+=[line[11:]]
         if line.find('Processed in ')>=0 and line.find('total')>=0 and _type==3:
             return line[13:]
-        if line.find('Global accuracy ')>=0 and _type==1:
-            return float(line[18:])
+        if line.find('Global')>=0:
+            label=1
+        if line.find('Accuracy ')>=0 and _type==1 and label==1:
+            return float(line[-14:-6])
     if _type==2:
         return obj_list
 
@@ -43,7 +46,7 @@ for g in graph:
         accu_list=[]
         for t in training:
             filename=g+'_'+t+'_'+a+'_0_0.txt';
-            accu_list+=[find_xls(filename,1)]
+            accu_list+=[find_xls(filename,1)];
         sheet.write(x,y,sum(accu_list)/3.0)
 #================================================================================
 #================================================================================
@@ -133,4 +136,4 @@ for g in graph:
         sheet.write(x+7,y,max(accu_list)-min(accu_list))
 
 #================================================================================
-xls.save('result.xls')
+xls.save('../excel/result.xls')

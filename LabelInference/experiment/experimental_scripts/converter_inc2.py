@@ -36,9 +36,11 @@ for g in graph:
 
         for i in range(1,2):
             filename=filename=g+'_'+t+'_MRG_'+str(i)+'_5.txt';
-            f = open('results/'+filename)
+            f = open('../results/'+filename)
             #print filename;
             for con in range(0,10):
+                label=0
+                
                 line = f.readline()
                 while True:
                     line = f.readline()
@@ -48,15 +50,17 @@ for g in graph:
                         sheet.write(con+2,tr*7+1,line[13:])
                     if line.find('Processed in ')>=0 and line.find('total')>=0:
                         sheet.write(con+2,tr*7+2,line[13:])
-                    if line.find('accuracy ')>=0 and line.find('Incremental')>=0:
-                        sheet.write(con+2,tr*7+3,line[22:])
-                    if line.find('accuracy ')>=0 and line.find('Global ')>=0:
-                        sheet.write(con+2,tr*7+4,line[18:])
+                    if line.find('Global')>=0:
+                        label=1
+                    if line.find('Accuracy')>=0 and label==0:
+                        sheet.write(con+2,tr*7+3,line[-14:-6])
+                    if line.find('Accuracy')>=0 and label==1:
+                        sheet.write(con+2,tr*7+4,line[-14:-6])
                     if line.find('confidence')>=0:
                         break
             f.close()
             filename=g+'_'+t+'_MRG_0_0.txt';
-            f = open('results/'+filename)
+            f = open('../results/'+filename)
             while True:
                 line = f.readline()
                 if not line:
@@ -66,12 +70,15 @@ for g in graph:
                 if line.find('Processed in ')>=0 and line.find('total')>=0:
                     _total=line[13:]
                     break;
+            label=0
             while True:
                 line = f.readline()
                 if not line:
                     break
-                if line.find('accuracy ')>=0 and line.find('Global ')>=0:
-                    _accuracy=line[18:]
+                if line.find('Global')>=0:
+                    label=1
+                if line.find('Accuracy')>=0 and label==1:
+                    _accuracy=line[-14:-6]
             f.close()
             for con in range(0,10):
                 sheet.write(con+2,tr*7+5,_update)
@@ -79,4 +86,4 @@ for g in graph:
                 sheet.write(con+2,tr*7+7,_accuracy)
 
 #plt.show()
-xls.save('result_inc_fixed_ratio_0.5.xls')
+xls.save('../excel/result_inc_fixed_ratio_0.5.xls')
