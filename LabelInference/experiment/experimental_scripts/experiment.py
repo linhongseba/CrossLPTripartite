@@ -5,7 +5,7 @@ rois=['0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 cfds=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 nuance='-1'
 maxIter='100'
-graphs=['graph-1','graph_paper','graph_imdb_10M']
+graphs=['graph-1','graph_imdb_10M','graph_paper']
 algorithms=['MRG','MRR','MRO','ARG','ARR','ARO','GRF']
 thr=4
 
@@ -32,7 +32,6 @@ def experiment(graph,rol,algo,roi,cfd0,cfd1):
         sys.stdout.write(fileName+': '+str(s,encoding='utf8')+'\n')
     f.close()
 
-
 threads=[]
 subprocess.call(['mkdir','\\..\\results'],shell=True)
 for graph in graphs:
@@ -44,6 +43,5 @@ for graph in graphs:
         threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1','0.1','0.9',))]      
 for t in threads:
     t.start()
-    x=0.001
     while(len(threading.enumerate())>thr):
-        time.sleep(x)
+        time.sleep(0.001)
