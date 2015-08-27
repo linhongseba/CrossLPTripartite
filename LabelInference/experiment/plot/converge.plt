@@ -1,0 +1,31 @@
+reset
+set size 1,1
+set datafile separator "\t"
+set key horizon out
+#set key reverse Left left top at screen 0.92, graph 1
+#set key font ",20" spacing 1
+#set logscal x
+set xrang [0:100]
+set ytics(
+#set yrange [0:1]
+set xlabel 'Number of iterations'
+set ylabel 'Objective values' offset 2
+set style line 1 lt 1 lc rgb "#0000ff" lw 9 pt 3 ps 4 
+set style line 2 lt 1 lc rgb "#ee7600" lw 9 pt 6 ps 4 
+set style line 3 lt 1 lc rgb "#008b45" lw 9 pt 1 ps 4 
+set style line 4 lt 1 lc rgb "#33ccff" lw 9 pt 12 ps 4 
+set style line 5 lt 1 lc rgb "red" lw 9 pt 2 ps 4
+set style line 6 lt 1 lc rgb "dark-red" lw 9 pt 4 ps 4 
+set style line 7 lt 1 lc rgb "#000066" lw 9 pt 14 ps 4 
+set style line 8 lt 1 lc rgb "#ff00ff" lw 9 pt 10 ps 4 
+set style line 9 lt 1 lc rgb "#0fd3f5" lw 4 pt 1 ps 4 
+set terminal postscript eps enhanced "Helvetica" 28
+set output 'Converge-IMDB.eps'
+plot 'converge-IMDB.txt' using 1:2 with lp ls 8 title 'MRG', \
+'' using 1:3 with lp ls 1 title 'ARG', \
+'' using 1:4 with lp ls 2 title 'MRR', \
+'' using 1:5 with lp ls 3 title 'ARR', \
+'' using 1:6 with lp ls 6 title 'GRF', \
+'' using 1:7 with lp ls 4 title 'MRO', \
+'' using 1:8 with lp ls 7 title 'ARO'
+clear
