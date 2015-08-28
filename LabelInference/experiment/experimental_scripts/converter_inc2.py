@@ -21,10 +21,11 @@ for g in graph:
         tr+=1
 
         for con in range(0,10):
-            sheet.write(con+2,0,'confidence=0.'+str(con))
+            sheet.write(con+2,0, float(con)/10)
         sheet.write(0,tr*7+1,t)
-        sheet.write(1,tr*7+1,"update_only-time")
-        sheet.write(1,tr*7+2,"total-time")
+        sheet.write(1,tr*7+0,"confidence")
+        sheet.write(1,tr*7+1,"update_only-time (sec)")
+        sheet.write(1,tr*7+2,"total-time (sec)")
         sheet.write(1,tr*7+3,"incremental-accuracy")
         sheet.write(1,tr*7+4,"global-accuracy")
         sheet.write(1,tr*7+5,"recompute-accuracy")
@@ -47,15 +48,15 @@ for g in graph:
                     if not line:
                         break
                     if line.find('Processed in ')>=0 and line.find('update')>=0:
-                        sheet.write(con+2,tr*7+1,line[13:])
+                        sheet.write(con+2,tr*7+1,float(line[13:-16])/1000)
                     if line.find('Processed in ')>=0 and line.find('total')>=0:
-                        sheet.write(con+2,tr*7+2,line[13:])
+                        sheet.write(con+2,tr*7+2,float(line[13:-10])/1000)
                     if line.find('Global')>=0:
                         label=1
                     if line.find('Accuracy')>=0 and label==0:
-                        sheet.write(con+2,tr*7+3,line[-14:-6])
+                        sheet.write(con+2,tr*7+3,float(line[-14:-6]))
                     if line.find('Accuracy')>=0 and label==1:
-                        sheet.write(con+2,tr*7+4,line[-14:-6])
+                        sheet.write(con+2,tr*7+4,float(line[-14:-6]))
                     if line.find('confidence')>=0:
                         break
             f.close()
@@ -66,9 +67,9 @@ for g in graph:
                 if not line:
                     break
                 if line.find('Processed in ')>=0 and line.find('update')>=0:
-                    _update=line[13:]
+                    _update=float(line[13:-16])/1000
                 if line.find('Processed in ')>=0 and line.find('total')>=0:
-                    _total=line[13:]
+                    _total=float(line[13:-10])/1000
                     break;
             label=0
             while True:
@@ -78,7 +79,7 @@ for g in graph:
                 if line.find('Global')>=0:
                     label=1
                 if line.find('Accuracy')>=0 and label==1:
-                    _accuracy=line[-14:-6]
+                    _accuracy=float(line[-14:-6])
             f.close()
             for con in range(0,10):
                 sheet.write(con+2,tr*7+5,_update)
