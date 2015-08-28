@@ -21,7 +21,7 @@ for g in graph:
         tr+=1
         sheet.write(0,tr*7+1,t)
         for i in range(1,10):
-            sheet.write(i+1,0,"%d"% i+"0%")
+            sheet.write(i+1,0,float(i)/10)
         sheet.write(1,0,"new-data-percentage")
         sheet.write(1,tr*7+1,"update_only-time")
         sheet.write(1,tr*7+2,"total-time")
@@ -43,15 +43,15 @@ for g in graph:
                     if not line:
                         break
                     if line.find('Processed in ')>=0 and line.find('update')>=0:
-                        sheet.write(i+1,tr*7+1,line[13:])
+                        sheet.write(i+1,tr*7+1,float(line[13:-16])/1000)
                     if line.find('Processed in ')>=0 and line.find('total')>=0:
-                        sheet.write(i+1,tr*7+2,line[13:])
+                        sheet.write(i+1,tr*7+2,float(line[13:-10])/1000)
                     if line.find('Global')>=0:
                         label=1
                     if line.find('Accuracy')>=0 and label==0:
-                        sheet.write(i+1,tr*7+3,line[-14:-6])
+                        sheet.write(i+1,tr*7+3,float(line[-14:-6]))
                     if line.find('Accuracy')>=0 and label==1:
-                        sheet.write(i+1,tr*7+4,line[-14:-6])
+                        sheet.write(i+1,tr*7+4,float(line[-14:-6]))
                     if line.find('confidence')>=0:
                         break
             f.close()
@@ -62,9 +62,9 @@ for g in graph:
                 if not line:
                     break
                 if line.find('Processed in ')>=0 and line.find('update')>=0:
-                    sheet.write(i+1,tr*7+5,line[13:])
+                    sheet.write(i+1,tr*7+5,float(line[13:-16])/1000)
                 if line.find('Processed in ')>=0 and line.find('total')>=0:
-                    sheet.write(i+1,tr*7+6,line[13:])
+                    sheet.write(i+1,tr*7+6,float(line[13:-10])/1000)
                     break;
             label=0
             while True:
@@ -74,7 +74,7 @@ for g in graph:
                 if line.find('Global')>=0:
                     label=1
                 if line.find('Accuracy')>=0 and label==1:
-                    sheet.write(i+1,tr*7+7,line[-14:-6])
+                    sheet.write(i+1,tr*7+7,float(line[-14:-6]))
             f.close()
 
         for i in range(2,10):
@@ -87,15 +87,15 @@ for g in graph:
                 if not line:
                     break
                 if line.find('Processed in ')>=0 and line.find('update')>=0:
-                    sheet.write(i+1,tr*7+1,line[13:])
+                    sheet.write(i+1,tr*7+1,float(line[13:-16])/1000)
                 if line.find('Processed in ')>=0 and line.find('total')>=0:
-                    sheet.write(i+1,tr*7+2,line[13:])
+                    sheet.write(i+1,tr*7+2,float(line[13:-10])/1000)
                 if line.find('Global')>=0:
                     label=1
                 if line.find('Accuracy')>=0 and label==0:
-                    sheet.write(i+1,tr*7+3,line[-14:-6])
+                    sheet.write(i+1,tr*7+3,float(line[-14:-6]))
                 if line.find('Accuracy')>=0 and label==1:
-                    sheet.write(i+1,tr*7+4,line[-14:-6])
+                    sheet.write(i+1,tr*7+4,float(line[-14:-6]))
             f.close()
 
             filename=filename=g+'_'+t+'_MRG_0_0.txt';
@@ -105,9 +105,9 @@ for g in graph:
                 if not line:
                     break
                 if line.find('Processed in ')>=0 and line.find('update')>=0:
-                    sheet.write(i+1,tr*7+5,line[13:])
+                    sheet.write(i+1,tr*7+5,float(line[13:-16])/1000)
                 if line.find('Processed in ')>=0 and line.find('total')>=0:
-                    sheet.write(i+1,tr*7+6,line[13:])
+                    sheet.write(i+1,tr*7+6,float(line[13:-10])/1000)
                     break;
             label=0
             while True:
@@ -117,7 +117,7 @@ for g in graph:
                 if line.find('Global')>=0:
                     label=1
                 if line.find('Accuracy')>=0 and label==1:
-                    sheet.write(i+1,tr*7+7,line[-14:-6])
+                    sheet.write(i+1,tr*7+7,float(line[-14:-6]))
             f.close()
 
 #plt.show()

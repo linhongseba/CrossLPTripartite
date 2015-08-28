@@ -2,7 +2,7 @@ import xlwt
 import math
 
 def find_xls(filename,_type):
-    f = open('../results/'+filename)
+    f = open('../8-26/'+filename)
     obj=''
     time=''
     obj_list=[]
@@ -136,4 +136,4 @@ for g in graph:
         sheet.write(x+7,y,max(accu_list)-min(accu_list))
 
 #================================================================================
-xls.save('../excel/result.xls')
+xls.save('../excel/result826.xls')
