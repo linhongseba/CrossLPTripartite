@@ -12,9 +12,9 @@ def find_xls(filename,_type):
         if not line:
             break
         if line.find('ObjValue')>=0 and line.find('0.000000')<0 and _type==2:
-            obj_list+=[line[11:]]
+            obj_list.append(float([line[11:]))
         if line.find('Processed in ')>=0 and line.find('total')>=0 and _type==3:
-            return line[13:]
+            return float(line[13:-10])/1000
         if line.find('Global')>=0:
             label=1
         if line.find('Accuracy ')>=0 and _type==1 and label==1:
