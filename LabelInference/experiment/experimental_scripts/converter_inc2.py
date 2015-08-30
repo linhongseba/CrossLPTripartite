@@ -17,13 +17,12 @@ training=['01','05','10'];
 for g in graph:
     sheet = xls.add_sheet(g,cell_overwrite_ok=True)
     tr=-1
+	sheet.write(1,0,"confidence")
     for t in training:
         tr+=1
-
         for con in range(0,10):
             sheet.write(con+2,0, float(con)/10)
         sheet.write(0,tr*7+1,t)
-        sheet.write(1,tr*7+0,"confidence")
         sheet.write(1,tr*7+1,"update_only-time (sec)")
         sheet.write(1,tr*7+2,"total-time (sec)")
         sheet.write(1,tr*7+3,"incremental-accuracy")
