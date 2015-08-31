@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.Matrix;
@@ -55,7 +57,34 @@ public abstract class AbstractLabelInference implements LabelInference{
         for(Vertex.Type t0:Vertex.types) {
             B.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types)
-                B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
+                //B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
+                B.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+        }
+        for(Vertex u:g.getVertices()){
+            if(u.isY0()==false)
+                continue;
+            for(Vertex v:u.getNeighbors()) {
+                if(v.isY0()==false)
+                    continue;
+                Matrix temp=B.get(u.getType()).get(v.getType());
+                for(int row=0;row<k;row++){
+                    for(int col=0;col<k;col++){
+                        try {
+                            temp.set(row, col, temp.get(row, col)+u.getLabel().get(row, 0)*v.getLabel().get(col, 0));
+                        } catch (ColumnOutOfRangeException ex) {
+                            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (RowOutOfRangeException ex) {
+                            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                B.get(u.getType()).put(v.getType(), temp);
+            }
+        }
+        for(Vertex.Type t0:Vertex.types) {
+            for(Vertex.Type t1:Vertex.types)
+                //B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
+                B.get(t0).put(t1,B.get(t0).get(t1).normalize());
         }
     }
     
@@ -100,7 +129,7 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param deltaGraph: the additional graph
     * @param maxIter: the max iterations times
     * @param nuance: a tiny number control when the procedure ends
-    * @param a: conffidence level
+    * @param a: confidence level
     * @param disp: a code choose what to display
     * implement the overall procedure of the basic non-incremental algorithms
     */	
