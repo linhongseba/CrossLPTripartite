@@ -114,7 +114,7 @@ public class Main {
         LabelInference lp=new LabelPropagation(result,1);
         if(inference.charAt(inference.length()-1)=='G')lp.getResult(maxIter/10, nuance, DISP_NONE);
         LabelInference li=inferences.get(inference).apply(result);
-        li.getResult(maxIter,nuance,DISP_ALL);
+        li.getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         
         for(Vertex v:result.getVertices())
@@ -128,7 +128,7 @@ public class Main {
                 if(!deltaGraph.contains(v))v.removeEdge(u);
             result.removeVertex(u);
         }
-        li.recompute(deltaGraph, maxIter,nuance, DISP_ALL);
+        li.recompute(deltaGraph, maxIter,nuance, DISP_ALL^DISP_LABEL);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         System.out.print("Incremental\n");
         check(expResult,deltaGraph);
@@ -153,7 +153,7 @@ public class Main {
                     if(!deltaGraph.contains(v))v.removeEdge(u);
                 result.removeVertex(u);
             }
-            li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL);
+            li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
             System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
 
             System.out.print("Incremental\n");

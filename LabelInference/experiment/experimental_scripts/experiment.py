@@ -3,7 +3,7 @@ path='../../data/{0}.txt'
 rols=['0.05']
 rois=['0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 maxIter='100'
-graphs=['graph_imdb_10M','graph_paper']
+graphs=['graph_paper','graph_imdb_10M']
 algorithms=['MRG','MRR','MRO','ARG','ARR','ARO','GRF']
 thr=4
 
@@ -21,14 +21,14 @@ def experiment(graph,rol,algo,roi,cfd0,cfd1,nuance):
     while p.poll() == None:
         f=open(fileName,'ab')
         s=p.stdout.readline()
-        #sys.stdout.write(fileName+': '+str(s,encoding='utf8'))
+        sys.stdout.write(fileName+': '+str(s,encoding='utf8'))
         f.write(s)
         f.close()
     last=p.stdout.readlines()
     f=open(fileName,'ab')
     for s in last:
         f.write(s)
-        #sys.stdout.write(fileName+': '+str(s,encoding='utf8')+'\n')
+        sys.stdout.write(fileName+': '+str(s,encoding='utf8')+'\n')
     f.close()
 
 threads=[]
