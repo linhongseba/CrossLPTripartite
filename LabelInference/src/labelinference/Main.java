@@ -114,11 +114,26 @@ public class Main {
         LabelInference lp=new LabelPropagation(result,1);
         if(inference.charAt(inference.length()-1)=='G')lp.getResult(maxIter/10, nuance, DISP_NONE);
         LabelInference li=inferences.get(inference).apply(result);
-        li.getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
+        li.getResult(maxIter,nuance,DISP_ALL);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         
         for(Vertex v:result.getVertices())
             backup.findVertexByID(v.getId()).setLabel(v.getLabel().copy());
+        
+        System.out.print("Recompute2\n");
+        mTime=System.currentTimeMillis();
+        if(inference.charAt(inference.length()-1)=='G')lp.recompute(deltaGraph,maxIter/10, nuance, DISP_NONE);
+        for(Vertex u:deltaGraph) {
+            for(Vertex v:u.getNeighbors())
+                if(!deltaGraph.contains(v))v.removeEdge(u);
+            result.removeVertex(u);
+        }
+        li.recompute(deltaGraph, maxIter,nuance, DISP_ALL);
+        System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
+        System.out.print("Incremental\n");
+        check(expResult,deltaGraph);
+        System.out.print("Global\n");
+        check(expResult,result.getVertices());
         
         for(double a=a0;a<=a1;a+=0.1) {
             System.out.print("confidence="+a+"\n");
@@ -138,7 +153,7 @@ public class Main {
                     if(!deltaGraph.contains(v))v.removeEdge(u);
                 result.removeVertex(u);
             }
-            li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
+            li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL);
             System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
 
             System.out.print("Incremental\n");

@@ -29,8 +29,7 @@ import labelinference.Matrix.MatrixFactory;
 * 
 */
 public abstract class AbstractLabelInference implements LabelInference{
-    protected final Graph g;                                
-    protected boolean isDone;                               
+    protected final Graph g;                                                             
     protected final BiConsumer<Matrix,Integer> labelInit;    
     protected final int k; //the variable denotes the number of clusters
     protected double maxE=0; //the variable denotes the max number of edges
@@ -50,41 +49,23 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param _labelInit: initial labeled vertices
     */	    
     public AbstractLabelInference(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
+        
         g=_g;
         k=g.getNumLabels();
-        isDone=false;
         labelInit=_labelInit;
         for(Vertex.Type t0:Vertex.types) {
             B.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types)
-                //B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
-                B.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+                B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
         }
-        for(Vertex u:g.getVertices()){
-            if(u.isY0()==false)
-                continue;
-            for(Vertex v:u.getNeighbors()) {
-                if(v.isY0()==false)
-                    continue;
-                Matrix temp=B.get(u.getType()).get(v.getType());
-                for(int row=0;row<k;row++){
-                    for(int col=0;col<k;col++){
-                        try {
-                            temp.set(row, col, temp.get(row, col)+u.getLabel().get(row, 0)*v.getLabel().get(col, 0));
-                        } catch (ColumnOutOfRangeException ex) {
-                            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
-                        } catch (RowOutOfRangeException ex) {
-                            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-                B.get(u.getType()).put(v.getType(), temp);
-            }
-        }
-        for(Vertex.Type t0:Vertex.types) {
-            for(Vertex.Type t1:Vertex.types)
-                //B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
-                B.get(t0).put(t1,B.get(t0).get(t1).normalize());
+        try {
+            for(Vertex u:g.getVertices(v->v.isY0()))
+                for(Vertex v:u.getNeighbors())if(v.isY0())
+                    B.get(u.getType()).put(v.getType(), B.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose())));
+            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)
+                B.get(t0).put(t1, B.get(t0).get(t1).normalize());
+        } catch (DimensionNotAgreeException ex) {
+            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -96,32 +77,62 @@ public abstract class AbstractLabelInference implements LabelInference{
     * TODO To implement the overall procedure of the basic non-incremental algorithms
     */	
     @Override
-    public void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
-        if(isDone)return;                                        
+    public void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {                                       
         final Map<Vertex,Matrix> Y0=init(g.getVertices(),g.getVertices(), labelInit, g.getNumLabels());   
         double timeUsed=0;                                                                
         double delta; //the variable denotes the difference between Y and last produced Y.
+        double oldObj=0;
+        double obj;
         int iter=0; //the variable controls the iteration times.
-        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_LABEL|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k);
+        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,0);
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
-            delta=0;
             Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
-            for(Vertex u:g.getVertices()) {
-                delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
-                u.setLabel(Y.get(u));
-            }
-            delta/=g.getVertices().size();
+            for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
+            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            delta=abs(oldObj-obj)/g.getVertices().size();
+            oldObj=obj;
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
             iter++;
-            LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~(iter<10||iter%10==0?0:DISP_OBJ), iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k);
+            LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
         } while(delta>nuance && iter!=maxIter);
-        LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k);
-        isDone=true;
+        LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
+    }
+    
+    public void recompute(Collection<Vertex> deltaGraph, int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
+        for(Vertex u:deltaGraph) {
+            g.addVertex(u);
+            for(Vertex v:u.getNeighbors())
+                v.addEdge(u, u.getEdge(v));
+        }
+        final Map<Vertex,Matrix> Y0=init(deltaGraph,g.getVertices(), labelInit, g.getNumLabels());
+        for(Vertex v:g.getVertices(v->v.isY0()))Y0.put(v, v.getLabel());
+        double timeUsed=0;                                                                
+        double delta; //the variable denotes the difference between Y and last produced Y.
+        double oldObj=0;
+        double obj;
+        int iter=0; //the variable controls the iteration times.
+        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,0);
+        do {
+            long nTime=System.nanoTime();
+            long mTime=System.currentTimeMillis();
+            updateB(g.getVertices(),g.getVertices());
+            Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
+            for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
+            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            delta=abs(oldObj-obj)/g.getVertices().size();
+            oldObj=obj;
+            nTime=System.nanoTime()-nTime;
+            mTime=System.currentTimeMillis()-mTime;
+            timeUsed+=max(mTime,nTime/1000000.0);
+            iter++;
+            LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
+        } while(delta>nuance && iter!=maxIter);
+        LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
     }
     
     /**
@@ -129,14 +140,12 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param deltaGraph: the additional graph
     * @param maxIter: the max iterations times
     * @param nuance: a tiny number control when the procedure ends
-    * @param a: confidence level
+    * @param a: conffidence level
     * @param disp: a code choose what to display
     * implement the overall procedure of the basic non-incremental algorithms
     */	
     @Override
     public void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
-        if(!isDone)getResult(maxIter, nuance, disp);
-        else {
             Map<Vertex.Type,Map<Vertex.Type,Double>> w=new HashMap<>();
             Map<Vertex.Type,Map<Vertex.Type,Double>> sigma=new HashMap<>();
             Map<Vertex.Type,Map<Vertex.Type,Double>> tot=new HashMap<>();
@@ -174,19 +183,19 @@ public abstract class AbstractLabelInference implements LabelInference{
             final Map<Vertex,Matrix> Y0=init(cand, candS, labelInit, g.getNumLabels());//original state of labels
             
             double timeUsed=0;                                                        
-            double delta;                                                             
+            double delta; 
+            double oldObj=0;
+            double obj;
             int iter=0;                                                       
-            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_LABEL|DISP_OBJ), iter, 0, 0, cand,candS, Y0,B,k);
+            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, cand,candS, Y0,B,k,0);
             do {
                 long nTime=System.nanoTime();
                 long mTime=System.currentTimeMillis();
-                delta=0;
                 Map<Vertex, Matrix> Y=updateY(cand,candS,Y0);
-                for(Vertex u:cand) {
-                    delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
-                    u.setLabel(Y.get(u));
-                }
-                delta/=cand.size();
+                for(Vertex u:cand)u.setLabel(Y.get(u));
+                obj=LabelInference.objective(cand, candS, Y0, B, k);
+                delta=abs(oldObj-obj)/cand.size();
+                oldObj=obj;
                 Collection deltaCand=new HashSet<>();
                 for(Vertex u:cand)
                     for(Vertex v:u.getNeighbors()) if(!cand.contains(v)) {
@@ -204,10 +213,9 @@ public abstract class AbstractLabelInference implements LabelInference{
                 mTime=System.currentTimeMillis()-mTime;
                 timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~(iter<10||iter%10==0?0:DISP_OBJ), iter, delta, timeUsed, cand,candS, Y0,B,k);
+                LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, cand,candS, Y0,B,k,obj);
             } while(delta>nuance && iter!=maxIter);
-            LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B), iter, delta, timeUsed, cand,candS, Y0,B,k);
-        }
+            LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, cand,candS, Y0,B,k,0);
     }
     
     /**

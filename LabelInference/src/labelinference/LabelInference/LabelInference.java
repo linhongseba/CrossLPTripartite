@@ -27,6 +27,7 @@ public interface LabelInference {
     void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     /** TODO To declare the increase function */	
     void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
+    void recompute(Collection<Vertex> deltaGraph, int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     
     /** 
      * @param k:the number of clusters
@@ -79,11 +80,11 @@ public interface LabelInference {
      * @param disp:to select which of the outputs would be chose to write, other parameter are for displaying
      * TODO To displays all the needed information
      */	
-    public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+    public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k,double obj) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
         if((disp&DISP_ITER)!=0)System.out.print(String.format("Iter = %d\n",iter));
         if((disp&DISP_SIZE)!=0)System.out.print(String.format("Size = %d\n",cand.size()));
         if((disp&DISP_DELTA)!=0)System.out.print(String.format("Delta = %.6f\n",delta));
-        if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",LabelInference.objective(cand,candS,Y0,B,k)));
+        if((disp&DISP_OBJ)!=0)System.out.print(String.format("ObjValue = %.6f\n",obj));
         if((disp&DISP_LABEL)!=0)for(Vertex v:cand) {
             System.out.print(v.getId()+v.getLabel().toString()+"\n"); 
         }

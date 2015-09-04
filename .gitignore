@@ -1,0 +1,9 @@
+*.xml
+*.properties
+*.class
+LabelInference/lib/junit/junit-3.8.2-api.zip
+LabelInference/build/test/classes/.netbeans_update_resources
+*.netbeans_automatic_build
+LabelInference/build/classes/.netbeans_update_resources
+/LabelInference/dist/
+LabelInference/experiment/result.xls
