@@ -1,6 +1,5 @@
 package labelinference.Selector;
 
-import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import static java.lang.Math.random;
 import java.util.ArrayList;

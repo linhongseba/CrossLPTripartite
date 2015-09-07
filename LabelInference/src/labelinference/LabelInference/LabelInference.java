@@ -22,16 +22,14 @@ import labelinference.exceptions.RowOutOfRangeException;
 * @see labelinference.AbstractLabelInference.AbstractLabelInference(Graph _g)
 */
 public interface LabelInference {
-	
-    /** TODO To declare the getResult function*/	
     void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
-    /** TODO To declare the increase function */	
     void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     void recompute(Collection<Vertex> deltaGraph, int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     
-    /** 
+    /**
+     * @param label
      * @param k:the number of clusters
-     * TODO To give a unified initialization of label 
+     * unified initialization of label 
      */	
     public static void defaultLabelInit(Matrix label, Integer k) {
         for(int i=0;i<k;i++)try {
@@ -40,20 +38,30 @@ public interface LabelInference {
     }
     public static BiConsumer<Matrix,Integer> defaultLabelInit=LabelInference::defaultLabelInit;
     
-    /** TODO To initialize the Y matrix with random numbers*/
+    /** initialize Y matrix with random numbers*/
     static Random random=new Random(1008611);
     public static void randomLabelInit(Matrix label, Integer k) {
-        for(int i=0;i<k;i++)try {
-            label.set(i, 0, random.nextDouble());//set the label to a random number
+        try {
+            for(int i=0;i<k;i++)label.set(i, 0, random.nextDouble());//set the label to a random number
+            Matrix nlabel=label.normalize();
+            for(int i=0;i<k;i++)label.set(i, 0, nlabel.get(i, 0));
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
-        label=label.normalize();
     }
     public static BiConsumer<Matrix,Integer> randomLabelInit=LabelInference::randomLabelInit;
     
     public static void noneInit(Matrix label, Integer k) {}
     public static BiConsumer<Matrix,Integer> noneInit=LabelInference::noneInit;
     
-    /** TODO To count the objective number*/	
+    /** count objective numbe
+     * @param cand
+     * @param candS
+     * @param Y0
+     * @param B
+     * @param k	
+     * @return 	
+     * @throws labelinference.exceptions.ColumnOutOfRangeException	
+     * @throws labelinference.exceptions.RowOutOfRangeException	
+     * @throws labelinference.exceptions.DimensionNotAgreeException*/	
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     	Double obj=0.0;
         for(Vertex v:cand) {
@@ -79,6 +87,18 @@ public interface LabelInference {
      * 
      * @param disp:to select which of the outputs would be chose to write, other parameter are for displaying
      * TODO To displays all the needed information
+     * @param iter
+     * @param delta
+     * @param time
+     * @param cand
+     * @param candS
+     * @param Y0
+     * @param B
+     * @param k
+     * @param obj
+     * @throws labelinference.exceptions.ColumnOutOfRangeException
+     * @throws labelinference.exceptions.RowOutOfRangeException
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */	
     public static void infoDisplay(int disp, int iter, double delta, double time, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k,double obj) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
         if((disp&DISP_ITER)!=0)System.out.print(String.format("Iter = %d\n",iter));

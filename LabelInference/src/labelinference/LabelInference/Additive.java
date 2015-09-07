@@ -1,6 +1,5 @@
 package labelinference.LabelInference;
 
-import static java.lang.Math.max;
 import static java.lang.Math.sqrt;
 import java.util.Collection;
 import labelinference.Matrix.MatrixFactory;
@@ -51,34 +50,34 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 	 */
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
-        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBdown=new HashMap<>();
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBleft=new HashMap<>();
+        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBright=new HashMap<>();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> L=new HashMap<>();
         for(Vertex.Type t0:Vertex.types) {
-            dBup.put(t0, new HashMap<>());
-            dBdown.put(t0, new HashMap<>());
+            dBleft.put(t0, new HashMap<>());
+            dBright.put(t0, new HashMap<>());
             L.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types) {
-                dBup.get(t0).put(t1,mf.creatMatrix(k,k));
-                dBdown.get(t0).put(t1,mf.creatMatrix(k,k));
+                dBleft.get(t0).put(t1,mf.creatMatrix(k,k));
+                dBright.get(t0).put(t1,mf.creatMatrix(k,k));
                 L.get(t0).put(t1,mf.creatMatrix(k,k));
             }
         }
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
-            dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
-            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
+            dBleft.get(u.getType()).put(v.getType(), dBleft.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
+            dBright.get(u.getType()).put(v.getType(), dBright.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
             L.get(u.getType()).put(v.getType(), L.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
         }
-        //dBup_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
-        //dBdown_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
+        //dBleft_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
+        //dBright_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
         //L_{tt'}=\Sigma{Y(u)*Y(u)^T*Y(v)*Y(v)^T*G(u,v)}(u\in t,v\in t')
 
         double alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
             double etab=(alphaNext+alpha-1)/alphaNext/L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*L_{tt'}}
-            B.get(t0).put(t1, B.get(t0).get(t1).add(dBup.get(t0).get(t1).subtract(dBdown.get(t0).get(t1)).times(etab/maxE)));
-            //B_{tt'}=B_{tt'}+\eta_b(dBup_{tt'}-dBdown_{tt'})/maxE
+            B.get(t0).put(t1, B.get(t0).get(t1).add(dBleft.get(t0).get(t1).subtract(dBright.get(t0).get(t1)).times(etab/maxE)));
+            //B_{tt'}=B_{tt'}+\eta_b(dBleft_{tt'}-dBright_{tt'})/maxE
             //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
         }
     }

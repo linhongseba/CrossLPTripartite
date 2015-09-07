@@ -49,8 +49,8 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
             dBup.put(t0, new HashMap<>());
             dBdown.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types) {
-                dBup.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
-                dBdown.get(t0).put(t1,MatrixFactory.getInstance().creatMatrix(k,k));
+                dBup.get(t0).put(t1,mf.creatMatrix(k,k));
+                dBdown.get(t0).put(t1,mf.creatMatrix(k,k));
             }
         }
         

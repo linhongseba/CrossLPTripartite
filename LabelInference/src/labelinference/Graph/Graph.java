@@ -49,41 +49,6 @@ public class Graph {
                         vertex.addEdge(findVertexByID(nid), weight);
                     }
             }
-
-            /*File file=new File(path+".RINIT");
-            if(file.exists()) {
-                in=new Scanner(new FileReader(file));
-                for(int i=0;i<vertices.size();i++) {
-                    Matrix label=matrixFactory.creatMatrix(numLabels,1);
-                    String id=in.next();
-                    for(int j=0;j<numLabels;j++)label.set(j, 0, in.nextDouble());
-                    RINIT.put(findVertexByID(id),label);
-                }
-            } else {
-                final Map<Vertex,Matrix> Y0=new HashMap<>();
-                Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
-                for(Vertex.Type t0:Vertex.types) {
-                    B.put(t0, new HashMap<>());
-                    for(Vertex.Type t1:Vertex.types)
-                        B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(numLabels));
-                }
-                for (Vertex v:getVertices())
-                    if(v.isY0()) {
-                        v.setLabel(v.getLabel().normalize());
-                        Y0.put(v, v.getLabel().copy());
-                    } else LabelInference.randomLabelInit(v.getLabel(),numLabels);
-                final Map<Vertex,Matrix> best=new HashMap<>();
-                for(Vertex v:getVertices())best.put(v, v.getLabel());
-                double minObj=LabelInference.objective(getVertices(), getVertices(), Y0, B, numLabels);
-                for(int i=0;i<100;i++) {
-                    for (Vertex v:getVertices())if(!v.isY0())LabelInference.randomLabelInit(v.getLabel(),numLabels);
-                    double obj=LabelInference.objective(getVertices(), getVertices(), Y0, B, numLabels);
-                    if(obj<minObj) {
-                        for(Vertex v:getVertices())best.put(v, v.getLabel());
-                        minObj=obj;
-                    }
-                }
-            }*/
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     

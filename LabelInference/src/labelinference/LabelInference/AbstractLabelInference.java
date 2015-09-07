@@ -74,7 +74,10 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param maxIter: the max iterations times
     * @param nuance: a tiny number control when the procedure ends
     * @param disp: a code choose what to display
-    * TODO To implement the overall procedure of the basic non-incremental algorithms
+    * overall procedure of the basic non-incremental algorithms
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     * @throws labelinference.exceptions.RowOutOfRangeException
+     * @throws labelinference.exceptions.ColumnOutOfRangeException
     */	
     @Override
     public void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {                                       
@@ -103,6 +106,17 @@ public abstract class AbstractLabelInference implements LabelInference{
         LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
     }
     
+    /**
+     *
+     * @param deltaGraph
+     * @param maxIter
+     * @param nuance
+     * @param disp
+     * @throws DimensionNotAgreeException
+     * @throws RowOutOfRangeException
+     * @throws ColumnOutOfRangeException
+     */
+    @Override
     public void recompute(Collection<Vertex> deltaGraph, int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
         for(Vertex u:deltaGraph) {
             g.addVertex(u);
@@ -142,7 +156,10 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param nuance: a tiny number control when the procedure ends
     * @param a: conffidence level
     * @param disp: a code choose what to display
-    * implement the overall procedure of the basic non-incremental algorithms
+    * overall procedure of the basic non-incremental algorithms
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     * @throws labelinference.exceptions.RowOutOfRangeException
+     * @throws labelinference.exceptions.ColumnOutOfRangeException
     */	
     @Override
     public void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {
@@ -219,13 +236,17 @@ public abstract class AbstractLabelInference implements LabelInference{
     }
     
     /**
-    * 
-    * @param g: a graph
-    * @param labelInit: function giving a initialized k*k matrix
-    * @param k: the number of clusters
-    * TODO To implement the overall procedure of the basic non-incremental algorithms
+     * 
+     * @param cand
+     * @param candS
+     * @param labelInit: function giving a initialized k*k matrix
+     * @param k: the number of clusters
+     * TODO To implement the overall procedure of the basic non-incremental algorithms
      * @return 
-    */	
+     * @throws labelinference.exceptions.ColumnOutOfRangeException 
+     * @throws labelinference.exceptions.RowOutOfRangeException 
+     * @throws labelinference.exceptions.DimensionNotAgreeException 
+     */	
     public Map<Vertex,Matrix> init(Collection<Vertex> cand, Collection<Vertex> candS, BiConsumer<Matrix,Integer> labelInit, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     	for(Vertex v:cand)
             for(Vertex u:v.getNeighbors())
@@ -254,26 +275,25 @@ public abstract class AbstractLabelInference implements LabelInference{
     }
 
     /**
-    * 
-    * @param cand: implement by cand
-    * @param candS: implement by candS 
-    * TODO To implement the updating procedure of B
-    * 
-    * This abstract method will be implemented in the three algorithms respectively
+     * 
+     * @param cand: implement by cand
+     * @param candS: implement by candS 
+     * update procedure of B
+     * This abstract method will be implemented in the three algorithms respectively
      * @throws labelinference.exceptions.DimensionNotAgreeException
-    */	
+     */	
     abstract protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException ;
 
     /**
      * 
-	 * @param cand: implement by cand
-	 * @param candS: implement by candS 
-	 * @param Y0: the initialized label
-	 * TODO To implement the updating procedure of Y
-	 * 
-	 * This abstract method will be implemented in the three algorithms respectively
+     * @param cand: implement by cand
+     * @param candS: implement by candS 
+     * @param Y0: the initialized label
+     * update procedure of Y
+     * 
+     * This abstract method will be implemented in the three algorithms respectively
      * @return 
      * @throws labelinference.exceptions.DimensionNotAgreeException
-	 */	
+     */	
     abstract protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException ;
 }

@@ -45,7 +45,9 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
     /**
      * @param cand: the candidate graph
      * @param candS: the candidate graph with its adjacent nodes
+     * @throws labelinference.exceptions.DimensionNotAgreeException
      */
+    @Override
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {}
     
     @Override
@@ -53,7 +55,7 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
      * @param cand: the candidate graph
      * @param candS: the candidate graph with its adjacent nodes
      * @param Y0: the initial state of Y matrix
-     * TODO: TO update Y using label propagation algorithm
+     * update Y using label propagation algorithm
      */
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
         final MatrixFactory mf=MatrixFactory.getInstance();
