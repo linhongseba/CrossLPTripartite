@@ -3,14 +3,16 @@ package labelinference.Graph;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import labelinference.Matrix.MatrixFactory;
-import labelinference.Matrix.Matrix;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.function.Predicate;
+
+import labelinference.Matrix.Matrix;
+import labelinference.Matrix.MatrixFactory;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.RowOutOfRangeException;
 
@@ -108,4 +110,62 @@ public class Graph {
     public final Vertex findVertexByID(String vid) {
         return vertices.get(vid);
     }
+    
+    // used to calculate Objective for all the edge entries, only used it for small graph (graph-0, graph-1)
+    public int cntA, cntB, cntC;
+    public Map <Vertex, Integer> aMap, bMap, cMap;
+    public Matrix mAB, mAC, mBC;
+
+    // generate Bimatrix AB, AC and BC
+    public void generateSubMatrix() throws ColumnOutOfRangeException, RowOutOfRangeException {
+        aMap = new TreeMap<Vertex, Integer>();
+        bMap = new TreeMap<Vertex, Integer>();
+        cMap = new TreeMap<Vertex, Integer>();
+        cntA = cntB = cntC = 0;
+        
+        for (Vertex v: vertices.values()) {
+            if (v.getType() == Vertex.typeA) {
+                aMap.put(v, cntA);
+                cntA++;
+            } else if (v.getType() == Vertex.typeB) {
+                bMap.put(v, cntB);
+                cntB++;
+            } else {
+                cMap.put(v, cntC);
+                cntC++;
+            }
+        }
+        
+        MatrixFactory matrixFactory = MatrixFactory.getInstance();
+        mAB = matrixFactory.creatMatrix(cntA, cntB); // init to 0
+        mAC = matrixFactory.creatMatrix(cntA, cntC); // init to 0
+        mBC = matrixFactory.creatMatrix(cntB, cntC); // init to 0
+        
+        for (Vertex a: aMap.keySet()) {
+           for (Vertex aneighbor: a.getNeighbors()) {
+               if (aneighbor.getType() == Vertex.typeB) {
+                   mAB.set(aMap.get(a), bMap.get(aneighbor), a.getEdge(aneighbor));
+               }
+           }
+        }
+        
+        for (Vertex a: aMap.keySet()) {
+            for (Vertex aneighbor: a.getNeighbors()) {
+                if (aneighbor.getType() == Vertex.typeC) {
+                    mAC.set(aMap.get(a), cMap.get(aneighbor), a.getEdge(aneighbor));
+                }
+            }
+         }
+        
+        for (Vertex b: bMap.keySet()) {
+            for (Vertex bneighbor: b.getNeighbors()) {
+                if (bneighbor.getType() == Vertex.typeC) {
+                    mBC.set(bMap.get(b), cMap.get(bneighbor), b.getEdge(bneighbor));
+                }
+            }
+         }
+    }
+    
+    ///////////new code ends here /////////
+    ///////////////////////////////////////
 }

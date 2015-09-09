@@ -10,7 +10,7 @@ import java.util.Map;
  *
  * @author sailw
  */
-public class Vertex {
+public class Vertex implements Comparable<Vertex> {
     public static class Type {}
 
     private Type type;
@@ -108,6 +108,21 @@ public class Vertex {
     }
     
     public String getId() {
+        return id;
+    }
+    
+    @Override
+    public int hashCode(){
+        return (int) id.hashCode();
+    }
+    
+    @Override
+    public int compareTo(Vertex other){
+        return this.id.compareTo(other.id);
+    }
+    
+    @Override
+    public String toString(){
         return id;
     }
 }

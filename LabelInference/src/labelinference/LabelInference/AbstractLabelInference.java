@@ -4,6 +4,7 @@ import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -11,14 +12,14 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.Matrix;
+import labelinference.Matrix.MatrixFactory;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
-import static labelinference.LabelInference.LabelInference.*;
-import labelinference.Matrix.MatrixFactory;
 
 /**
 *
@@ -82,27 +83,42 @@ public abstract class AbstractLabelInference implements LabelInference{
     @Override
     public void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException {                                       
         final Map<Vertex,Matrix> Y0=init(g.getVertices(),g.getVertices(), labelInit, g.getNumLabels());   
-        double timeUsed=0;                                                                
+        double timeUsed=0;
+        
         double delta; //the variable denotes the difference between Y and last produced Y.
         double oldObj=0;
         double obj;
+        
         int iter=0; //the variable controls the iteration times.
-        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,0);
+        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
             Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
             for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
-            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-            delta=abs(oldObj-obj)/g.getVertices().size();
-            oldObj=obj;
+            
+            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+
+            //            delta = (oldObj-obj)/g.getVertices().size();
+            delta = (oldObj-obj);
+            oldObj = obj;
+            
+            if (iter > 0) {
+                // y-delta goese here...
+                
+                // obj delta
+                if (delta <= nuance)
+                    break;
+            }
+            
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
             iter++;
             LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
-        } while(delta>nuance && iter!=maxIter);
+        } while(iter!=maxIter);
         LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
     }
     
