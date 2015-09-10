@@ -23,6 +23,7 @@ public interface Matrix {
     void times_assign(double lambda);
     Matrix copy();
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
+    void cron_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix add(Matrix b) throws DimensionNotAgreeException;
     void add_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix subtract(Matrix b) throws DimensionNotAgreeException;

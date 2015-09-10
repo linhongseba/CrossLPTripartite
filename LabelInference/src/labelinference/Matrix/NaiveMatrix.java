@@ -58,6 +58,12 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
+    public void cron_assign(Matrix b) throws DimensionNotAgreeException {
+        if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
+        A.arrayTimesEquals(((NaiveMatrix)b).A);
+    }
+
+    @Override
     public Matrix add(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
@@ -68,7 +74,7 @@ public class NaiveMatrix implements Matrix{
     @Override
     public void add_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
-        A=A.plus(((NaiveMatrix)b).A);
+        A.plusEquals(((NaiveMatrix)b).A);
     }
 
     @Override
@@ -82,7 +88,7 @@ public class NaiveMatrix implements Matrix{
     @Override
     public void subtract_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
-        A=A.minus(((NaiveMatrix)b).A);
+        A.minusEquals(((NaiveMatrix)b).A);
     }
 
     @Override
@@ -116,7 +122,7 @@ public class NaiveMatrix implements Matrix{
                         else b.set(i, j, ZERO);
                     }
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
-        A=A.arrayRightDivide(((NaiveMatrix)b).A);
+        A.arrayRightDivideEquals(((NaiveMatrix)b).A);	
     }
 
     @Override
@@ -124,7 +130,7 @@ public class NaiveMatrix implements Matrix{
     	int n=A.getRowDimension(),m=A.getColumnDimension();
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         for(int i=0;i<n;i++)
-        for(int j=0;j<m;j++)
+        	for(int j=0;j<m;j++)
             M.A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
     	return M;
     }
@@ -133,7 +139,7 @@ public class NaiveMatrix implements Matrix{
     public void sqrt_assign(){
     	int n=A.getRowDimension(),m=A.getColumnDimension();
         for(int i=0;i<n;i++)
-        for(int j=0;j<m;j++)
+        	for(int j=0;j<m;j++)
             A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
     }
 
@@ -246,7 +252,7 @@ public class NaiveMatrix implements Matrix{
 
     @Override
     public void times_assign(double lambda) {
-        A=A.times(lambda);
+        A.timesEquals(lambda);
     }
 
     @Override
