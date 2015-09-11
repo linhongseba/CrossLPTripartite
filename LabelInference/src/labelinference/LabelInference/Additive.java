@@ -90,27 +90,22 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 	 */
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        Map<Vertex.Type,Matrix> A=new HashMap<>();
-        Matrix emptyMat=mf.creatMatrix(k, k);
-        for(Vertex.Type type:Vertex.types)
-            for(Vertex u:candS)
-                if(u.getType()!=type)
-                    A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
-        //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
-        
         Map<Vertex, Matrix> Y=new HashMap<>();
         alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
+            Matrix A=mf.creatMatrix(k,k);
+            for(Vertex v:u.getNeighbors()) {
+                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
+                A=A.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(v.getLabel().transpose()).times(B.get(u.getType()).get(v.getType()).transpose()));
+            }
+            
+            double L=A.norm(Matrix.FROBENIUS_NORM);
             double eta=(alphaNext+alpha-1)/alphaNext/L;
             //System.out.println(A.get(u.getType()));
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
-            
-            for(Vertex v:u.getNeighbors())
-                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
-            Matrix t=A.get(u.getType()).times(u.getLabel()).times(2);
-            label=label.subtract(t.times(label.norm(Matrix.FIRST_NORM)/t.norm(Matrix.FIRST_NORM))).times(1/maxE);
+            Matrix t=A.times(u.getLabel()).times(2);
+            label=label.subtract(t);
             if(u.isY0())label=label.add(Y0.get(u)).subtract(u.getLabel());
             label=u.getLabel().add(label.times(2*eta)).normalize();
             //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|

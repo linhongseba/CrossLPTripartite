@@ -36,21 +36,26 @@ public class Graph {
         c2type.put((int)'B', Vertex.typeB);
         c2type.put((int)'C', Vertex.typeC);
         try {
+            double maxE=0;
             while(in.hasNext()) {
-                    String vid=in.next();
-                    int nNei=in.nextInt();
-                    Matrix label=matrixFactory.creatMatrix(numLabels, 1);
-                    for(int row=0;row<numLabels;row++)label.set(row, 0, in.nextDouble());
-                    if(findVertexByID(vid)==null)addVertex(new Vertex(vid));
-                    Vertex vertex=findVertexByID(vid);
-                    vertex.init(c2type.get((int)vid.charAt(0)),label,label.norm(Matrix.FIRST_NORM)>0.5);
-                    for(int j=0;j<nNei;j++) {
-                        String nid=in.next();
-                        double weight=in.nextDouble();
-                        if(findVertexByID(nid)==null)addVertex(new Vertex(nid));
-                        vertex.addEdge(findVertexByID(nid), weight);
-                    }
+                String vid=in.next();
+                int nNei=in.nextInt();
+                Matrix label=matrixFactory.creatMatrix(numLabels, 1);
+                for(int row=0;row<numLabels;row++)label.set(row, 0, in.nextDouble());
+                if(findVertexByID(vid)==null)addVertex(new Vertex(vid));
+                Vertex vertex=findVertexByID(vid);
+                vertex.init(c2type.get((int)vid.charAt(0)),label,label.norm(Matrix.FIRST_NORM)>0.5);
+                for(int j=0;j<nNei;j++) {
+                    String nid=in.next();
+                    double weight=in.nextDouble();
+                    if(findVertexByID(nid)==null)addVertex(new Vertex(nid));
+                    vertex.addEdge(findVertexByID(nid), weight);
+                    if(weight>maxE)maxE=weight;
+                }
             }
+            for(Vertex v:this.getVertices())
+                for(Vertex u:v.getNeighbors())
+                    v.addEdge(u, v.getEdge(u)/maxE);
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     

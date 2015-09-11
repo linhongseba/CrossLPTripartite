@@ -76,21 +76,16 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
      @Override
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        Map<Vertex.Type,Matrix> A=new HashMap<>();
-        Matrix emptyMat=mf.creatMatrix(k, k);
-        for(Vertex.Type type:Vertex.types)
-            for(Vertex u:candS)
-                if(u.getType()!=type)
-                    A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
-        //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
-        
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            for(Vertex v:u.getNeighbors())
+            Matrix A=mf.creatMatrix(k,k);
+            for(Vertex v:u.getNeighbors()) {
                 label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
-            if(u.isY0())label=label.times(1.0/maxE).add(Y0.get(u)).divide(A.get(u.getType()).times(u.getLabel()).add(u.getLabel()));
-            else label=label.times(1.0/maxE).divide(A.get(u.getType()).times(u.getLabel()));
+                A=A.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(v.getLabel().transpose()).times(B.get(u.getType()).get(v.getType()).transpose()));
+            }
+            if(u.isY0())label=label.add(Y0.get(u)).divide(A.times(u.getLabel()).add(u.getLabel()));
+            else label=label.divide(A.times(u.getLabel()));
             label=u.getLabel().cron(label.sqrt()).normalize();
             Y.put(u, label);
             //Y(u)=Y(u)\circ\sqrt{\frac{\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}/maxE+1_{YL}*Y0(u)}{A_{t(u)}+1_{YL}*Y(u)}}
