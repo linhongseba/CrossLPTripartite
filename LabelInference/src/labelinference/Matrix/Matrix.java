@@ -19,19 +19,19 @@ public interface Matrix {
     
     Matrix times(Matrix b) throws DimensionNotAgreeException;
     Matrix times(double lambda);
-    void times_assign(Matrix b) throws DimensionNotAgreeException;
-    void times_assign(double lambda);
+    Matrix times_assign(Matrix b) throws DimensionNotAgreeException;
+    Matrix times_assign(double lambda);
     Matrix copy();
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
-    void cron_assign(Matrix b) throws DimensionNotAgreeException;
+    Matrix cron_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix add(Matrix b) throws DimensionNotAgreeException;
-    void add_assign(Matrix b) throws DimensionNotAgreeException;
+    Matrix add_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix subtract(Matrix b) throws DimensionNotAgreeException;
-    void subtract_assign(Matrix b) throws DimensionNotAgreeException;
+    Matrix subtract_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix divide(Matrix b) throws DimensionNotAgreeException;
-    void divide_assign(Matrix b) throws DimensionNotAgreeException;
+    Matrix divide_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix sqrt() throws DimensionNotAgreeException;
-    void sqrt_assign() throws DimensionNotAgreeException;
+    Matrix sqrt_assign() throws DimensionNotAgreeException;
     double get(int row,int col) throws ColumnOutOfRangeException,RowOutOfRangeException;
     Matrix getRow(int row) throws RowOutOfRangeException;
     Matrix getCol(int col) throws ColumnOutOfRangeException;
@@ -43,7 +43,7 @@ public interface Matrix {
     Matrix adjoint () throws DimensionNotAgreeException;
     Matrix transpose();
     Matrix normalize();
-    void normalize_assign();
+    Matrix normalize_assign();
     double norm(Norm normName);
     double trace() throws DimensionNotAgreeException;
     

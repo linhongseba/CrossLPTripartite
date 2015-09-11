@@ -44,9 +44,10 @@ public class NaiveMatrix implements Matrix{
     }
     
     @Override
-    public void times_assign(Matrix b) throws DimensionNotAgreeException {
+    public Matrix times_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getColumnDimension()!=((NaiveMatrix)b).A.getRowDimension())throw new DimensionNotAgreeException();
         A=A.times(((NaiveMatrix)b).A);
+        return this;
     }
 
     @Override
@@ -58,9 +59,10 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public void cron_assign(Matrix b) throws DimensionNotAgreeException {
+    public Matrix cron_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
         A.arrayTimesEquals(((NaiveMatrix)b).A);
+        return this;
     }
 
     @Override
@@ -72,9 +74,10 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public void add_assign(Matrix b) throws DimensionNotAgreeException {
+    public Matrix add_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
         A.plusEquals(((NaiveMatrix)b).A);
+        return this;
     }
 
     @Override
@@ -86,9 +89,10 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public void subtract_assign(Matrix b) throws DimensionNotAgreeException {
+    public Matrix subtract_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
         A.minusEquals(((NaiveMatrix)b).A);
+        return this;
     }
 
     @Override
@@ -110,7 +114,7 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public void divide_assign(Matrix b) throws DimensionNotAgreeException {
+    public Matrix divide_assign(Matrix b) throws DimensionNotAgreeException {
         if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
         int n=A.getRowDimension(),m=A.getColumnDimension();
         final double ZERO=1e-9;
@@ -123,6 +127,7 @@ public class NaiveMatrix implements Matrix{
                     }
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         A.arrayRightDivideEquals(((NaiveMatrix)b).A);	
+        return this;
     }
 
     @Override
@@ -136,11 +141,12 @@ public class NaiveMatrix implements Matrix{
     }
     
     @Override
-    public void sqrt_assign(){
+    public Matrix sqrt_assign(){
     	int n=A.getRowDimension(),m=A.getColumnDimension();
         for(int i=0;i<n;i++)
         	for(int j=0;j<m;j++)
             A.set(i,j,java.lang.Math.sqrt(A.get(i,j)));
+        return this;
     }
 
     @Override
@@ -251,8 +257,9 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
-    public void times_assign(double lambda) {
+    public Matrix times_assign(double lambda) {
         A.timesEquals(lambda);
+        return this;
     }
 
     @Override
@@ -278,7 +285,7 @@ public class NaiveMatrix implements Matrix{
     }
     
     @Override
-    public void normalize_assign(){
+    public Matrix normalize_assign(){
         final double ZERO=1e-9;
         double sum=0;
         double min=0;
@@ -295,6 +302,7 @@ public class NaiveMatrix implements Matrix{
         for(int col=0;col<A.getColumnDimension();col++)
             for(int row=0;row<A.getRowDimension();row++)
                 A.set(row, col, A.get(row, col)/sum);
+        return this;
 }
 
     @Override
