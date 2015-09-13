@@ -62,9 +62,9 @@ public abstract class AbstractLabelInference implements LabelInference{
         try {
             for(Vertex u:g.getVertices(v->v.isY0()))
                 for(Vertex v:u.getNeighbors())if(v.isY0())
-                    B.get(u.getType()).put(v.getType(), B.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose())));
+                    B.get(u.getType()).get(v.getType()).add_assign(u.getLabel().times(v.getLabel().transpose()));
             for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)
-                B.get(t0).put(t1, B.get(t0).get(t1).normalize());
+                B.get(t0).get(t1).normalize_assign();
         } catch (DimensionNotAgreeException ex) {
             Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -88,6 +88,7 @@ public abstract class AbstractLabelInference implements LabelInference{
         double delta; //the variable denotes the difference between Y and last produced Y.
         double oldObj=0;
         double obj;
+        double deltaObj;
         
         int iter=0; //the variable controls the iteration times.
         oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
@@ -97,21 +98,15 @@ public abstract class AbstractLabelInference implements LabelInference{
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
             Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
-            for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
-            
+            delta=0;
+            for(Vertex u:g.getVertices())
+                delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
             obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-
-            //            delta = (oldObj-obj)/g.getVertices().size();
-            delta = (oldObj-obj);
+            deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
             
-            if (iter > 0) {
-                // y-delta goese here...
-                
-                // obj delta
-                if (delta <= nuance)
-                    break;
-            }
+            if (iter>0 && (delta<=nuance || deltaObj<=nuance))break;
+            for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
             
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;

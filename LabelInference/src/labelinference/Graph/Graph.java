@@ -23,8 +23,6 @@ import labelinference.exceptions.RowOutOfRangeException;
 public class Graph {
     private final Map<String, Vertex> vertices;
     private final int numLabels;
-    private final Map<Vertex, Matrix> RINIT=new HashMap<>();
-    private final Map<Vertex, Matrix> GINIT=new HashMap<>();
     
     public Graph(String path) throws FileNotFoundException {
         vertices=new HashMap<>();
