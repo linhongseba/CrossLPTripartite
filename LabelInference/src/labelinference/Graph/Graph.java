@@ -55,7 +55,7 @@ public class Graph {
             }
             for(Vertex v:this.getVertices())
                 for(Vertex u:v.getNeighbors())
-                    v.addEdge(u, v.getEdge(u)/maxE);
+                    u.addEdge(v, v.getEdge(u)/maxE);
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     
