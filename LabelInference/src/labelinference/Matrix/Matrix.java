@@ -21,6 +21,7 @@ public interface Matrix {
     Matrix times(double lambda);
     Matrix times_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix times_assign(double lambda);
+    double innerProduct(Matrix b)throws DimensionNotAgreeException,ColumnOutOfRangeException,RowOutOfRangeException;
     Matrix copy();
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
     Matrix cron_assign(Matrix b) throws DimensionNotAgreeException;

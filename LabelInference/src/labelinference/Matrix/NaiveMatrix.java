@@ -51,6 +51,15 @@ public class NaiveMatrix implements Matrix{
     }
 
     @Override
+    public double innerProduct(Matrix b) throws DimensionNotAgreeException, ColumnOutOfRangeException, RowOutOfRangeException {
+        if(A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension())throw new DimensionNotAgreeException();
+        if(A.getColumnDimension()!=1 || ((NaiveMatrix)b).A.getColumnDimension()!=1)throw new DimensionNotAgreeException();
+        double ret=0;
+        for(int row=0;row<A.getRowDimension();row++)ret+=this.get(row, 0)*b.get(row, 0);
+        return ret;
+    }
+    
+    @Override
     public Matrix cron(Matrix b) throws DimensionNotAgreeException {
         NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
         if(M.A.getRowDimension()!=((NaiveMatrix)b).A.getRowDimension()||M.A.getColumnDimension()!=((NaiveMatrix)b).A.getColumnDimension())throw new DimensionNotAgreeException();
