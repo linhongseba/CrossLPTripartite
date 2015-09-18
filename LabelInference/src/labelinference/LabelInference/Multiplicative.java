@@ -64,8 +64,7 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
                 .times(u.getLabel().transpose())
                 .times_assign(B.get(u.getType()).get(v.getType()))
                 .times_assign(v.getLabel())
-                .times_assign(v.getLabel().transpose())
-                .times_assign(u.getEdge(v)));
+                .times_assign(v.getLabel().transpose()));
         }
         //dBup_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
         //dBdown_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')

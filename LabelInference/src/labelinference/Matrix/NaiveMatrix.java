@@ -341,4 +341,43 @@ public class NaiveMatrix implements Matrix{
         for(int r=0;r<A.getColumnDimension();r++)ret+=A.get(r, r);
         return ret;
     }
+
+    @Override
+    public Matrix projectpositive() {
+         final double ZERO=1e-9;
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+         for(int col=0;col<A.getColumnDimension();col++){
+             for(int row=0;row<A.getRowDimension();row++){
+                 if(A.get(row, col)>ZERO){
+                     A.set(row, col, A.get(row, col));
+                 }else{
+                     A.set(row, col, ZERO);
+                 }
+             }
+         }             
+    	return M;
+    }
+
+    @Override
+    public Matrix projectpositive_assign() {
+       final double ZERO=1e-9;
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                if(A.get(row, col)<ZERO){
+                    A.set(row, col, ZERO);
+                }
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        final double ZERO=1e-9;
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                    A.set(row, col, ZERO);
+            }
+        }
+    }
 }

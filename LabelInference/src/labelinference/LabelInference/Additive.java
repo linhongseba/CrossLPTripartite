@@ -73,14 +73,12 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                 .times(u.getLabel().transpose())
                 .times_assign(B.get(u.getType()).get(v.getType()))
                 .times_assign(v.getLabel())
-                .times_assign(v.getLabel().transpose())
-                .times_assign(u.getEdge(v)));
+                .times_assign(v.getLabel().transpose()));
             L.get(u.getType()).get(v.getType()).add_assign(
                 u.getLabel()
                 .times(u.getLabel().transpose())
                 .times_assign(v.getLabel())
-                .times_assign(v.getLabel().transpose())
-                .times_assign(u.getEdge(v)));
+                .times_assign(v.getLabel().transpose()));
         }
         //dBleft_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
         //dBright_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
@@ -109,9 +107,10 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex, Matrix> Y=new HashMap<>();
         alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
+        Matrix A=mf.creatMatrix(k,k); //reuse space generate
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            Matrix A=mf.creatMatrix(k,k);
+            A.reset();//reset ench entry of A into Zero
             for(Vertex v:u.getNeighbors()) {
                 label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
                 A.add_assign(
@@ -125,10 +124,10 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             double eta=(alphaNext+alpha-1)/alphaNext/L;
             //System.out.println(A.get(u.getType()));
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
-            Matrix t=A.times_assign(u.getLabel()).times_assign(2);
+            Matrix t=A.times_assign(u.getLabel());
             label.subtract_assign(t);
             if(u.isY0())label.add_assign(Y0.get(u)).subtract_assign(u.getLabel());
-            label.times_assign(2*eta).add_assign(u.getLabel()).normalize_assign();
+            label.times_assign(eta).add_assign(u.getLabel()).normalize_assign();
             //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
             Y.put(u, label);
         }

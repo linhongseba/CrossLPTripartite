@@ -69,7 +69,6 @@ public interface LabelInference {
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     	Double obj=0.0;
     	Double lableObj = 0.0;
-    	int cnt = 0;
     	
     	//obj=\Sigma {(G(u,v)-Y(u)^T*B_{t(u)t(v)}*Y(v))}+1_{YL(u)}*\|Y0(v)-Y(v)\|_F^2  (v \in  cand,u \in N(v))
         for(Vertex v:cand) {
@@ -77,11 +76,10 @@ public interface LabelInference {
                 obj+=pow(v.getEdge(u)-v.getLabel().transpose()
                                         .times_assign(B.get(u.getType()).get(v.getType()))
                                         .times_assign(u.getLabel()).get(0, 0),2);
-                cnt++;
             }
             if(v.isY0()) lableObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
         }
-        obj = Math.sqrt(obj/cnt);
+        obj = Math.sqrt(obj);
         return obj + lableObj;
     }
 
