@@ -13,6 +13,7 @@ public:
     std::vector<vertex*> verts;
     std::unordered_map<std::string,int> id2v;
     int k;
+    int NoE;
     
     graph(std::string path);
     void addVertex(vertex* v);
@@ -33,11 +34,13 @@ graph::graph(std::string path) {
 
     std::istringstream fin(buffer);
     fin>>k;
+    NoE=0;
     std::string vid,nid;
     int nNei;
     double maxE=0,w;
     while(!fin.eof()) {
         fin>>vid>>nNei;
+        NoE+=nNei;
         if(id2v.find(vid)==id2v.end())addVertex(new vertex(vid,k));
         vertex &v=*verts[id2v[vid]];
         fin>>v.truth;
@@ -79,7 +82,7 @@ inline void graph::dispAccuracy() {
         crt+=v->correct();
         tot+=k;
     }
-    std::cout<<crt<<'/'<<tot<<std::endl;
+    std::cout<<"Accuracy = "<<crt<<'/'<<tot<<std::endl;
 }
 
 template<class Slt>

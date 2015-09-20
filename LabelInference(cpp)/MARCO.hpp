@@ -12,5 +12,8 @@
 #define AR additiveRule
 #define AO additiveOld
 #define LP labelPropagation
-#define MAX_THR 50 
+#define MAX_THR 500
+#define MIN_THR 1
+#define THR_CTRL 30
+#define SET_THR_NUM(Ek) thrNum=std::max(MIN_THR,std::min(MAX_THR,(int)std::sqrt(Ek)/THR_CTRL))
 #endif

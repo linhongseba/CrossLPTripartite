@@ -3,10 +3,13 @@
 #include"additiveOld.hpp"
 class additiveRule:public additiveOld {
 private:
-    matrix dBleft[MAX_THR][3][3],dBright[MAX_THR][3][3],L[MAX_THR][3][3];
+    std::vector<std::array<std::array<matrix,3>,3> > dBleft,dBright,L;
     double alphaB,alphaBNext;
 public:
     additiveRule(graph* g):additiveOld(g),alphaB(0) {
+    	dBleft.resize(thrNum);
+    	dBright.resize(thrNum);
+    	L.resize(thrNum);
     }
     
     void updateB() {
@@ -14,7 +17,7 @@ public:
         double etac=(alphaYNext+alphaY-1)/alphaYNext;
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1) {
             newB[t0][t1]=empty;
-            fore(t,MAX_THR) {
+            fore(t,thrNum) {
                 dBleft[t][t0][t1]=empty;
                 dBright[t][t0][t1]=empty;
                 L[t][t0][t1]=empty;
@@ -31,7 +34,7 @@ public:
             }
         });
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1) {
-            for(int t=1;t<MAX_THR;t++) {
+            for(int t=1;t<thrNum;t++) {
                 dBleft[0][t0][t1]+=dBleft[t][t0][t1];
                 dBright[0][t0][t1]+=dBright[t][t0][t1];
                 L[0][t0][t1]+=L[t][t0][t1];

@@ -5,16 +5,18 @@
 class additiveOld:public inference {
 protected:
     double alphaY,alphaYNext,etac_L[3];
-    matrix A[MAX_THR][3];
+    std::vector<std::array<matrix,3> > A;
 public:
     additiveOld(graph* g):inference(g),alphaY(1) {
+    	A.resize(thrNum);
+    	for(auto t0:TYPES)fore(t,thrNum)A[t][t0]=empty;
     }
 
     void updateB() {
     }
 
     void updateY() {
-    	for(int t0:TYPES)fore(t,MAX_THR)A[t][t0]=empty;
+    	for(int t0:TYPES)fore(t,thrNum)A[t][t0]=empty;
         multiRun(cand, [&](vertex* u, int thrID){
             for(const auto& e:u->edges) {
                 const auto& v=e.neighbor;
@@ -24,7 +26,7 @@ public:
     	alphaYNext=(1+sqrt(4*alphaY*alphaY+1))/2;
     	double etac=(alphaYNext+alphaY-1)/alphaYNext;
     	for(int t0:TYPES) {
-    		for(int t=1;t<MAX_THR;t++)A[0][t0]+=A[t][t0];
+    		for(int t=1;t<thrNum;t++)A[0][t0]+=A[t][t0];
 			etac_L[t0]=2*etac/(A[0][t0]||matrix::NORMF);
     	}
 		
