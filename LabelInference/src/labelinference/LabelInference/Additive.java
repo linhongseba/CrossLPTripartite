@@ -77,8 +77,8 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             L.get(u.getType()).get(v.getType()).add_assign(
                 u.getLabel()
                 .times(u.getLabel().transpose())
-                .times_assign(v.getLabel())
-                .times_assign(v.getLabel().transpose()));
+                .times(v.getLabel())
+                .times(v.getLabel().transpose()));
         }
         //dBleft_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
         //dBright_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
@@ -95,6 +95,33 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             //B_{tt'}=B_{tt'}+\eta_b(dBleft_{tt'}-dBright_{tt'})/maxE
             //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
         }
+        
+        try {
+            final double ZERO=1e-9;
+            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) {
+                double maxItem=0;
+                double minItem=0;
+                Matrix curB=B.get(t0).get(t1);
+                for(int row=0;row<k;row++)
+                    for(int col=0;col<k;col++) {
+                        double curItem=curB.get(row, col);
+                        if(curItem>maxItem)maxItem=curItem;
+                        if(curItem<minItem)minItem=curItem;
+                    }
+                if(minItem<ZERO) {
+                    if(minItem>0)minItem=-ZERO;
+                    maxItem-=2*minItem;
+                    for(int row=0;row<k;row++)
+                        for(int col=0;col<k;col++)
+                            curB.set(row, col, (curB.get(row, col)-2*minItem)/maxItem);
+                }
+                else { 
+                    for(int row=0;row<k;row++)
+                        for(int col=0;col<k;col++)
+                            curB.set(row, col, curB.get(row, col)/maxItem);
+                }
+            }
+        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     
     @Override
@@ -105,26 +132,34 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 	 */
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
+        Map<Vertex.Type,Matrix> A=new HashMap<>();
+        for(Vertex.Type type:Vertex.types) {
+            A.put(type, mf.creatMatrix(k, k));
+            for(Vertex u:candS)
+                if(u.getType()!=type)
+                    A.get(type).add_assign(
+                        B.get(type).get(u.getType())
+                        .times(u.getLabel())
+                        .times_assign(u.getLabel().transpose())
+                        .times_assign(B.get(type).get(u.getType()).transpose()));
+        }
+        //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
+        
         Map<Vertex, Matrix> Y=new HashMap<>();
         alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
-        Matrix A=mf.creatMatrix(k,k); //reuse space generate
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            A.reset();//reset ench entry of A into Zero
-            for(Vertex v:u.getNeighbors()) {
-                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
-                A.add_assign(
-                    B.get(u.getType()).get(v.getType())
-                    .times(v.getLabel())
-                    .times_assign(v.getLabel().transpose())
-                    .times_assign(B.get(u.getType()).get(v.getType()).transpose()));
-            }
-            
-            double L=A.norm(Matrix.FROBENIUS_NORM);
+            double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
             double eta=(alphaNext+alpha-1)/alphaNext/L;
             //System.out.println(A.get(u.getType()));
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
-            Matrix t=A.times_assign(u.getLabel());
+            
+            for(Vertex v:u.getNeighbors())
+                label.add_assign(
+                    B.get(u.getType()).get(v.getType())
+                    .times(v.getLabel())
+                    .times_assign(u.getEdge(v)));
+            Matrix t=A.get(u.getType()).times(u.getLabel());
             label.subtract_assign(t);
             if(u.isY0())label.add_assign(Y0.get(u)).subtract_assign(u.getLabel());
             label.times_assign(eta).add_assign(u.getLabel()).normalize_assign();

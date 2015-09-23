@@ -49,7 +49,7 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param _labelInit: initial labeled vertices
     */	    
     public AbstractLabelInference(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
-        
+        final double ZERO=1e-9;
         g=_g;
         k=g.getNumLabels();
         labelInit=_labelInit;
@@ -61,10 +61,33 @@ public abstract class AbstractLabelInference implements LabelInference{
         try {
             for(Vertex u:g.getVertices(v->v.isY0()))
                 for(Vertex v:u.getNeighbors())if(v.isY0())
-                    B.get(u.getType()).get(v.getType()).add_assign(u.getLabel().times(v.getLabel().transpose()));
-            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)
-                B.get(t0).get(t1).normalize_assign();
-        } catch (DimensionNotAgreeException ex) {
+                    B.get(u.getType()).get(v.getType()).add_assign(
+                        u.getLabel()
+                        .times(v.getLabel().transpose()));
+            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) {
+                double maxItem=0;
+                double minItem=0;
+                Matrix curB=B.get(t0).get(t1);
+                for(int row=0;row<k;row++)
+                    for(int col=0;col<k;col++) {
+                        double curItem=curB.get(row, col);
+                        if(curItem>maxItem)maxItem=curItem;
+                        if(curItem<minItem)minItem=curItem;
+                    }
+                if(minItem<ZERO) {
+                    if(minItem>0)minItem=-ZERO;
+                    maxItem-=2*minItem;
+                    for(int row=0;row<k;row++)
+                        for(int col=0;col<k;col++)
+                            curB.set(row, col, (curB.get(row, col)-2*minItem)/maxItem);
+                }
+                else { 
+                    for(int row=0;row<k;row++)
+                        for(int col=0;col<k;col++)
+                            curB.set(row, col, curB.get(row, col)/maxItem);
+                }
+            }
+        } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
             Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
