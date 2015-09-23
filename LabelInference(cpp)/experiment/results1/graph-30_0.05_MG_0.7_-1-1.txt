@@ -1,0 +1,1033 @@
+----------Computing----------
+Iter = 0
+Size = 6908
+Delta = 0.000000
+ObjValue = 1887.492024
+
+Iter = 1
+Size = 6908
+Delta = 0.030097
+ObjValue = 3022.171529
+
+Iter = 2
+Size = 6908
+Delta = 0.025846
+ObjValue = 3690.217666
+
+Iter = 3
+Size = 6908
+Delta = 0.022394
+ObjValue = 3983.144327
+
+Iter = 4
+Size = 6908
+Delta = 0.019763
+ObjValue = 4072.286467
+
+Iter = 5
+Size = 6908
+Delta = 0.017762
+ObjValue = 4073.396343
+
+Iter = 6
+Size = 6908
+Delta = 0.016175
+ObjValue = 4044.250548
+
+Iter = 7
+Size = 6908
+Delta = 0.014883
+ObjValue = 4009.345657
+
+Iter = 8
+Size = 6908
+Delta = 0.013827
+ObjValue = 3977.843284
+
+Iter = 9
+Size = 6908
+Delta = 0.012970
+ObjValue = 3952.142178
+
+Iter = 10
+Size = 6908
+Delta = 0.012279
+ObjValue = 3931.774868
+
+Iter = 11
+Size = 6908
+Delta = 0.011737
+ObjValue = 3915.554538
+
+Iter = 12
+Size = 6908
+Delta = 0.011315
+ObjValue = 3902.519475
+
+Iter = 13
+Size = 6908
+Delta = 0.010984
+ObjValue = 3892.048892
+
+Iter = 14
+Size = 6908
+Delta = 0.010729
+ObjValue = 3883.672004
+
+Iter = 15
+Size = 6908
+Delta = 0.010538
+ObjValue = 3876.932758
+
+Iter = 16
+Size = 6908
+Delta = 0.010397
+ObjValue = 3871.406673
+
+Iter = 17
+Size = 6908
+Delta = 0.010301
+ObjValue = 3866.816355
+
+Iter = 18
+Size = 6908
+Delta = 0.010254
+ObjValue = 3863.095756
+
+Iter = 19
+Size = 6908
+Delta = 0.010260
+ObjValue = 3860.295018
+
+Iter = 20
+Size = 6908
+Delta = 0.010313
+ObjValue = 3858.394228
+
+Iter = 21
+Size = 6908
+Delta = 0.010396
+ObjValue = 3857.216890
+
+Iter = 22
+Size = 6908
+Delta = 0.010487
+ObjValue = 3856.516276
+
+Iter = 23
+Size = 6908
+Delta = 0.010572
+ObjValue = 3856.082236
+
+Iter = 24
+Size = 6908
+Delta = 0.010640
+ObjValue = 3855.782486
+
+Iter = 25
+Size = 6908
+Delta = 0.010676
+ObjValue = 3855.569061
+
+Iter = 26
+Size = 6908
+Delta = 0.010665
+ObjValue = 3855.467600
+
+Iter = 27
+Size = 6908
+Delta = 0.010585
+ObjValue = 3855.525825
+
+Iter = 28
+Size = 6908
+Delta = 0.010402
+ObjValue = 3855.752246
+
+Iter = 29
+Size = 6908
+Delta = 0.010072
+ObjValue = 3856.121876
+
+Iter = 30
+Size = 6908
+Delta = 0.009539
+ObjValue = 3856.604622
+
+Iter = 31
+Size = 6908
+Delta = 0.008733
+ObjValue = 3857.159297
+
+Iter = 32
+Size = 6908
+Delta = 0.007579
+ObjValue = 3857.733017
+
+Iter = 33
+Size = 6908
+Delta = 0.006045
+ObjValue = 3858.281732
+
+Iter = 34
+Size = 6908
+Delta = 0.004233
+ObjValue = 3858.788809
+
+Iter = 35
+Size = 6908
+Delta = 0.002494
+ObjValue = 3859.268644
+
+Iter = 36
+Size = 6908
+Delta = 0.001313
+ObjValue = 3859.745247
+
+Iter = 37
+Size = 6908
+Delta = 0.000838
+ObjValue = 3860.231452
+
+Iter = 38
+Size = 6908
+Delta = 0.000734
+ObjValue = 3860.726295
+
+Iter = 39
+Size = 6908
+Delta = 0.000708
+ObjValue = 3861.214119
+
+Iter = 40
+Size = 6908
+Delta = 0.000686
+ObjValue = 3861.671295
+
+Iter = 41
+Size = 6908
+Delta = 0.000664
+ObjValue = 3862.082064
+
+Iter = 42
+Size = 6908
+Delta = 0.000640
+ObjValue = 3862.442029
+
+Iter = 43
+Size = 6908
+Delta = 0.000616
+ObjValue = 3862.750204
+
+Iter = 44
+Size = 6908
+Delta = 0.000592
+ObjValue = 3863.011399
+
+Iter = 45
+Size = 6908
+Delta = 0.000568
+ObjValue = 3863.245781
+
+Iter = 46
+Size = 6908
+Delta = 0.000547
+ObjValue = 3863.481814
+
+Iter = 47
+Size = 6908
+Delta = 0.000529
+ObjValue = 3863.736317
+
+Iter = 48
+Size = 6908
+Delta = 0.000513
+ObjValue = 3864.007990
+
+Iter = 49
+Size = 6908
+Delta = 0.000497
+ObjValue = 3864.296870
+
+Iter = 50
+Size = 6908
+Delta = 0.000484
+ObjValue = 3864.619502
+
+Iter = 51
+Size = 6908
+Delta = 0.000474
+ObjValue = 3864.991728
+
+Iter = 52
+Size = 6908
+Delta = 0.000464
+ObjValue = 3865.406332
+
+Iter = 53
+Size = 6908
+Delta = 0.000455
+ObjValue = 3865.844038
+
+Iter = 54
+Size = 6908
+Delta = 0.000446
+ObjValue = 3866.294653
+
+Iter = 55
+Size = 6908
+Delta = 0.000438
+ObjValue = 3866.758182
+
+Iter = 56
+Size = 6908
+Delta = 0.000431
+ObjValue = 3867.236232
+
+Iter = 57
+Size = 6908
+Delta = 0.000424
+ObjValue = 3867.728279
+
+Iter = 58
+Size = 6908
+Delta = 0.000417
+ObjValue = 3868.230067
+
+Iter = 59
+Size = 6908
+Delta = 0.000412
+ObjValue = 3868.731328
+
+Iter = 60
+Size = 6908
+Delta = 0.000406
+ObjValue = 3869.217751
+
+Iter = 61
+Size = 6908
+Delta = 0.000400
+ObjValue = 3869.672893
+
+Iter = 62
+Size = 6908
+Delta = 0.000393
+ObjValue = 3870.080524
+
+Iter = 63
+Size = 6908
+Delta = 0.000385
+ObjValue = 3870.429819
+
+Iter = 64
+Size = 6908
+Delta = 0.000377
+ObjValue = 3870.717767
+
+Iter = 65
+Size = 6908
+Delta = 0.000368
+ObjValue = 3870.947957
+
+Iter = 66
+Size = 6908
+Delta = 0.000358
+ObjValue = 3871.130059
+
+Iter = 67
+Size = 6908
+Delta = 0.000349
+ObjValue = 3871.281162
+
+Iter = 68
+Size = 6908
+Delta = 0.000341
+ObjValue = 3871.420960
+
+Iter = 69
+Size = 6908
+Delta = 0.000334
+ObjValue = 3871.559630
+
+Iter = 70
+Size = 6908
+Delta = 0.000327
+ObjValue = 3871.693201
+
+Iter = 71
+Size = 6908
+Delta = 0.000319
+ObjValue = 3871.812691
+
+Iter = 72
+Size = 6908
+Delta = 0.000310
+ObjValue = 3871.916242
+
+Iter = 73
+Size = 6908
+Delta = 0.000302
+ObjValue = 3872.013644
+
+Iter = 74
+Size = 6908
+Delta = 0.000294
+ObjValue = 3872.123332
+
+Iter = 75
+Size = 6908
+Delta = 0.000286
+ObjValue = 3872.265871
+
+Iter = 76
+Size = 6908
+Delta = 0.000281
+ObjValue = 3872.458409
+
+Iter = 77
+Size = 6908
+Delta = 0.000276
+ObjValue = 3872.706764
+
+Iter = 78
+Size = 6908
+Delta = 0.000273
+ObjValue = 3873.001445
+
+Iter = 79
+Size = 6908
+Delta = 0.000270
+ObjValue = 3873.324489
+
+Iter = 80
+Size = 6908
+Delta = 0.000268
+ObjValue = 3873.656385
+
+Iter = 81
+Size = 6908
+Delta = 0.000265
+ObjValue = 3873.980759
+
+Iter = 82
+Size = 6908
+Delta = 0.000262
+ObjValue = 3874.287577
+
+Iter = 83
+Size = 6908
+Delta = 0.000259
+ObjValue = 3874.574365
+
+Iter = 84
+Size = 6908
+Delta = 0.000255
+ObjValue = 3874.846513
+
+Iter = 85
+Size = 6908
+Delta = 0.000251
+ObjValue = 3875.114155
+
+Iter = 86
+Size = 6908
+Delta = 0.000248
+ObjValue = 3875.384607
+
+Iter = 87
+Size = 6908
+Delta = 0.000245
+ObjValue = 3875.655128
+
+Iter = 88
+Size = 6908
+Delta = 0.000243
+ObjValue = 3875.911541
+
+Iter = 89
+Size = 6908
+Delta = 0.000240
+ObjValue = 3876.136120
+
+Iter = 90
+Size = 6908
+Delta = 0.000236
+ObjValue = 3876.318397
+
+Iter = 91
+Size = 6908
+Delta = 0.000231
+ObjValue = 3876.460633
+
+Iter = 92
+Size = 6908
+Delta = 0.000227
+ObjValue = 3876.577445
+
+Iter = 93
+Size = 6908
+Delta = 0.000224
+ObjValue = 3876.688983
+
+Iter = 94
+Size = 6908
+Delta = 0.000221
+ObjValue = 3876.811679
+
+Iter = 95
+Size = 6908
+Delta = 0.000219
+ObjValue = 3876.952928
+
+Iter = 96
+Size = 6908
+Delta = 0.000217
+ObjValue = 3877.110166
+
+Iter = 97
+Size = 6908
+Delta = 0.000216
+ObjValue = 3877.273592
+
+Iter = 98
+Size = 6908
+Delta = 0.000215
+ObjValue = 3877.432903
+
+Iter = 99
+Size = 6908
+Delta = 0.000214
+ObjValue = 3877.580831
+
+Iter = 100
+Size = 6908
+Delta = 0.000213
+ObjValue = 3877.580831
+
+B_AB = {{1.006965 0.000000 }{0.000000 1.026142 }}
+B_AC = {{1.096444 0.000000 }{0.000000 1.124521 }}
+B_BA = {{1.006965 0.000000 }{0.000000 1.026142 }}
+B_BC = {{1.041314 0.000000 }{0.000000 1.042201 }}
+B_CA = {{1.096444 0.000000 }{0.000000 1.124521 }}
+B_CB = {{1.041314 0.000000 }{0.000000 1.042201 }}
+0.008438sec per iteration
+Old accuracy = 7452/8776
+
+---------Recomputing---------
+Iter = 0
+Size = 6908
+Delta = 0.000000
+ObjValue = 13282.144544
+
+Iter = 1
+Size = 6908
+Delta = 0.000898
+ObjValue = 12855.615654
+
+Iter = 2
+Size = 6908
+Delta = 0.000775
+ObjValue = 12676.901858
+
+Iter = 3
+Size = 6908
+Delta = 0.000665
+ObjValue = 12606.012078
+
+Iter = 4
+Size = 6908
+Delta = 0.000573
+ObjValue = 12581.575995
+
+Iter = 5
+Size = 6908
+Delta = 0.000501
+ObjValue = 12575.405687
+
+Iter = 6
+Size = 6908
+Delta = 0.000443
+ObjValue = 12576.475132
+
+Iter = 7
+Size = 6908
+Delta = 0.000392
+ObjValue = 12581.098492
+
+Iter = 8
+Size = 6908
+Delta = 0.000348
+ObjValue = 12586.231940
+
+Iter = 9
+Size = 6908
+Delta = 0.000318
+ObjValue = 12588.653685
+
+Iter = 10
+Size = 6908
+Delta = 0.000298
+ObjValue = 12590.841827
+
+Iter = 11
+Size = 6908
+Delta = 0.000276
+ObjValue = 12596.492995
+
+Iter = 12
+Size = 6908
+Delta = 0.000254
+ObjValue = 12601.769112
+
+Iter = 13
+Size = 6908
+Delta = 0.000234
+ObjValue = 12606.499022
+
+Iter = 14
+Size = 6908
+Delta = 0.000215
+ObjValue = 12610.829786
+
+Iter = 15
+Size = 6908
+Delta = 0.000200
+ObjValue = 12614.120873
+
+Iter = 16
+Size = 6908
+Delta = 0.000190
+ObjValue = 12616.446066
+
+Iter = 17
+Size = 6908
+Delta = 0.000182
+ObjValue = 12618.452441
+
+Iter = 18
+Size = 6908
+Delta = 0.000172
+ObjValue = 12620.572899
+
+Iter = 19
+Size = 6908
+Delta = 0.000161
+ObjValue = 12622.573167
+
+Iter = 20
+Size = 6908
+Delta = 0.000152
+ObjValue = 12623.448001
+
+Iter = 21
+Size = 6908
+Delta = 0.000147
+ObjValue = 12622.367065
+
+Iter = 22
+Size = 6908
+Delta = 0.000145
+ObjValue = 12620.433046
+
+Iter = 23
+Size = 6908
+Delta = 0.000143
+ObjValue = 12619.028477
+
+Iter = 24
+Size = 6908
+Delta = 0.000140
+ObjValue = 12618.403574
+
+Iter = 25
+Size = 6908
+Delta = 0.000135
+ObjValue = 12618.786926
+
+Iter = 26
+Size = 6908
+Delta = 0.000127
+ObjValue = 12620.145887
+
+Iter = 27
+Size = 6908
+Delta = 0.000120
+ObjValue = 12622.027033
+
+Iter = 28
+Size = 6908
+Delta = 0.000113
+ObjValue = 12623.965415
+
+Iter = 29
+Size = 6908
+Delta = 0.000110
+ObjValue = 12625.668658
+
+Iter = 30
+Size = 6908
+Delta = 0.000109
+ObjValue = 12626.984970
+
+Iter = 31
+Size = 6908
+Delta = 0.000111
+ObjValue = 12627.812995
+
+Iter = 32
+Size = 6908
+Delta = 0.000114
+ObjValue = 12628.180833
+
+Iter = 33
+Size = 6908
+Delta = 0.000116
+ObjValue = 12628.614661
+
+Iter = 34
+Size = 6908
+Delta = 0.000116
+ObjValue = 12629.470111
+
+Iter = 35
+Size = 6908
+Delta = 0.000119
+ObjValue = 12630.306803
+
+Iter = 36
+Size = 6908
+Delta = 0.000124
+ObjValue = 12631.017506
+
+Iter = 37
+Size = 6908
+Delta = 0.000126
+ObjValue = 12632.470891
+
+Iter = 38
+Size = 6908
+Delta = 0.000124
+ObjValue = 12634.523393
+
+Iter = 39
+Size = 6908
+Delta = 0.000122
+ObjValue = 12636.083185
+
+Iter = 40
+Size = 6908
+Delta = 0.000123
+ObjValue = 12636.190083
+
+Iter = 41
+Size = 6908
+Delta = 0.000122
+ObjValue = 12635.542299
+
+Iter = 42
+Size = 6908
+Delta = 0.000117
+ObjValue = 12636.214405
+
+Iter = 43
+Size = 6908
+Delta = 0.000108
+ObjValue = 12638.334980
+
+Iter = 44
+Size = 6908
+Delta = 0.000099
+ObjValue = 12640.735339
+
+Iter = 45
+Size = 6908
+Delta = 0.000091
+ObjValue = 12642.595601
+
+Iter = 46
+Size = 6908
+Delta = 0.000085
+ObjValue = 12643.744641
+
+Iter = 47
+Size = 6908
+Delta = 0.000079
+ObjValue = 12644.507590
+
+Iter = 48
+Size = 6908
+Delta = 0.000074
+ObjValue = 12645.240571
+
+Iter = 49
+Size = 6908
+Delta = 0.000068
+ObjValue = 12646.024239
+
+Iter = 50
+Size = 6908
+Delta = 0.000064
+ObjValue = 12646.763192
+
+Iter = 51
+Size = 6908
+Delta = 0.000061
+ObjValue = 12647.338339
+
+Iter = 52
+Size = 6908
+Delta = 0.000060
+ObjValue = 12647.705791
+
+Iter = 53
+Size = 6908
+Delta = 0.000059
+ObjValue = 12647.811298
+
+Iter = 54
+Size = 6908
+Delta = 0.000059
+ObjValue = 12647.657652
+
+Iter = 55
+Size = 6908
+Delta = 0.000058
+ObjValue = 12647.437408
+
+Iter = 56
+Size = 6908
+Delta = 0.000056
+ObjValue = 12647.070152
+
+Iter = 57
+Size = 6908
+Delta = 0.000055
+ObjValue = 12646.490732
+
+Iter = 58
+Size = 6908
+Delta = 0.000053
+ObjValue = 12645.897189
+
+Iter = 59
+Size = 6908
+Delta = 0.000053
+ObjValue = 12645.384363
+
+Iter = 60
+Size = 6908
+Delta = 0.000053
+ObjValue = 12645.039120
+
+Iter = 61
+Size = 6908
+Delta = 0.000054
+ObjValue = 12645.118043
+
+Iter = 62
+Size = 6908
+Delta = 0.000053
+ObjValue = 12645.712136
+
+Iter = 63
+Size = 6908
+Delta = 0.000050
+ObjValue = 12646.641248
+
+Iter = 64
+Size = 6908
+Delta = 0.000048
+ObjValue = 12647.642501
+
+Iter = 65
+Size = 6908
+Delta = 0.000045
+ObjValue = 12648.510868
+
+Iter = 66
+Size = 6908
+Delta = 0.000042
+ObjValue = 12649.143767
+
+Iter = 67
+Size = 6908
+Delta = 0.000040
+ObjValue = 12649.524375
+
+Iter = 68
+Size = 6908
+Delta = 0.000039
+ObjValue = 12649.691813
+
+Iter = 69
+Size = 6908
+Delta = 0.000037
+ObjValue = 12649.702548
+
+Iter = 70
+Size = 6908
+Delta = 0.000036
+ObjValue = 12649.589471
+
+Iter = 71
+Size = 6908
+Delta = 0.000035
+ObjValue = 12649.351980
+
+Iter = 72
+Size = 6908
+Delta = 0.000035
+ObjValue = 12649.001638
+
+Iter = 73
+Size = 6908
+Delta = 0.000035
+ObjValue = 12648.631398
+
+Iter = 74
+Size = 6908
+Delta = 0.000034
+ObjValue = 12648.380052
+
+Iter = 75
+Size = 6908
+Delta = 0.000033
+ObjValue = 12648.330194
+
+Iter = 76
+Size = 6908
+Delta = 0.000032
+ObjValue = 12648.467969
+
+Iter = 77
+Size = 6908
+Delta = 0.000030
+ObjValue = 12648.702716
+
+Iter = 78
+Size = 6908
+Delta = 0.000029
+ObjValue = 12648.913675
+
+Iter = 79
+Size = 6908
+Delta = 0.000029
+ObjValue = 12648.981003
+
+Iter = 80
+Size = 6908
+Delta = 0.000030
+ObjValue = 12648.833922
+
+Iter = 81
+Size = 6908
+Delta = 0.000032
+ObjValue = 12648.555258
+
+Iter = 82
+Size = 6908
+Delta = 0.000033
+ObjValue = 12648.317615
+
+Iter = 83
+Size = 6908
+Delta = 0.000034
+ObjValue = 12648.136677
+
+Iter = 84
+Size = 6908
+Delta = 0.000034
+ObjValue = 12647.860850
+
+Iter = 85
+Size = 6908
+Delta = 0.000034
+ObjValue = 12647.534922
+
+Iter = 86
+Size = 6908
+Delta = 0.000034
+ObjValue = 12647.446405
+
+Iter = 87
+Size = 6908
+Delta = 0.000036
+ObjValue = 12647.600068
+
+Iter = 88
+Size = 6908
+Delta = 0.000038
+ObjValue = 12648.027737
+
+Iter = 89
+Size = 6908
+Delta = 0.000037
+ObjValue = 12648.878829
+
+Iter = 90
+Size = 6908
+Delta = 0.000035
+ObjValue = 12649.883612
+
+Iter = 91
+Size = 6908
+Delta = 0.000032
+ObjValue = 12650.729714
+
+Iter = 92
+Size = 6908
+Delta = 0.000031
+ObjValue = 12651.317086
+
+Iter = 93
+Size = 6908
+Delta = 0.000030
+ObjValue = 12651.719803
+
+Iter = 94
+Size = 6908
+Delta = 0.000030
+ObjValue = 12652.069951
+
+Iter = 95
+Size = 6908
+Delta = 0.000029
+ObjValue = 12652.427941
+
+Iter = 96
+Size = 6908
+Delta = 0.000027
+ObjValue = 12652.770050
+
+Iter = 97
+Size = 6908
+Delta = 0.000026
+ObjValue = 12653.062123
+
+Iter = 98
+Size = 6908
+Delta = 0.000025
+ObjValue = 12653.308654
+
+Iter = 99
+Size = 6908
+Delta = 0.000024
+ObjValue = 12653.533987
+
+Iter = 100
+Size = 6908
+Delta = 0.000023
+ObjValue = 12653.533987
+
+B_AB = {{1.013658 0.000000 }{0.000000 1.005168 }}
+B_AC = {{1.098593 0.000000 }{0.000000 1.132858 }}
+B_BA = {{1.021245 0.000000 }{0.000000 1.015447 }}
+B_BC = {{1.046355 0.000000 }{0.000000 1.048703 }}
+B_CA = {{1.064035 0.000000 }{0.000000 1.043155 }}
+B_CB = {{1.071387 0.000000 }{0.000000 1.079402 }}
+0.026939sec per iteration
+Global accuracy = 18953/31554
+Incremental accuracy = 11389/22778
+
+Processed in 5.489578sec (1.704736sec for IO)
+Done.
