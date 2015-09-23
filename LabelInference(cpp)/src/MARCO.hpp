@@ -1,6 +1,6 @@
 #ifndef MARCO_CPP
 #define MARCO_CPP
-#define fore(i,s) for(int i=0;i<s;i++)
+#define fore(i,e) for(int i=0;i<e;i++)
 #define EPSILON 1e-9
 #define TYPE_A 0;
 #define TYPE_B 1;

@@ -7,22 +7,20 @@ private:
     std::vector<vertex*> candS;
 public:
     double alpha;
-    labelPropagation(graph* g):inference(g),alpha(0) {
+    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(0) {
     }
     
-    labelPropagation(graph* g, double alpha):inference(g),alpha(alpha) {
+    labelPropagation(graph* g):labelPropagation(g,inference::defaultLabelInit) {
+    }
+    
+    labelPropagation(graph* g, double alpha):inference(g,inference::defaultLabelInit),alpha(alpha) {
     }
 
     void updateB() {
     }
     
-    void getResult(int maxIter, double nuance, unsigned int disp) {
-        candS=g->verts;
-        inference::getResult(maxIter, nuance, disp);
-    }
-    
     void updateY() {
-        multiRun(candS,[&](vertex* u, int thrID){
+        multiRun(g->verts,[&](vertex* u, int thrID){
             for(int t:TYPES)-u->cache[t];
             for(const auto e:u->edges) {
                 const vertex* v=e.neighbor;

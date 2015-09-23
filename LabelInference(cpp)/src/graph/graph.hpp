@@ -15,13 +15,17 @@ public:
     int k;
     int NoE;
     
+    graph(int k);
     graph(std::string path);
     void addVertex(vertex* v);
-    void removeVertex(unsigned int index);
+    void removeVertex(vertex* v);
     void dispAccuracy();
     template<class Slt>
 	void select(double ratio);
 };
+
+graph::graph(int k):k(k) {
+}
 
 graph::graph(std::string path) {
 	std::ifstream ifs (path, std::ifstream::binary);
@@ -68,10 +72,10 @@ inline void graph::addVertex(vertex* v) {
     id2v[v->id]=verts.size()-1;
 }
 
-inline void graph::removeVertex(unsigned int index) {
+inline void graph::removeVertex(vertex* v) {
+	int index=id2v[v->id];
     std::swap(verts[index],*verts.rbegin());
-    delete *verts.rbegin();
-    id2v.erase(verts[index]->id);
+    id2v.erase(v->id);
     id2v[verts[index]->id]=index;
     verts.pop_back();
 }
@@ -82,7 +86,7 @@ inline void graph::dispAccuracy() {
         crt+=v->correct();
         tot+=k;
     }
-    std::cout<<"Accuracy = "<<crt<<'/'<<tot<<std::endl;
+    std::cout<<"accuracy = "<<crt<<'/'<<tot<<std::endl;
 }
 
 template<class Slt>

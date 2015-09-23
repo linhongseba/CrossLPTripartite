@@ -14,15 +14,18 @@ public:
     matrix label;
     matrix truth;
     matrix newLabel;
-    matrix cache[3];
+    matrix cache[3];//for LP
     type t;
     bool isY0;
     bool isTruth;
     std::vector<edge> edges;
-
+	std::unordered_map<std::string,int> id2v;
+	bool isCand;//for increase
+	
     vertex(std::string vid, int k);
     vertex(const vertex& b);
     void addEdge(vertex* b, double w);
+    void removeEdge(vertex* b, double w);
     int deg();
     int correct();
 };
@@ -41,7 +44,8 @@ vertex::vertex(std::string vid, int k):	sumE(0),
 										newLabel(k,1),
 										t(vid[0]-'A'),
 										isY0(false),
-										isTruth(false){
+										isTruth(false),
+										isCand(false){
 }
 
 vertex::vertex(const vertex& b):sumE(b.sumE),
@@ -56,7 +60,17 @@ vertex::vertex(const vertex& b):sumE(b.sumE),
 
 inline void vertex::addEdge(vertex* b, double w) {
     edges.push_back(edge(b,w));
+    id2v[b->id]=id2v.size()-1;
     sumE+=w;
+}
+
+inline void vertex::removeEdge(vertex* b, double w) {
+	sumE-=w;
+    int index=id2v[b->id];
+    std::swap(edges[index],*edges.rbegin());
+    id2v[edges[index].neighbor->id]=index;
+    id2v.erase(b->id);
+    edges.pop_back();
 }
 
 inline int vertex::deg() {

@@ -7,3 +7,4 @@ LabelInference/build/test/classes/.netbeans_update_resources
 LabelInference/build/classes/.netbeans_update_resources
 /LabelInference/dist/
 LabelInference/experiment/result.xls
+*.exe

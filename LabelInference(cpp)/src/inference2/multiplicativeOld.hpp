@@ -8,12 +8,15 @@ protected:
 	std::vector<std::array<matrix,3> > dBdown;
 	bool flagA;//whether A's cache (a.k.a. dBdown) is updated, since increase will not call updateB forwardly
 public:
-    multiplicativeOld(graph* g):inference(g),flagA(false) {
+    multiplicativeOld(graph* g,const std::function<void(matrix&)>& labelInit):inference(g,labelInit),flagA(false) {
     	dBdown.resize(thrNum);
     	for(int t0:TYPES) {
             fore(t,thrNum)dBdown[t][t0]=empty;
             A[t0]=empty;
         }
+    }
+    
+    multiplicativeOld(graph* g):multiplicativeOld(g,inference::defaultLabelInit) {
     }
 
     void updateB() {

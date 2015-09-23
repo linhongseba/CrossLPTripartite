@@ -7,9 +7,12 @@ protected:
     double alphaY,alphaYNext,etac_L[3];
     std::vector<std::array<matrix,3> > A;
 public:
-    additiveOld(graph* g):inference(g),alphaY(1) {
+    additiveOld(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alphaY(1) {
     	A.resize(thrNum);
     	for(auto t0:TYPES)fore(t,thrNum)A[t][t0]=empty;
+    }
+
+	additiveOld(graph* g):additiveOld(g,inference::defaultLabelInit) {
     }
 
     void updateB() {

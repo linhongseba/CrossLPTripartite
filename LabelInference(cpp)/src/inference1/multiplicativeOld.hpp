@@ -6,9 +6,12 @@ class multiplicativeOld:public inference {
 protected:
 	std::vector<std::array<matrix,3> > A;
 public:
-    multiplicativeOld(graph* g):inference(g) {
+    multiplicativeOld(graph* g,const std::function<void(matrix&)>& labelInit):inference(g,labelInit) {
     	A.resize(thrNum);
     	for(auto t0:TYPES)fore(t,thrNum)A[t][t0]=empty;
+    }
+
+	multiplicativeOld(graph* g):multiplicativeOld(g,inference::defaultLabelInit) {
     }
 
     void updateB() {

@@ -5,10 +5,13 @@ class multiplicativeRule:public multiplicativeOld {
 private:
     std::vector<std::array<std::array<matrix,3>,3> > dBup;
 public:
-    multiplicativeRule(graph* g):multiplicativeOld(g) {
+    multiplicativeRule(graph* g, const std::function<void(matrix&)>& labelInit):multiplicativeOld(g,labelInit) {
     	dBup.resize(thrNum);
     	for(int t0:TYPES)for(int t1:TYPES)fore(t,thrNum)
 			if(t0!=t1)dBup[t][t0][t1]=empty;
+    }
+    
+    multiplicativeRule(graph* g):multiplicativeRule(g,inference::defaultLabelInit) {
     }
     
     void updateB() {

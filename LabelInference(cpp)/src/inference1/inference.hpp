@@ -46,9 +46,9 @@ public:
     void multiRun(std::vector<vertex*>& verts, Fn fn, Args&&... args);
     virtual void updateB()=0;
     virtual void updateY()=0;
-    virtual void getResult(int maxIter, double nuance, unsigned int disp);
-    virtual void increase(std::vector<vertex*>& deltaGraph, int maxIter, double nuance, double a, int disp);
-    virtual void recompute(std::vector<vertex*>& deltaGraph, int maxIter, double nuance, int disp);
+    virtual void getResult(int maxIter, double nuance, unsigned int disp, std::function<void()> func=[&]{});
+    virtual void increase(graph* deltaGraph, int maxIter, double nuance, double a, int disp);
+    virtual void recompute(graph* deltaGraph, int maxIter, double nuance, int disp);
 };
 
 void inference::defaultLabelInit(matrix& label) {
@@ -71,27 +71,21 @@ inference::inference(graph* g,const std::function<void(matrix&)>& labelInit):g(g
     }
     sum.resize(thrNum);
 	fore(t,thrNum)for(auto t0:TYPES)sum[t][t0]=empty;
+	for(auto v:cand)if(!v->isY0)labelInit(v->label);
+	cand=g->verts;
 }
 
 double inference::objective() {
 	std::vector<double> obj(thrNum,0);
-	fore(t,thrNum)for(auto t0:TYPES)-sum[t][t0];
     multiRun(cand, [&](const vertex* u, int thrID){
-    	sum[thrID][u->t]+=u->label**u->label;
         for(const auto& e:u->edges) {
             const auto& v=e.neighbor;
             double YuT_Btutv_Yv=((*u->label)*B[u->t][v->t]*=v->label).data.front();
-            obj[thrID]+=pow((e.weight-YuT_Btutv_Yv),2)-YuT_Btutv_Yv*YuT_Btutv_Yv;
+            obj[thrID]+=pow((e.weight-YuT_Btutv_Yv),2);
         }
         if(u->isY0)obj[thrID]+=pow(u->truth-u->label||matrix::NORMF,2);
     });
-    for(int t=1;t<thrNum;t++) {
-    	obj[0]+=obj[t];
-    	for(auto t0:TYPES)sum[0][t0]+=sum[t][t0];
-    }
-    for(auto t0:TYPES)for(auto t1:TYPES)if(t0!=t1)
-    	fore(a,g->k)fore(b,g->k)fore(c,g->k)fore(d,g->k)
-    		obj[0]+=B[t0][t1][a][b]*B[t0][t1][c][d]*sum[0][t0][a][c]*sum[0][t1][b][d];
+    for(int t=1;t<thrNum;t++)obj[0]+=obj[t];
     return obj[0];
 }
 
@@ -102,11 +96,10 @@ void inference::infoDisplay(unsigned int disp, int iter, double delta,double tim
     if((disp&DISP_SIZE)!=0)cout<<"Size = "<<cand.size()<<endl;
     if((disp&DISP_DELTA)!=0)cout<<"Delta = "<<delta<<endl;
     if((disp&DISP_OBJ)!=0)cout<<"ObjValue = "<<obj<<endl;
+    if(disp!=DISP_NONE)cout<<endl;
     if((disp&DISP_LABEL)!=0)for(auto v:cand)cout<<*v<<endl;
-    if((disp&DISP_B)!=0) {
-        cout<<"B ="<<endl;
-        for(type t0:TYPES)for(type t1:TYPES)if(t0!=t1)cout<<B[t0][t1]<<endl;
-    }
+    if((disp&DISP_B)!=0)for(type t0:TYPES)for(type t1:TYPES)if(t0!=t1)
+		cout<<"B_"<<char('A'+t0)<<char('A'+t1)<<" = "<<B[t0][t1]<<endl;
     if((disp&DISP_TIME)!=0)cout<<time/iter<<"sec per iteration"<<endl;
 }
 
@@ -122,11 +115,8 @@ void inference::multiRun(std::vector<vertex*>& verts, Fn fn, Args&&... args) {
     for(auto& thr:thrs)thr.join();
 }
 
-void inference::getResult(int maxIter, double nuance, unsigned int disp) {
+void inference::getResult(int maxIter, double nuance, unsigned int disp, std::function<void()> func) {
     using namespace std::chrono;
-    cand=g->verts;
-    for(auto v:cand)if(!v->isY0)labelInit(v->label);
-    
     double timeUsed=0;
     std::vector<double> delta(thrNum);
     double oldObj=0;
@@ -136,7 +126,6 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp) {
     steady_clock::time_point time;
 
     for(iter=0;iter<maxIter;iter++) {
-    	//std::cin.get();
         time=steady_clock::now();
 
         std::thread uB([&]{updateB();});
@@ -157,19 +146,85 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp) {
             u->label=std::move(u->newLabel);
         });
         for(int i=1;i<thrNum;i++)delta[0]+=delta[i];
-        deltaObj = std::abs(oldObj-obj)/g->verts.size();
+        deltaObj = (oldObj-obj)/g->verts.size();
+        delta[0]/=g->verts.size();
         oldObj = obj;
 
+		func();
         timeUsed+=duration_cast<duration<double>>(steady_clock::now()-time).count();
-        if (iter>0 && (delta[0]<=nuance || deltaObj<=nuance)){iter++;break;}
+        if (iter>0 && (delta[0]<=nuance || nuance>0 && deltaObj<=nuance)){iter++;break;}
     }
     infoDisplay(disp, iter, delta[0], timeUsed, oldObj);
 }
 
-void inference::increase(std::vector<vertex*>& deltaGraph, int maxIter, double nuance, double a, int disp) {
+void inference::increase(graph* deltaGraph, int maxIter, double nuance, double a, int disp) {
+	std::vector<double[3][3]> w(thrNum),s(thrNum),n(thrNum);
+	multiRun(cand, [&](const vertex* u, int thrID){
+		for(const auto e:u->edges) {
+			const auto v=e.neighbor;
+			n[thrID][u->t][v->t]++;
+			double x=(*u->label*B[u->t][v->t]*v->label)[0][0];
+			w[thrID][u->t][v->t]+=x;
+			s[thrID][u->t][v->t]+=x*x;
+		}
+	});
+	for(auto t0:TYPES)for(auto t1:TYPES)if(t0!=t1) {
+		for(int i=1;i<thrNum;i++) {
+			n[0][t0][t1]+=n[i][t0][t1];
+			w[0][t0][t1]+=w[i][t0][t1];
+			s[0][t0][t1]+=s[i][t0][t1];
+		}
+		w[0][t0][t1]/=n[0][t0][t1];
+		s[0][t0][t1]=std::sqrt(s[0][t0][t1]/n[0][t0][t1]-w[0][t0][t1]*w[0][t0][t1]/(1-a));
+	}
+	
+	for(auto u:deltaGraph->verts) {
+		g->addVertex(u);
+		u->isCand=true;
+		for(auto e:u->edges) {
+			auto v=e.neighbor;
+			if(deltaGraph->id2v.find(v->id)==deltaGraph->id2v.end()) {
+				v->addEdge(u,e.weight);
+			}
+		}
+		labelInit(u->label);
+	}
+	
+	cand=deltaGraph->verts;
+	std::cout<<cand.size()<<std::endl;
+	getResult(maxIter, nuance, disp, [&]{
+		std::mutex mtx;
+		multiRun(cand, [&](const vertex* u, int thrID){
+			for(const auto e:u->edges) {
+				const auto v=e.neighbor;
+				if(v->isCand)continue;
+				if(std::abs((*u->label*B[u->t][v->t]*v->label)[0][0]-w[0][u->t][v->t])>=s[0][u->t][v->t]) {
+					mtx.lock();
+					if(v->isCand){
+						mtx.unlock();
+						continue;
+					}
+					cand.push_back(v);
+					v->isCand=true;
+					mtx.unlock();
+				}
+			}
+		});
+	});
 }
 
-void inference::recompute(std::vector<vertex*>& deltaGraph, int maxIter, double nuance, int disp) {
+void inference::recompute(graph* deltaGraph, int maxIter, double nuance, int disp) {
+	for(auto u:deltaGraph->verts) {
+		g->addVertex(u);
+		for(auto e:u->edges) {
+			auto v=e.neighbor;
+			if(deltaGraph->id2v.find(v->id)==deltaGraph->id2v.end()) {
+				v->addEdge(u,e.weight);
+			}
+		}
+		labelInit(u->label);
+	}
+	getResult(maxIter, nuance, disp);
 }
 #include"labelPropagation.hpp"
 #include"multiplicativeRule.hpp"

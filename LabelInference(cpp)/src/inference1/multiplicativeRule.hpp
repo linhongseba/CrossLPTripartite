@@ -5,9 +5,12 @@ class multiplicativeRule:public multiplicativeOld {
 private:
     std::vector<std::array<std::array<matrix,3>,3> > dBup,dBdown;
 public:
-    multiplicativeRule(graph* g):multiplicativeOld(g) {
+    multiplicativeRule(graph* g, const std::function<void(matrix&)>& labelInit):multiplicativeOld(g,labelInit) {
     	dBup.resize(thrNum);
     	dBdown.resize(thrNum);
+    }
+    
+    multiplicativeRule(graph* g):multiplicativeRule(g,inference::defaultLabelInit) {
     }
     
     void updateB() {

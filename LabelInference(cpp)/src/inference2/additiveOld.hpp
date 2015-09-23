@@ -9,12 +9,15 @@ protected:
 	std::vector<std::array<matrix,3> > dBright;
     bool flagA;//whether A's cache (a.k.a. dBright) is updated, since increase will not call updateB forwardly
 public:
-    additiveOld(graph* g):inference(g),alphaY(1),flagA(false) {
+    additiveOld(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alphaY(1),flagA(false) {
     	dBright.resize(thrNum);
     	for(int t0:TYPES) {
             fore(t,thrNum)dBright[t][t0]=empty;
             A[t0]=empty;
         }
+    }
+	
+	additiveOld(graph* g):additiveOld(g,inference::defaultLabelInit) {
     }
 
     void updateB() {
@@ -34,7 +37,8 @@ public:
     	for(int t0:TYPES){
     		-A[t0];
     		for(int t1:TYPES)if(t0!=t1)A[t0]+=dBright[0][t1];
-    		etac_L[t0]=2*etac/(A[t0]||matrix::NORMF);
+    		A[t0]*=1.0/(A[t0]||matrix::NORMF);
+    		etac_L[t0]=2*etac;
 		}
 
         multiRun(cand, [&](vertex* u, int thrID){

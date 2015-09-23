@@ -6,10 +6,13 @@ private:
     std::vector<std::array<std::array<matrix,3>,3> > dBleft,dBright,L;
     double alphaB,alphaBNext;
 public:
-    additiveRule(graph* g):additiveOld(g),alphaB(0) {
+    additiveRule(graph* g,const std::function<void(matrix&)>& labelInit):additiveOld(g,labelInit),alphaB(0) {
     	dBleft.resize(thrNum);
     	dBright.resize(thrNum);
     	L.resize(thrNum);
+    }
+    
+    additiveRule(graph* g):additiveRule(g,inference::defaultLabelInit) {
     }
     
     void updateB() {

@@ -206,7 +206,7 @@ inline matrix& matrix::operator()() {
     if(colD==1) {
         double minV=0, sum=0;
         for(auto x=data.begin();x!=data.end();x++) {
-            if(minV<=*x)minV=*x;
+            if(minV>*x)minV=*x;
             sum+=*x;
         }
         if(minV<0) {
