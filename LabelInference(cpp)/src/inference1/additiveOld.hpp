@@ -30,7 +30,7 @@ public:
     	double etac=(alphaYNext+alphaY-1)/alphaYNext;
     	for(int t0:TYPES) {
     		for(int t=1;t<thrNum;t++)A[0][t0]+=A[t][t0];
-			etac_L[t0]=2*etac/(A[0][t0]||matrix::NORMF);
+			etac_L[t0]=etac/(A[0][t0]||matrix::NORMF);
     	}
 		
         multiRun(cand, [&](vertex* u, int thrID){
