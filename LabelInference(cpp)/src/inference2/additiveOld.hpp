@@ -38,7 +38,7 @@ public:
     		-A[t0];
     		for(int t1:TYPES)if(t0!=t1)A[t0]+=dBright[0][t1];
     		A[t0]*=1.0/(A[t0]||matrix::NORMF);
-    		etac_L[t0]=2*etac;
+    		etac_L[t0]=etac;
 		}
 
         multiRun(cand, [&](vertex* u, int thrID){
