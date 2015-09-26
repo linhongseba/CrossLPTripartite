@@ -1,0 +1,517 @@
+----------Computing----------
+Iter = 0
+Size = 961
+Delta = 0.000000
+ObjValue = 938.799503
+
+Iter = 1
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 2
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 3
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 4
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 5
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 6
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 7
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 8
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 9
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 10
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 11
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 12
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 13
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 14
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 15
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 16
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 17
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 18
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 19
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 20
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 21
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 22
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 23
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 24
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 25
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 26
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 27
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 28
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 29
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 30
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 31
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 32
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 33
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 34
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 35
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 36
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 37
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 38
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 39
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 40
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 41
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 42
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 43
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 44
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 45
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 46
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 47
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 48
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 49
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 50
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 51
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 52
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 53
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 54
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 55
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 56
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 57
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 58
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 59
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 60
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 61
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 62
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 63
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 64
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 65
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 66
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 67
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 68
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 69
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 70
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 71
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 72
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 73
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 74
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 75
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 76
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 77
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 78
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 79
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 80
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 81
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 82
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 83
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 84
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 85
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 86
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 87
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 88
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 89
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 90
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 91
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 92
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 93
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 94
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 95
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 96
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 97
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 98
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 99
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+Iter = 100
+Size = 961
+Delta = nan
+ObjValue = -nan
+
+B_AB = {{1.000000 0.000000 }{0.000000 1.000000 }}
+B_AC = {{1.000000 0.000000 }{0.000000 1.000000 }}
+B_BA = {{1.000000 0.000000 }{0.000000 1.000000 }}
+B_BC = {{1.000000 0.000000 }{0.000000 1.000000 }}
+B_CA = {{1.000000 0.000000 }{0.000000 1.000000 }}
+B_CB = {{1.000000 0.000000 }{0.000000 1.000000 }}
+0.005607sec per iteration
+Old accuracy = 190/380
+
+Processed in 0.574167sec (0.013160sec for IO)
+Done.
