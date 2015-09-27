@@ -4,7 +4,7 @@ rols=['0.05']
 rois=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 cfds=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 maxIter='100'
-graphs=['graph-1']
+graphs=['graph-30','graph-37','graph_imdb_10M','graph_paper']
 algorithms=['AG','AR','AO','MG','MR','MO','LP']
 
 def experiment(graph,rol,algo,roi,nuance,cfd):

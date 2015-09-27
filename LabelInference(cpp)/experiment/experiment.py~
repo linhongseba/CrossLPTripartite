@@ -8,7 +8,7 @@ graphs=['graph-1']
 algorithms=['AG','AR','AO','MG','MR','MO','LP']
 
 def experiment(graph,rol,algo,roi,nuance,cfd):
-    fileName='results/'+graph+'_'+rol+'_'+algo+'_'+roi+'_'+nuance+cfd+'.txt'
+    fileName='results/'+graph+'_'+rol+'_'+algo+'_'+roi+'_'+nuance+'_'+cfd+'.txt'
     if os.path.exists(fileName):
         rls=open(fileName).readlines()
         if len(rls)>0 and rls[-1]=='Done.\n':return
@@ -20,8 +20,8 @@ subprocess.call('mkdir results',shell=True)
 for graph in graphs:
     for rol in rols:
         for algo in algorithms:
-            experiment(graph,rol,algo,'0.0','-1','')
-            experiment(graph,rol,algo,'0.0','1e-15','')
+            experiment(graph,rol,algo,'0.0','-1','-1')
+            experiment(graph,rol,algo,'0.0','1e-15','-1')
         for roi in rois:
             experiment(graph,rol,'MG',roi,'-1','-1')
             experiment(graph,rol,'MG',roi,'1e-15','-1')

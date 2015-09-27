@@ -1,7 +1,7 @@
 #include"matrix/matrix.hpp"
 #include"graph/graph.hpp"
 #include"selector/degreeSelector.hpp"
-#include"inference1/inference.hpp"
+#include"inference2/inference.hpp"
 #include<chrono>
 #include<cstdlib>
 #include<unordered_map> 
