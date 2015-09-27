@@ -16,7 +16,8 @@ def _isfraction(ch):
 def fil_line(_line):
     a=list(filter(_isdigit,_line))
     b=''.join(a)
-    return float(b)
+    print(b)
+    return 1.0
 
 def fil_accu(_line):
     a=list(filter(_isfraction,_line))
@@ -76,32 +77,35 @@ xls=xlwt.Workbook()
 #================================================================================
 sheet = xls.add_sheet('accuracy',cell_overwrite_ok=True)
 
-graph=['graph-30','graph-37'];
+graph=['graph-30','graph-37','graph_imdb_10M','graph_paper'];
 algorithm=['MR','MO','MG','AR','AO','AG','LP'];
 nuance=['-1','1e-15'];
 #training_increase=['-10.5','1e-150.5','1e-15-1','-1-1'];
 
 for i in range(0,7):
-    sheet.write(0,1+i,algorithm[i])
+    sheet.write(0,1+i*2,algorithm[i])
+    sheet.write(1,1+i*2,'-1')
+    sheet.write(1,2+i*2,'-1e-15')
 
-x=0
+x=1
 for g in graph:
     x+=1
     sheet.write(x,0,g)
     y=0
     for a in algorithm:
-        y+=1
+        y+=2
         tot=0;
         accu_list=[]
+        o=0
         for t in nuance:
             filename=g+'_0.05_'+a+'_0.0_'+t+'_-1.txt';
-            accu_list.append(find_xls(filename,1));
-
-        sheet.write(x,y,sum(accu_list)/2.0)
+            print(filename,find_xls(filename,1))
+            sheet.write(x,y-1+o,find_xls(filename,1))
+            o+=1
 #================================================================================
 #================================================================================
 
-graph=['graph-30','graph-37'];
+graph=['graph-30','graph-37','graph_imdb_10M','graph_paper'];
 algorithm=['MR','MO','MG','AR','AO','AG','LP'];
 nuance=['-1','1e-15'];
 
@@ -132,7 +136,7 @@ for x in range(0,maxx):
 sheet = xls.add_sheet('running_time',cell_overwrite_ok=True)
 
 #graph=['graph-1','graph-30','graph-37','graph_imdb_10M','graph_paper'];
-graph=['graph-30','graph-37'];
+graph=['graph-30','graph-37','graph_imdb_10M','graph_paper'];
 algorithm=['MR','MO','MG','AR','AO','AG','LP'];
 nuance=['-1','1e-15'];
 
