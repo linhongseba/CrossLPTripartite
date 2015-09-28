@@ -33,7 +33,6 @@ public abstract class AbstractLabelInference implements LabelInference{
     protected final Graph g;                                                             
     protected final BiConsumer<Matrix,Integer> labelInit;    
     protected final int k; //the variable denotes the number of clusters
-    protected double maxE=0; //the variable denotes the max number of edges
     protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
     
     /**
@@ -62,9 +61,9 @@ public abstract class AbstractLabelInference implements LabelInference{
         try {
             for(Vertex u:g.getVertices(v->v.isY0()))
                 for(Vertex v:u.getNeighbors())if(v.isY0())
-                    B.get(u.getType()).put(v.getType(), B.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose())));
+                    B.get(u.getType()).get(v.getType()).add_assign(u.getLabel().times(v.getLabel().transpose()));
             for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)
-                B.get(t0).put(t1, B.get(t0).get(t1).normalize());
+                B.get(t0).get(t1).normalize_assign();
         } catch (DimensionNotAgreeException ex) {
             Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -88,6 +87,7 @@ public abstract class AbstractLabelInference implements LabelInference{
         double delta; //the variable denotes the difference between Y and last produced Y.
         double oldObj=0;
         double obj;
+        double deltaObj;
         
         int iter=0; //the variable controls the iteration times.
         oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
@@ -97,21 +97,15 @@ public abstract class AbstractLabelInference implements LabelInference{
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
             Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
-            for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
-            
-            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-
-            //            delta = (oldObj-obj)/g.getVertices().size();
-            delta = (oldObj-obj);
-            oldObj = obj;
-            
-            if (iter > 0) {
-                // y-delta goese here...
-                
-                // obj delta
-                if (delta <= nuance)
-                    break;
+            delta=0;
+            for(Vertex u:g.getVertices()) {
+                delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
+                u.setLabel(Y.get(u));
             }
+            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            deltaObj = (oldObj-obj)/g.getVertices().size();
+            oldObj = obj;
+            if (iter>0 && (delta<=nuance || deltaObj<=nuance))break;
             
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
@@ -144,24 +138,32 @@ public abstract class AbstractLabelInference implements LabelInference{
         double timeUsed=0;                                                                
         double delta; //the variable denotes the difference between Y and last produced Y.
         double oldObj=0;
+        double deltaObj;
         double obj;
         int iter=0; //the variable controls the iteration times.
-        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,0);
+        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
             Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
-            for(Vertex u:g.getVertices())u.setLabel(Y.get(u));
-            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-            delta=abs(oldObj-obj)/g.getVertices().size();
-            oldObj=obj;
+            delta=0;
+            for(Vertex u:g.getVertices()) {
+                delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
+                u.setLabel(Y.get(u));
+            }
+            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            deltaObj = (oldObj-obj)/g.getVertices().size();
+            oldObj = obj;
+            if (iter>0 && (delta<=nuance || deltaObj<=nuance))break;
+            
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
             iter++;
             LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
-        } while(delta>nuance && iter!=maxIter);
+        } while(iter!=maxIter);
         LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
     }
     
@@ -191,8 +193,16 @@ public abstract class AbstractLabelInference implements LabelInference{
                 if(deltaGraph.contains(u))continue;
                 for(Vertex v:u.getNeighbors()) {
                     if(deltaGraph.contains(v))continue;
-                    sigma.get(u.getType()).put(v.getType(), sigma.get(u.getType()).getOrDefault(v.getType(),0.0)+pow(u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).get(0, 0),2));
-                    w.get(u.getType()).put(v.getType(), w.get(u.getType()).getOrDefault(v.getType(),0.0)+u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).get(0, 0));
+                    sigma.get(u.getType()).put(v.getType(), 
+                        sigma.get(u.getType()).getOrDefault(v.getType(),0.0)
+                            +pow(u.getLabel().transpose()
+                            .times_assign(B.get(u.getType()).get(v.getType()))
+                            .times_assign(v.getLabel()).get(0, 0),2));
+                    w.get(u.getType()).put(v.getType(), 
+                        w.get(u.getType()).getOrDefault(v.getType(),0.0)
+                            +u.getLabel().transpose()
+                            .times_assign(B.get(u.getType()).get(v.getType()))
+                            .times_assign(v.getLabel()).get(0, 0));
                     tot.get(u.getType()).put(v.getType(), tot.get(u.getType()).getOrDefault(v.getType(),0.0)+1);
                 }
             }
@@ -233,7 +243,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 for(Vertex u:cand)
                     for(Vertex v:u.getNeighbors()) if(!cand.contains(v)) {
                         
-                        if(abs(u.getLabel().transpose().times(B.get(u.getType()).get(v.getType())).times(u.getLabel()).get(0, 0)
+                        if(abs(u.getLabel().transpose().times_assign(B.get(u.getType()).get(v.getType())).times_assign(u.getLabel()).get(0, 0)
                                 -w.get(u.getType()).get(v.getType()))>sigma.get(u.getType()).get(v.getType())) {
                             deltaCand.add(v);
                             v.getNeighbors().forEach(candS::add);
@@ -264,13 +274,10 @@ public abstract class AbstractLabelInference implements LabelInference{
      * @throws labelinference.exceptions.DimensionNotAgreeException 
      */	
     public Map<Vertex,Matrix> init(Collection<Vertex> cand, Collection<Vertex> candS, BiConsumer<Matrix,Integer> labelInit, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
-    	for(Vertex v:cand)
-            for(Vertex u:v.getNeighbors())
-                if(v.getEdge(u)>maxE)maxE=v.getEdge(u);
         final Map<Vertex,Matrix> Y0=new HashMap<>();
         for (Vertex v:cand)
             if(v.isY0()) {
-                v.setLabel(v.getLabel().normalize());
+                v.getLabel().normalize_assign();
                 Y0.put(v, v.getLabel().copy());
             } else labelInit.accept(v.getLabel(),k);
         if(labelInit==LabelInference.randomLabelInit) {

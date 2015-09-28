@@ -169,10 +169,11 @@ public class Main {
         Map<Vertex.Type,Integer> num=new HashMap<>();
         Map<Vertex.Type,Double> correct=new HashMap<>();
         Map<Vertex.Type,Integer> labeled=new HashMap<>();
-        int nol[]=new int[expResult.getNumLabels()];
-        int nor[]=new int[expResult.getNumLabels()];
+        int k=expResult.getNumLabels();
+        int nol[]=new int[k];
+        int nor[]=new int[k];
+        int A[][]=new int[k][k];
         try {
-            int k=expResult.getNumLabels();
             double k1=1.0/k;
             for(Vertex resV:result) {
                 Vertex expV=expResult.findVertexByID(resV.getId());
@@ -184,9 +185,11 @@ public class Main {
                 if(expV.isY0())for(int row=0;row<k;row++)if(expV.getLabel().get(row, 0)>k1)nol[row]++;
                 if(expV.isY0() && !resV.isY0()) {
                     totle.put(expV.getType(), totle.getOrDefault(expV.getType(),0)+k);
-                    for(int row=0;row<k;row++)
+                    for(int row=0;row<k;row++) {
                         if(abs(expV.getLabel().get(row, 0))<1e-9^resV.getLabel().get(row, 0)>k1)
                             correct.put(expV.getType(), correct.getOrDefault(expV.getType(),0.0)+1);
+                        for(int r=0;r<k;r++)if(abs(expV.getLabel().get(row, 0))<1e-9^resV.getLabel().get(r, 0)>k1)A[row][r]++;
+                    }
                 }
             }
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
@@ -213,5 +216,12 @@ public class Main {
                                                                                             (totle.getOrDefault(Vertex.typeA,0)+
                                                                                             totle.getOrDefault(Vertex.typeB,0)+
                                                                                             totle.getOrDefault(Vertex.typeC,0))));
+        double ber=1;
+        for(int row=0;row<k;row++) {
+            double frac=0;
+            for(int col=0;col<k;col++)frac+=A[row][col];
+            ber-=A[row][row]/frac/k;
+        }
+        System.out.print("BER : "+ber+"\n");
     }
 }

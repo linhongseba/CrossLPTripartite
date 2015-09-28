@@ -3,8 +3,9 @@ path='../../data/{0}.txt'
 rols=['0.05']
 rois=['0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 maxIter='100'
-graphs=['graph_paper','graph_imdb_10M']
-algorithms=['MRG','MRR','MRO','ARG','ARR','ARO','GRF']
+nuance='0.0000000000000001'
+graphs=['graph-30']
+algorithms=['ARG','ARR','ARO','MRG','MRR','MRO','GRF']
 thr=4
 
 def experiment(graph,rol,algo,roi,cfd0,cfd1,nuance):
@@ -36,13 +37,13 @@ subprocess.call(['mkdir','results'],shell=True)
 for graph in graphs:
     for rol in rols:
         for algo in algorithms:
-            threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,'0.0','0.0','0.0','-1',))]
-            #threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,'0.0','0.0','0.0','0.001',))]
+            #threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,'0.0','0.0','0.0','-1',))]
+            threads+=[threading.Thread(target=experiment, args=(graph,rol,algo,'0.0','0.0','0.0',nuance,))]
         for roi in rois:
-            threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG',roi,'0.5','0.5','-1',))]
-            #threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG',roi,'0.5','0.5','0.001',))]
-        threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1','0.1','0.9','-1',))]
-        #threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1','0.1','0.9','0.001',))]  
+            #threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG',roi,'0.5','0.5','-1',))]
+            threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG',roi,'0.5','0.5',nuance,))]
+        #threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1','0.1','0.9','-1',))]
+        threads+=[threading.Thread(target=experiment, args=(graph,rol,'MRG','0.1','0.1','0.9',nuance,))]  
 for t in threads:
     t.start()
     while(len(threading.enumerate())>thr):

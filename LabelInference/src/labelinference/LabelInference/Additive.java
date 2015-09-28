@@ -64,9 +64,21 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             }
         }
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
-            dBleft.get(u.getType()).put(v.getType(), dBleft.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
-            dBright.get(u.getType()).put(v.getType(), dBright.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
-            L.get(u.getType()).put(v.getType(), L.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
+            dBleft.get(u.getType()).get(v.getType()).add_assign(
+                u.getLabel()
+                .times(v.getLabel().transpose())
+                .times_assign(u.getEdge(v)));
+            dBright.get(u.getType()).get(v.getType()).add_assign(
+                u.getLabel()
+                .times(u.getLabel().transpose())
+                .times_assign(B.get(u.getType()).get(v.getType()))
+                .times_assign(v.getLabel())
+                .times_assign(v.getLabel().transpose()));
+            L.get(u.getType()).get(v.getType()).add_assign(
+                u.getLabel()
+                .times(u.getLabel().transpose())
+                .times_assign(v.getLabel())
+                .times_assign(v.getLabel().transpose()));
         }
         //dBleft_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
         //dBright_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
@@ -76,7 +88,10 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
             double etab=(alphaNext+alpha-1)/alphaNext/L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*L_{tt'}}
-            B.get(t0).put(t1, B.get(t0).get(t1).add(dBleft.get(t0).get(t1).subtract(dBright.get(t0).get(t1)).times(etab/maxE)));
+            B.get(t0).get(t1).add_assign(
+                dBleft.get(t0).get(t1)
+                .subtract_assign(dBright.get(t0).get(t1))
+                .times_assign(etab));
             //B_{tt'}=B_{tt'}+\eta_b(dBleft_{tt'}-dBright_{tt'})/maxE
             //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
         }
@@ -90,29 +105,29 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 	 */
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        Map<Vertex.Type,Matrix> A=new HashMap<>();
-        Matrix emptyMat=mf.creatMatrix(k, k);
-        for(Vertex.Type type:Vertex.types)
-            for(Vertex u:candS)
-                if(u.getType()!=type)
-                    A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
-        //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
-        
         Map<Vertex, Matrix> Y=new HashMap<>();
         alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
+        Matrix A=mf.creatMatrix(k,k); //reuse space generate
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
+            A.reset();//reset ench entry of A into Zero
+            for(Vertex v:u.getNeighbors()) {
+                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
+                A.add_assign(
+                    B.get(u.getType()).get(v.getType())
+                    .times(v.getLabel())
+                    .times_assign(v.getLabel().transpose())
+                    .times_assign(B.get(u.getType()).get(v.getType()).transpose()));
+            }
+            
+            double L=A.norm(Matrix.FROBENIUS_NORM);
             double eta=(alphaNext+alpha-1)/alphaNext/L;
             //System.out.println(A.get(u.getType()));
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
-            
-            for(Vertex v:u.getNeighbors())
-                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
-            Matrix t=A.get(u.getType()).times(u.getLabel()).times(2);
-            label=label.subtract(t.times(label.norm(Matrix.FIRST_NORM)/t.norm(Matrix.FIRST_NORM))).times(1/maxE);
-            if(u.isY0())label=label.add(Y0.get(u)).subtract(u.getLabel());
-            label=u.getLabel().add(label.times(2*eta)).normalize();
+            Matrix t=A.times_assign(u.getLabel());
+            label.subtract_assign(t);
+            if(u.isY0())label.add_assign(Y0.get(u)).subtract_assign(u.getLabel());
+            label.times_assign(eta).add_assign(u.getLabel()).normalize_assign();
             //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
             Y.put(u, label);
         }

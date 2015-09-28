@@ -107,6 +107,26 @@ public class NaiveMatrixTest {
         result = mD.add(mD);
         assertEquals(expResult, result);
     }
+    
+    /**
+     * Test of add_assign method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     */
+    @Test
+    public void testAdd_assign() throws DimensionNotAgreeException {
+        System.out.println("add");
+        double expResData1[][]={{2,4},{8,16}};
+        Matrix expResult = new NaiveMatrix(expResData1);
+        Matrix result = mA.copy();
+        result.add_assign(result);
+        assertEquals(expResult, result);
+        
+        double expResData2[][]={{4, 2, 10}, {4, 8, 8}, {14, 6, 2}};
+        expResult = new NaiveMatrix(expResData2);
+        result = mD.copy();
+        result.add_assign(result);
+        assertEquals(expResult, result);
+    }
 
     /**
      * Test of subtract method, of class NaiveMatrix.
@@ -225,6 +245,26 @@ public class NaiveMatrixTest {
         assertEquals(expResult, result);
     }
     
+    /**
+     * Test of normalize_assign method, of class NaiveMatrix.
+     * @throws labelinference.exceptions.ColumnOutOfRangeException
+     * @throws labelinference.exceptions.DimensionNotAgreeException
+     */
+    @Test
+    public void testNormalize_assign() throws DimensionNotAgreeException {
+        System.out.println("normalize_assign");
+        double expResData[][]={{2/11.0}, {2/11.0}, {7/11.0}};
+        Matrix expResult = new NaiveMatrix(expResData);
+        Matrix result;
+		try {
+			result = mD.getCol(0);
+	        result.normalize_assign();
+	        assertEquals(expResult, result);
+		} catch (ColumnOutOfRangeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     /**
      * Test of times method, of class NaiveMatrix.
      */

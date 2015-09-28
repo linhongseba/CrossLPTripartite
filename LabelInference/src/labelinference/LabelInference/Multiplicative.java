@@ -55,14 +55,25 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         }
         
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
-            dBup.get(u.getType()).put(v.getType(), dBup.get(u.getType()).get(v.getType()).add(u.getLabel().times(v.getLabel().transpose()).times(u.getEdge(v))));
-            dBdown.get(u.getType()).put(v.getType(), dBdown.get(u.getType()).get(v.getType()).add(u.getLabel().times(u.getLabel().transpose()).times(B.get(u.getType()).get(v.getType())).times(v.getLabel()).times(v.getLabel().transpose()).times(u.getEdge(v))));
+            dBup.get(u.getType()).get(v.getType()).add_assign(
+                u.getLabel()
+                .times(v.getLabel().transpose())
+                .times(u.getEdge(v)));
+            dBdown.get(u.getType()).get(v.getType()).add_assign(
+                u.getLabel()
+                .times(u.getLabel().transpose())
+                .times_assign(B.get(u.getType()).get(v.getType()))
+                .times_assign(v.getLabel())
+                .times_assign(v.getLabel().transpose()));
         }
         //dBup_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
         //dBdown_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
 
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
-            B.get(t0).put(t1, B.get(t0).get(t1).cron(dBup.get(t0).get(t1).divide(dBdown.get(t0).get(t1)).sqrt()));
+            B.get(t0).get(t1).cron_assign(
+                dBup.get(t0).get(t1)
+                .divide_assign(dBdown.get(t0).get(t1))
+                .sqrt_assign());
         //B_{tt'}=B_{tt'}\circ\sqrt{\frac{dBup_{tt'}}{dBdown_{tt'}}}
     }
     
@@ -76,22 +87,30 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
      @Override
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex, Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
-        Map<Vertex.Type,Matrix> A=new HashMap<>();
-        Matrix emptyMat=mf.creatMatrix(k, k);
-        for(Vertex.Type type:Vertex.types)
-            for(Vertex u:candS)
-                if(u.getType()!=type)
-                    A.put(type, A.getOrDefault(type, emptyMat).add(B.get(type).get(u.getType()).times(u.getLabel()).times(u.getLabel().transpose()).times(B.get(type).get(u.getType()).transpose())));
-        //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
-        
         Map<Vertex, Matrix> Y=new HashMap<>();
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
-            for(Vertex v:u.getNeighbors())
-                label=label.add(B.get(u.getType()).get(v.getType()).times(v.getLabel()).times(u.getEdge(v)));
-            if(u.isY0())label=label.times(1.0/maxE).add(Y0.get(u)).divide(A.get(u.getType()).times(u.getLabel()).add(u.getLabel()));
-            else label=label.times(1.0/maxE).divide(A.get(u.getType()).times(u.getLabel()));
-            label=u.getLabel().cron(label.sqrt()).normalize();
+            Matrix A=mf.creatMatrix(k,k);
+            for(Vertex v:u.getNeighbors()) {
+                label.add_assign(
+                    B.get(u.getType()).get(v.getType())
+                    .times(v.getLabel())
+                    .times_assign(u.getEdge(v)));
+                A.add_assign(
+                    B.get(u.getType()).get(v.getType())
+                    .times(v.getLabel())
+                    .times_assign(v.getLabel().transpose())
+                    .times_assign(B.get(u.getType()).get(v.getType()).transpose()));
+            }
+            if(u.isY0())label
+                .add_assign(Y0.get(u))
+                .divide_assign(
+                    A.times_assign(u.getLabel())
+                    .add_assign(u.getLabel()));
+            else label.divide_assign(A.times_assign(u.getLabel()));
+            label.sqrt_assign()
+                .cron_assign(u.getLabel())
+                .normalize_assign();
             Y.put(u, label);
             //Y(u)=Y(u)\circ\sqrt{\frac{\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}/maxE+1_{YL}*Y0(u)}{A_{t(u)}+1_{YL}*Y(u)}}
         }
