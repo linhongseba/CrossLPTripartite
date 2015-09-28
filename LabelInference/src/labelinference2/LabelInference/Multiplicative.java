@@ -44,27 +44,23 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBup=new HashMap<>();
-        Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBdown=new HashMap<>();
+        Map<Vertex.Type,Matrix> dBdown=new HashMap<>();
         for(Vertex.Type t0:Vertex.types) {
             dBup.put(t0, new HashMap<>());
-            dBdown.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types) {
                 dBup.get(t0).put(t1,mf.creatMatrix(k,k));
-                dBdown.get(t0).put(t1,mf.creatMatrix(k,k));
             }
+            dBdown.put(t0,mf.creatMatrix(k,k));
         }
-        
         for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
             dBup.get(u.getType()).get(v.getType()).add_assign(
                 u.getLabel()
                 .times(v.getLabel().transpose())
                 .times_assign(u.getEdge(v)));
-            dBdown.get(u.getType()).get(v.getType()).add_assign(
-                u.getLabel()
-                .times(u.getLabel().transpose())
-                .times_assign(B.get(u.getType()).get(v.getType()))
-                .times_assign(v.getLabel())
-                .times_assign(v.getLabel().transpose()));
+        }
+        for(Vertex u:cand){
+            dBdown.get(u.getType()).add_assign(
+                u.getLabel().times(u.getLabel().transpose()));
         }
         //dBup_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
         //dBdown_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
@@ -72,7 +68,7 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1)
             B.get(t0).get(t1)
                 .cron_assign(dBup.get(t0).get(t1)
-                .divide_assign(dBdown.get(t0).get(t1)).sqrt_assign());
+                .divide_assign(dBdown.get(t0).times(B.get(t0).get(t1)).times_assign(dBdown.get(t1))).sqrt_assign());
         //B_{tt'}=B_{tt'}\circ\sqrt{\frac{dBup_{tt'}}{dBdown_{tt'}}}
     }
     
