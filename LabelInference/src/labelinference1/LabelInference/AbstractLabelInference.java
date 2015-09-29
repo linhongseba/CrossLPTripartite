@@ -1,4 +1,4 @@
-package labelinference.LabelInference;
+package labelinference1.LabelInference;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.max;

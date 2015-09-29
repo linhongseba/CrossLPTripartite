@@ -128,12 +128,13 @@ public class NaiveMatrix implements Matrix{
         int n=A.getRowDimension(),m=A.getColumnDimension();
         final double ZERO=1e-9;
         try {
-            for(int i=0;i<n;i++)
-                for(int j=0;j<m;j++)
-                    if(abs(b.get(i, j))<ZERO) {
-                        if(b.get(i, j)<0)b.set(i, j, -ZERO);
-                        else b.set(i, j, ZERO);
+            for(int i=0;i<n;i++){
+                for(int j=0;j<m;j++){
+                    if(b.get(i, j)<ZERO) {
+                        b.set(i, j, ZERO);
                     }
+                }
+            }
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
         A.arrayRightDivideEquals(((NaiveMatrix)b).A);	
         return this;
@@ -340,5 +341,71 @@ public class NaiveMatrix implements Matrix{
         double ret=0;
         for(int r=0;r<A.getColumnDimension();r++)ret+=A.get(r, r);
         return ret;
+    }
+
+    @Override
+    public Matrix projectpositive() {
+         final double ZERO=1e-9;
+        NaiveMatrix M=new NaiveMatrix(A.getRowDimension(),A.getColumnDimension());
+         for(int col=0;col<A.getColumnDimension();col++){
+             for(int row=0;row<A.getRowDimension();row++){
+                 if(A.get(row, col)>ZERO){
+                     A.set(row, col, A.get(row, col));
+                 }else{
+                     A.set(row, col, ZERO);
+                 }
+             }
+         }             
+    	return M;
+    }
+
+    @Override
+    public Matrix projectpositive_assign() {
+       final double ZERO=1e-9;
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                if(A.get(row, col)<ZERO){
+                    A.set(row, col, ZERO);
+                }
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public void reset() {
+        final double ZERO=1e-9;
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                    A.set(row, col, ZERO);
+            }
+        }
+    }
+
+    @Override
+    public Matrix normone_assign() {
+        double sum;
+        for(int col=0;col<A.getColumnDimension();col++){
+            sum=0;
+            for(int row=0;row<A.getRowDimension();row++){
+                    sum+=A.get(row, col);
+            }
+            for(int row=0;row<A.getRowDimension();row++){
+                if(sum>1e-9)
+                    A.set(row, col, A.get(row, col)/sum);
+            }
+        }
+            
+        return this;
+    }
+
+    @Override
+    public int Getrownum() {
+        return A.getRowDimension();
+    }
+
+    @Override
+    public int Getcolnum() {
+        return A.getColumnDimension();
     }
 }

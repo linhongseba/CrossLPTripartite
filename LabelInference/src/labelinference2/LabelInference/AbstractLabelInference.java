@@ -1,10 +1,8 @@
-package labelinference.LabelInference;
+package labelinference2.LabelInference;
 
-import static java.lang.Math.abs;
 import static java.lang.Math.max;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,14 +10,15 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
+import static labelinference2.LabelInference.LabelInference.*;
 import labelinference.Matrix.Matrix;
 import labelinference.Matrix.MatrixFactory;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
+import static labelinference2.LabelInference.LabelInference.DISP_TIME;
 
 /**
 *
@@ -113,13 +112,14 @@ public abstract class AbstractLabelInference implements LabelInference{
         double deltaObj;
         
         int iter=0; //the variable controls the iteration times.
-        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
+        //oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        //LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
+        Map<Vertex, Matrix> Y;
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
-            Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
+            Y=updateY(g.getVertices(),g.getVertices(),Y0);
             delta=0;
             for(Vertex u:g.getVertices()) {
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
@@ -129,13 +129,15 @@ public abstract class AbstractLabelInference implements LabelInference{
             deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
             if (iter>0 && (delta<=nuance || deltaObj<=nuance))break;
-            
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
             iter++;
             LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
         } while(iter!=maxIter);
+        for(Vertex u:g.getVertices()){
+            u.setLabel(Y.get(u).normone_assign());
+        }
         LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
     }
     
@@ -166,11 +168,12 @@ public abstract class AbstractLabelInference implements LabelInference{
         int iter=0; //the variable controls the iteration times.
         oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
         LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
+        Map<Vertex, Matrix> Y;
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
-            Map<Vertex, Matrix> Y=updateY(g.getVertices(),g.getVertices(),Y0);
+            Y=updateY(g.getVertices(),g.getVertices(),Y0);
             delta=0;
             for(Vertex u:g.getVertices()) {
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
@@ -260,13 +263,13 @@ public abstract class AbstractLabelInference implements LabelInference{
                 Map<Vertex, Matrix> Y=updateY(cand,candS,Y0);
                 for(Vertex u:cand)u.setLabel(Y.get(u));
                 obj=LabelInference.objective(cand, candS, Y0, B, k);
-                delta=abs(oldObj-obj)/cand.size();
+                delta=Math.abs(oldObj-obj)/cand.size();
                 oldObj=obj;
                 Collection deltaCand=new HashSet<>();
                 for(Vertex u:cand)
                     for(Vertex v:u.getNeighbors()) if(!cand.contains(v)) {
                         
-                        if(abs(u.getLabel().transpose().times_assign(B.get(u.getType()).get(v.getType())).times_assign(u.getLabel()).get(0, 0)
+                        if(Math.abs(u.getLabel().transpose().times_assign(B.get(u.getType()).get(v.getType())).times_assign(u.getLabel()).get(0, 0)
                                 -w.get(u.getType()).get(v.getType()))>sigma.get(u.getType()).get(v.getType())) {
                             deltaCand.add(v);
                             v.getNeighbors().forEach(candS::add);

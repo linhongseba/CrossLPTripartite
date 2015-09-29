@@ -1,4 +1,4 @@
-package labelinference.LabelInference;
+package labelinference2.LabelInference;
 
 import static java.lang.Math.sqrt;
 import java.util.Collection;
@@ -77,7 +77,12 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 
         double alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
-            double etab=(alphaNext+alpha-1)/alphaNext/(dBright.get(t0).times(dBright.get(t1))).norm(Matrix.FROBENIUS_NORM);
+             double temp=(dBright.get(t0).times(dBright.get(t1))).norm(Matrix.FROBENIUS_NORM);
+            double etab;
+            if(temp>1e-16)
+                etab=(alphaNext+alpha-1)/alphaNext/temp;
+            else
+                etab=(alphaNext+alpha-1)/alphaNext;
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*L_{tt'}}
             B.get(t0).get(t1).add_assign(
                 dBleft.get(t0).get(t1)
@@ -86,33 +91,37 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             //B_{tt'}=B_{tt'}+\eta_b(dBleft_{tt'}-dBright_{tt'})/maxE
             //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
             }
+        for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) {
+            Matrix curB=B.get(t0).get(t1);
+            curB.projectpositive_assign();
+        }
 
-        try {
-            final double ZERO=1e-9;
-            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) {
-                double maxItem=0;
-                double minItem=0;
-                Matrix curB=B.get(t0).get(t1);
-                for(int row=0;row<k;row++)
-                    for(int col=0;col<k;col++) {
-                        double curItem=curB.get(row, col);
-                        if(curItem>maxItem)maxItem=curItem;
-                        if(curItem<minItem)minItem=curItem;
-                    }
-                if(minItem<ZERO) {
-                    if(minItem>0)minItem=-ZERO;
-                    maxItem-=2*minItem;
-                    for(int row=0;row<k;row++)
-                        for(int col=0;col<k;col++)
-                            curB.set(row, col, (curB.get(row, col)-2*minItem)/maxItem);
-                }
-                else {
-                    for(int row=0;row<k;row++)
-                        for(int col=0;col<k;col++)
-                            curB.set(row, col, curB.get(row, col)/maxItem);
-                }
-            }
-        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
+//        try {
+//            final double ZERO=1e-9;
+//            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) {
+//                double maxItem=0;
+//                double minItem=0;
+//                Matrix curB=B.get(t0).get(t1);
+//                for(int row=0;row<k;row++)
+//                    for(int col=0;col<k;col++) {
+//                        double curItem=curB.get(row, col);
+//                        if(curItem>maxItem)maxItem=curItem;
+//                        if(curItem<minItem)minItem=curItem;
+//                    }
+//                if(minItem<ZERO) {
+//                    if(minItem>0)minItem=-ZERO;
+//                    maxItem-=2*minItem;
+//                    for(int row=0;row<k;row++)
+//                        for(int col=0;col<k;col++)
+//                            curB.set(row, col, (curB.get(row, col)-2*minItem)/maxItem);
+//                }
+//                else {
+//                    for(int row=0;row<k;row++)
+//                        for(int col=0;col<k;col++)
+//                            curB.set(row, col, curB.get(row, col)/maxItem);
+//                }
+//            }
+//        } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
 
     @Override
@@ -141,7 +150,11 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
             double L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
-            double eta=(alphaNext+alpha-1)/alphaNext/L;
+            double eta;
+            if(L>1e-16)
+                eta=(alphaNext+alpha-1)/alphaNext/L;
+            else
+                eta=(alphaNext+alpha-1)/alphaNext;
             //System.out.println(A.get(u.getType()));
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
 
@@ -153,7 +166,8 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             Matrix t=A.get(u.getType()).times(u.getLabel());
             label.subtract_assign(t);
             if(u.isY0())label.add_assign(Y0.get(u)).subtract_assign(u.getLabel());
-            label.times_assign(eta).add_assign(u.getLabel()).normalize_assign();
+            label.times_assign(eta).add_assign(u.getLabel()).projectpositive_assign();
+            label.normone_assign();
             //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
             Y.put(u, label);
         }

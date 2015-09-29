@@ -1,4 +1,4 @@
-package labelinference.LabelInference;
+package labelinference2.LabelInference;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -109,7 +109,7 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
                     .times(u.getLabel())
                     .add_assign(u.getLabel()));
             else label.divide_assign(A.get(u.getType()).times(u.getLabel()));
-            label.sqrt_assign().cron_assign(u.getLabel()).normalize_assign();
+            label.sqrt_assign().cron_assign(u.getLabel());
             Y.put(u, label);
             //Y(u)=Y(u)\circ\sqrt{\frac{\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}/maxE+1_{YL}*Y0(u)}{A_{t(u)}+1_{YL}*Y(u)}}
         }

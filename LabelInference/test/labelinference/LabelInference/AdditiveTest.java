@@ -5,21 +5,23 @@
  */
 package labelinference.LabelInference;
 
-import labelinference.Graph.Graph;
-import labelinference.Graph.Vertex;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.function.Function;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import labelinference.Labor;
 import labelinference.Selector.DegreeSelector;
-import labelinference.Selector.Selector;
-import org.junit.Test;
-import static labelinference.LabelInference.LabelInference.*;
 import labelinference.Selector.RandomSelector;
+import labelinference.Selector.Selector;
 import labelinference.Selector.SimpleHeuristicSelector;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
+import labelinference2.LabelInference.Additive;
+import labelinference2.LabelInference.LabelInference;
+import static labelinference2.LabelInference.LabelInference.*;
+import org.junit.Test;
 
 /**
  *
@@ -36,9 +38,11 @@ public class AdditiveTest {
         Labor labor=Labor.getInstance();
         Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
-        Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::randomLabelInit);
+        //Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::defaultLabelInit);
+         //Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::noneInit);
+          Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::randomLabelInit);
         
         //labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
-        labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_OBJ);
+        labor.testLabelInference("data/graph_paper.txt",selector5,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_B);
     }
 }

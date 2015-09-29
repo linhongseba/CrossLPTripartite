@@ -5,12 +5,11 @@
  */
 package labelinference.LabelInference;
 
-import labelinference.Graph.Graph;
-import labelinference.Graph.Vertex;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.function.Function;
-import static labelinference.LabelInference.LabelInference.*;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import labelinference.Labor;
 import labelinference.Selector.DegreeSelector;
 import labelinference.Selector.RandomSelector;
@@ -18,6 +17,9 @@ import labelinference.Selector.Selector;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
+import labelinference2.LabelInference.LabelInference;
+import static labelinference1.LabelInference.LabelInference.*;
+import labelinference2.LabelInference.LabelPropagation;
 import org.junit.Test;
 
 /**
@@ -38,6 +40,6 @@ public class LabelPropagationTest {
         Function<Graph,LabelInference> labelInference=g->new LabelPropagation(g,0);
         
         //labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
-        labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        labor.testLabelInference("data/graph-30.txt",selector5,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_B);
     }
 }

@@ -1,4 +1,4 @@
-package labelinference.LabelInference;
+package labelinference1.LabelInference;
 
 import java.util.Collection;
 import java.util.HashMap;

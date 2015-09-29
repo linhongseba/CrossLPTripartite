@@ -5,18 +5,20 @@
  */
 package labelinference.LabelInference;
 
-import labelinference.Graph.Graph;
-import labelinference.Graph.Vertex;
 import java.io.FileNotFoundException;
 import java.util.Collection;
 import java.util.function.Function;
-import static labelinference.LabelInference.LabelInference.*;
+import labelinference.Graph.Graph;
+import labelinference.Graph.Vertex;
 import labelinference.Labor;
 import labelinference.Selector.DegreeSelector;
 import labelinference.Selector.Selector;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
+import labelinference2.LabelInference.LabelInference;
+import static labelinference2.LabelInference.LabelInference.*;
+import labelinference2.LabelInference.Multiplicative;
 import org.junit.Test;
 
 /**
@@ -34,10 +36,10 @@ public class MultiplicativeTest {
         Labor labor=Labor.getInstance();
         Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
-        Function<Graph,LabelInference> labelInference=g->new Multiplicative(g,LabelInference::defaultLabelInit);
+        Function<Graph,LabelInference> labelInference=g->new Multiplicative(g,LabelInference::noneInit);
         
         
-        labor.testLabelInference("data/graph-37.txt",selector10,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        labor.testLabelInference("data/graph-30.txt",selector10,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ);
         //labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_LABEL);
     }
 }

@@ -40,11 +40,17 @@ public interface Matrix {
     void setRow(int row,Matrix b) throws RowOutOfRangeException,DimensionNotAgreeException;
     void setCol(int col,Matrix b) throws ColumnOutOfRangeException,DimensionNotAgreeException;
     double determinant();
+    void reset();
+    int Getrownum();
+    int Getcolnum();
     Matrix inverse() throws IrreversibleException;
     Matrix adjoint () throws DimensionNotAgreeException;
     Matrix transpose();
     Matrix normalize();
     Matrix normalize_assign();
+    Matrix normone_assign();
+    Matrix projectpositive();
+    Matrix projectpositive_assign();
     double norm(Norm normName);
     double trace() throws DimensionNotAgreeException;
     

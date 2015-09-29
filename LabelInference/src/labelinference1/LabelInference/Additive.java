@@ -1,4 +1,4 @@
-package labelinference.LabelInference;
+package labelinference1.LabelInference;
 
 import static java.lang.Math.sqrt;
 import java.util.Collection;
@@ -86,7 +86,12 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 
         double alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
         for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
-            double etab=(alphaNext+alpha-1)/alphaNext/L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
+            double temp=L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM);
+            double etab;
+            if(temp>1e-16)
+                etab=(alphaNext+alpha-1)/alphaNext/temp;
+            else
+                etab=(alphaNext+alpha-1)/alphaNext;
             //\eta=\frac{alphaNext+alpha-1}{alphaNext*L_{tt'}}
             B.get(t0).get(t1).add_assign(
                 dBleft.get(t0).get(t1)
