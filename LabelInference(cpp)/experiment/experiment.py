@@ -4,7 +4,7 @@ rols=['0.05']
 rois=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 cfds=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 maxIter='100'
-graphs=['graph-30','graph-37','graph_imdb_10M','graph_paper']
+graphs=['graph-30','graph_imdb_10M']
 algorithms=['AG','AR','AO','MG','MR','MO','LP']
 
 def experiment(graph,rol,algo,roi,nuance,cfd):
@@ -13,9 +13,8 @@ def experiment(graph,rol,algo,roi,nuance,cfd):
         rls=open(fileName).readlines()
         if len(rls)>0 and rls[-1]=='Done.\n':return
     print(fileName)
-    p=subprocess.call('./main '+path.format(graph)+' '+rol+' '+algo+' '+roi+' '+nuance+' '+maxIter+' '+cfd+' '+'> '+fileName,shell=True)
-    print('main '+path.format(graph)+' '+rol+' '+algo+' '+roi+' '+nuance+' '+maxIter+' '+cfd+' '+'> '+fileName)
-    
+    p=subprocess.call('main '+path.format(graph)+' '+rol+' '+algo+' '+roi+' '+nuance+' '+maxIter+' '+cfd+' '+'> '+fileName,shell=True)
+
 subprocess.call('mkdir results',shell=True)
 for graph in graphs:
     for rol in rols:

@@ -2,1032 +2,1032 @@
 Iter = 0
 Size = 16110
 Delta = 0.000000
-ObjValue = 99356415.266009
+ObjValue = 75912507.664719
 
 Iter = 1
 Size = 16110
-Delta = 0.056806
-ObjValue = 154331.360007
+Delta = 0.073275
+ObjValue = 72891746.403957
 
 Iter = 2
 Size = 16110
-Delta = 0.057659
-ObjValue = 87454.990359
+Delta = 0.077272
+ObjValue = 69826687.048820
 
 Iter = 3
 Size = 16110
-Delta = 0.072729
-ObjValue = 86075.443945
+Delta = 0.078963
+ObjValue = 66705218.221259
 
 Iter = 4
 Size = 16110
-Delta = 0.089443
-ObjValue = 85963.779571
+Delta = 0.076004
+ObjValue = 63885940.947976
 
 Iter = 5
 Size = 16110
-Delta = 0.093044
-ObjValue = 85944.762425
+Delta = 0.068107
+ObjValue = 61303756.285339
 
 Iter = 6
 Size = 16110
-Delta = 0.100489
-ObjValue = 85935.339115
+Delta = 0.063742
+ObjValue = 58777720.907099
 
 Iter = 7
 Size = 16110
-Delta = 0.116096
-ObjValue = 85922.012654
+Delta = 0.065701
+ObjValue = 56158515.737241
 
 Iter = 8
 Size = 16110
-Delta = 0.134508
-ObjValue = 85896.804475
+Delta = 0.074729
+ObjValue = 53343229.257795
 
 Iter = 9
 Size = 16110
-Delta = 0.121891
-ObjValue = 85860.460972
+Delta = 0.086841
+ObjValue = 50281519.342725
 
 Iter = 10
 Size = 16110
-Delta = 0.071746
-ObjValue = 85833.925155
+Delta = 0.094030
+ObjValue = 47037251.610341
 
 Iter = 11
 Size = 16110
-Delta = 0.041754
-ObjValue = 85817.440063
+Delta = 0.089949
+ObjValue = 43760682.821937
 
 Iter = 12
 Size = 16110
-Delta = 0.030133
-ObjValue = 85803.923475
+Delta = 0.077904
+ObjValue = 40640733.426865
 
 Iter = 13
 Size = 16110
-Delta = 0.027365
-ObjValue = 85781.883531
+Delta = 0.064737
+ObjValue = 37836135.233053
 
 Iter = 14
 Size = 16110
-Delta = 0.028613
-ObjValue = 85752.491335
+Delta = 0.053483
+ObjValue = 35347032.709351
 
 Iter = 15
 Size = 16110
-Delta = 0.023411
-ObjValue = 85751.504588
+Delta = 0.045133
+ObjValue = 33160891.454815
 
 Iter = 16
 Size = 16110
-Delta = 0.020320
-ObjValue = 85716.019785
+Delta = 0.038697
+ObjValue = 31361793.909747
 
 Iter = 17
 Size = 16110
-Delta = 0.020091
-ObjValue = 85607.227369
+Delta = 0.033254
+ObjValue = 29912993.831665
 
 Iter = 18
 Size = 16110
-Delta = 0.020382
-ObjValue = 85549.983574
+Delta = 0.028645
+ObjValue = 28724341.074205
 
 Iter = 19
 Size = 16110
-Delta = 0.019599
-ObjValue = 85547.328250
+Delta = 0.024851
+ObjValue = 27723252.318842
 
 Iter = 20
 Size = 16110
-Delta = 0.017605
-ObjValue = 85553.304715
+Delta = 0.022023
+ObjValue = 26851523.300433
 
 Iter = 21
 Size = 16110
-Delta = 0.015653
-ObjValue = 85549.982157
+Delta = 0.019911
+ObjValue = 26081742.666169
 
 Iter = 22
 Size = 16110
-Delta = 0.014154
-ObjValue = 85543.551350
+Delta = 0.018183
+ObjValue = 25412265.806384
 
 Iter = 23
 Size = 16110
-Delta = 0.013011
-ObjValue = 85542.233779
+Delta = 0.016769
+ObjValue = 24829118.986109
 
 Iter = 24
 Size = 16110
-Delta = 0.012150
-ObjValue = 85546.887794
+Delta = 0.015744
+ObjValue = 24300522.586536
 
 Iter = 25
 Size = 16110
-Delta = 0.011390
-ObjValue = 85556.166920
+Delta = 0.015091
+ObjValue = 23805361.605330
 
 Iter = 26
 Size = 16110
-Delta = 0.010580
-ObjValue = 85568.819035
+Delta = 0.014668
+ObjValue = 23339652.910685
 
 Iter = 27
 Size = 16110
-Delta = 0.009710
-ObjValue = 85583.442688
+Delta = 0.014162
+ObjValue = 22924345.512786
 
 Iter = 28
 Size = 16110
-Delta = 0.008915
-ObjValue = 85598.669219
+Delta = 0.013264
+ObjValue = 22577219.304774
 
 Iter = 29
 Size = 16110
-Delta = 0.008179
-ObjValue = 85613.586612
+Delta = 0.012078
+ObjValue = 22288755.214712
 
 Iter = 30
 Size = 16110
-Delta = 0.007423
-ObjValue = 85627.630061
+Delta = 0.010943
+ObjValue = 22042257.597074
 
 Iter = 31
 Size = 16110
-Delta = 0.006664
-ObjValue = 85640.449244
+Delta = 0.009981
+ObjValue = 21829505.618644
 
 Iter = 32
 Size = 16110
-Delta = 0.005977
-ObjValue = 85652.128260
+Delta = 0.009121
+ObjValue = 21644980.104594
 
 Iter = 33
 Size = 16110
-Delta = 0.005361
-ObjValue = 85662.993683
+Delta = 0.008294
+ObjValue = 21482355.370039
 
 Iter = 34
 Size = 16110
-Delta = 0.004806
-ObjValue = 85673.156772
+Delta = 0.007566
+ObjValue = 21326841.207757
 
 Iter = 35
 Size = 16110
-Delta = 0.004337
-ObjValue = 85682.453257
+Delta = 0.007124
+ObjValue = 21157315.038602
 
 Iter = 36
 Size = 16110
-Delta = 0.003977
-ObjValue = 85690.853801
+Delta = 0.007035
+ObjValue = 20965692.779233
 
 Iter = 37
 Size = 16110
-Delta = 0.003711
-ObjValue = 85698.413099
+Delta = 0.007051
+ObjValue = 20777109.299420
 
 Iter = 38
 Size = 16110
-Delta = 0.003539
-ObjValue = 85705.170537
+Delta = 0.006893
+ObjValue = 20612687.500032
 
 Iter = 39
 Size = 16110
-Delta = 0.003403
-ObjValue = 85711.229437
+Delta = 0.006552
+ObjValue = 20467656.049417
 
 Iter = 40
 Size = 16110
-Delta = 0.003255
-ObjValue = 85716.696610
+Delta = 0.006111
+ObjValue = 20333986.999747
 
 Iter = 41
 Size = 16110
-Delta = 0.003095
-ObjValue = 85721.643671
+Delta = 0.005690
+ObjValue = 20207226.306727
 
 Iter = 42
 Size = 16110
-Delta = 0.002966
-ObjValue = 85726.203224
+Delta = 0.005373
+ObjValue = 20088425.408057
 
 Iter = 43
 Size = 16110
-Delta = 0.002865
-ObjValue = 85730.598509
+Delta = 0.005122
+ObjValue = 19980618.257829
 
 Iter = 44
 Size = 16110
-Delta = 0.002762
-ObjValue = 85734.991459
+Delta = 0.004848
+ObjValue = 19885398.373396
 
 Iter = 45
 Size = 16110
-Delta = 0.002646
-ObjValue = 85739.357896
+Delta = 0.004510
+ObjValue = 19801478.589473
 
 Iter = 46
 Size = 16110
-Delta = 0.002535
-ObjValue = 85743.613361
+Delta = 0.004161
+ObjValue = 19724630.571949
 
 Iter = 47
 Size = 16110
-Delta = 0.002420
-ObjValue = 85747.711179
+Delta = 0.003877
+ObjValue = 19651035.219671
 
 Iter = 48
 Size = 16110
-Delta = 0.002277
-ObjValue = 85751.605218
+Delta = 0.003675
+ObjValue = 19579396.688181
 
 Iter = 49
 Size = 16110
-Delta = 0.002102
-ObjValue = 85755.243718
+Delta = 0.003529
+ObjValue = 19510392.887331
 
 Iter = 50
 Size = 16110
-Delta = 0.001935
-ObjValue = 85758.561934
+Delta = 0.003399
+ObjValue = 19445309.770405
 
 Iter = 51
 Size = 16110
-Delta = 0.001823
-ObjValue = 85761.511789
+Delta = 0.003258
+ObjValue = 19384886.497278
 
 Iter = 52
 Size = 16110
-Delta = 0.001791
-ObjValue = 85764.171184
+Delta = 0.003100
+ObjValue = 19328968.589871
 
 Iter = 53
 Size = 16110
-Delta = 0.001817
-ObjValue = 85766.732223
+Delta = 0.002933
+ObjValue = 19276761.660279
 
 Iter = 54
 Size = 16110
-Delta = 0.001838
-ObjValue = 85769.283661
+Delta = 0.002774
+ObjValue = 19226669.753172
 
 Iter = 55
 Size = 16110
-Delta = 0.001808
-ObjValue = 85771.720765
+Delta = 0.002646
+ObjValue = 19176880.235266
 
 Iter = 56
 Size = 16110
-Delta = 0.001722
-ObjValue = 85773.898020
+Delta = 0.002545
+ObjValue = 19126706.457022
 
 Iter = 57
 Size = 16110
-Delta = 0.001600
-ObjValue = 85775.739937
+Delta = 0.002451
+ObjValue = 19077048.939848
 
 Iter = 58
 Size = 16110
-Delta = 0.001477
-ObjValue = 85777.239710
+Delta = 0.002340
+ObjValue = 19029626.452530
 
 Iter = 59
 Size = 16110
-Delta = 0.001387
-ObjValue = 85778.449476
+Delta = 0.002206
+ObjValue = 18986322.158759
 
 Iter = 60
 Size = 16110
-Delta = 0.001349
-ObjValue = 85779.456294
+Delta = 0.002061
+ObjValue = 18947718.751077
 
 Iter = 61
 Size = 16110
-Delta = 0.001357
-ObjValue = 85780.326850
+Delta = 0.001924
+ObjValue = 18912536.269907
 
 Iter = 62
 Size = 16110
-Delta = 0.001386
-ObjValue = 85781.100671
+Delta = 0.001810
+ObjValue = 18879153.879975
 
 Iter = 63
 Size = 16110
-Delta = 0.001434
-ObjValue = 85781.819213
+Delta = 0.001718
+ObjValue = 18846461.416034
 
 Iter = 64
 Size = 16110
-Delta = 0.001521
-ObjValue = 85782.483822
+Delta = 0.001648
+ObjValue = 18813661.564669
 
 Iter = 65
 Size = 16110
-Delta = 0.001644
-ObjValue = 85783.049103
+Delta = 0.001599
+ObjValue = 18780448.127512
 
 Iter = 66
 Size = 16110
-Delta = 0.001735
-ObjValue = 85783.493247
+Delta = 0.001569
+ObjValue = 18746971.756953
 
 Iter = 67
 Size = 16110
-Delta = 0.001690
-ObjValue = 85783.865748
+Delta = 0.001546
+ObjValue = 18713791.160639
 
 Iter = 68
 Size = 16110
-Delta = 0.001503
-ObjValue = 85784.252600
+Delta = 0.001509
+ObjValue = 18682342.351945
 
 Iter = 69
 Size = 16110
-Delta = 0.001303
-ObjValue = 85784.701695
+Delta = 0.001445
+ObjValue = 18654302.832033
 
 Iter = 70
 Size = 16110
-Delta = 0.001176
-ObjValue = 85785.219846
+Delta = 0.001359
+ObjValue = 18629928.792109
 
 Iter = 71
 Size = 16110
-Delta = 0.001111
-ObjValue = 85785.815702
+Delta = 0.001269
+ObjValue = 18607967.825802
 
 Iter = 72
 Size = 16110
-Delta = 0.001069
-ObjValue = 85786.497337
+Delta = 0.001191
+ObjValue = 18587071.585522
 
 Iter = 73
 Size = 16110
-Delta = 0.001034
-ObjValue = 85787.242399
+Delta = 0.001127
+ObjValue = 18566518.991625
 
 Iter = 74
 Size = 16110
-Delta = 0.001000
-ObjValue = 85787.988603
+Delta = 0.001077
+ObjValue = 18546043.969596
 
 Iter = 75
 Size = 16110
-Delta = 0.000965
-ObjValue = 85788.656192
+Delta = 0.001040
+ObjValue = 18525445.924241
 
 Iter = 76
 Size = 16110
-Delta = 0.000935
-ObjValue = 85789.205246
+Delta = 0.001014
+ObjValue = 18504795.409000
 
 Iter = 77
 Size = 16110
-Delta = 0.000913
-ObjValue = 85789.660848
+Delta = 0.000995
+ObjValue = 18484770.026391
 
 Iter = 78
 Size = 16110
-Delta = 0.000894
-ObjValue = 85790.069918
+Delta = 0.000975
+ObjValue = 18465783.426947
 
 Iter = 79
 Size = 16110
-Delta = 0.000876
-ObjValue = 85790.452620
+Delta = 0.000956
+ObjValue = 18447386.573094
 
 Iter = 80
 Size = 16110
-Delta = 0.000854
-ObjValue = 85790.806804
+Delta = 0.000939
+ObjValue = 18429228.107762
 
 Iter = 81
 Size = 16110
-Delta = 0.000823
-ObjValue = 85791.125264
+Delta = 0.000924
+ObjValue = 18411121.005058
 
 Iter = 82
 Size = 16110
-Delta = 0.000792
-ObjValue = 85791.405721
+Delta = 0.000914
+ObjValue = 18392626.197116
 
 Iter = 83
 Size = 16110
-Delta = 0.000772
-ObjValue = 85791.644267
+Delta = 0.000910
+ObjValue = 18373512.537517
 
 Iter = 84
 Size = 16110
-Delta = 0.000768
-ObjValue = 85791.826635
+Delta = 0.000904
+ObjValue = 18354363.866685
 
 Iter = 85
 Size = 16110
-Delta = 0.000779
-ObjValue = 85791.943149
+Delta = 0.000889
+ObjValue = 18336168.327058
 
 Iter = 86
 Size = 16110
-Delta = 0.000787
-ObjValue = 85791.987042
+Delta = 0.000864
+ObjValue = 18319152.066341
 
 Iter = 87
 Size = 16110
-Delta = 0.000773
-ObjValue = 85791.926641
+Delta = 0.000843
+ObjValue = 18302574.184013
 
 Iter = 88
 Size = 16110
-Delta = 0.000743
-ObjValue = 85791.714916
+Delta = 0.000840
+ObjValue = 18285521.317735
 
 Iter = 89
 Size = 16110
-Delta = 0.000719
-ObjValue = 85791.340733
+Delta = 0.000861
+ObjValue = 18267432.469542
 
 Iter = 90
 Size = 16110
-Delta = 0.000707
-ObjValue = 85790.838090
+Delta = 0.000907
+ObjValue = 18248124.746227
 
 Iter = 91
 Size = 16110
-Delta = 0.000701
-ObjValue = 85790.246030
+Delta = 0.000968
+ObjValue = 18227872.026516
 
 Iter = 92
 Size = 16110
-Delta = 0.000692
-ObjValue = 85789.579133
+Delta = 0.001025
+ObjValue = 18207474.112650
 
 Iter = 93
 Size = 16110
-Delta = 0.000689
-ObjValue = 85788.842099
+Delta = 0.001059
+ObjValue = 18187711.920570
 
 Iter = 94
 Size = 16110
-Delta = 0.000708
-ObjValue = 85788.075913
+Delta = 0.001069
+ObjValue = 18168445.616919
 
 Iter = 95
 Size = 16110
-Delta = 0.000728
-ObjValue = 85787.362025
+Delta = 0.001080
+ObjValue = 18148786.691584
 
 Iter = 96
 Size = 16110
-Delta = 0.000720
-ObjValue = 85786.740203
+Delta = 0.001111
+ObjValue = 18128247.001451
 
 Iter = 97
 Size = 16110
-Delta = 0.000690
-ObjValue = 85786.170808
+Delta = 0.001155
+ObjValue = 18107546.667237
 
 Iter = 98
 Size = 16110
-Delta = 0.000662
-ObjValue = 85785.615921
+Delta = 0.001179
+ObjValue = 18088328.108852
 
 Iter = 99
 Size = 16110
-Delta = 0.000648
-ObjValue = 85785.066808
+Delta = 0.001150
+ObjValue = 18071747.648538
 
 Iter = 100
 Size = 16110
-Delta = 0.000658
-ObjValue = 85785.066808
+Delta = 0.001073
+ObjValue = 18071747.648538
 
-B_AB = {{0.003447 0.000000 0.000000 }{0.000000 0.000371 0.000000 }{0.000000 0.000000 0.010301 }}
-B_AC = {{0.001512 0.000000 0.000000 }{0.000000 0.002660 0.000000 }{0.000000 0.000000 0.023057 }}
-B_BA = {{0.003447 0.000000 0.000000 }{0.000000 0.000371 0.000000 }{0.000000 0.000000 0.010301 }}
-B_BC = {{0.023822 0.000000 0.000000 }{0.000000 0.001017 0.000000 }{0.000000 0.000000 0.000289 }}
-B_CA = {{0.001512 0.000000 0.000000 }{0.000000 0.002660 0.000000 }{0.000000 0.000000 0.023057 }}
-B_CB = {{0.023822 0.000000 0.000000 }{0.000000 0.001017 0.000000 }{0.000000 0.000000 0.000289 }}
-0.106298sec per iteration
-Old accuracy = 4703/10977
+B_AB = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_AC = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_BA = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_BC = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_CA = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_CB = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+0.021653sec per iteration
+Old accuracy = 3799/10977
 
 ---------Recomputing---------
 Iter = 0
 Size = 16110
 Delta = 0.000000
-ObjValue = 169291.351037
+ObjValue = 18126166.810662
 
 Iter = 1
 Size = 16110
-Delta = 0.000600
-ObjValue = 169275.493164
+Delta = 0.006445
+ObjValue = 18137503.249876
 
 Iter = 2
 Size = 16110
-Delta = 0.000673
-ObjValue = 169266.167832
+Delta = 0.005723
+ObjValue = 18185328.993502
 
 Iter = 3
 Size = 16110
-Delta = 0.000695
-ObjValue = 169260.317691
+Delta = 0.005019
+ObjValue = 18245013.632869
 
 Iter = 4
 Size = 16110
-Delta = 0.000678
-ObjValue = 169255.606347
+Delta = 0.004350
+ObjValue = 18307047.833147
 
 Iter = 5
 Size = 16110
-Delta = 0.000643
-ObjValue = 169251.102351
+Delta = 0.003741
+ObjValue = 18366899.047427
 
 Iter = 6
 Size = 16110
-Delta = 0.000609
-ObjValue = 169246.648425
+Delta = 0.003206
+ObjValue = 18421201.973122
 
 Iter = 7
 Size = 16110
-Delta = 0.000583
-ObjValue = 169242.341871
+Delta = 0.002750
+ObjValue = 18467335.286807
 
 Iter = 8
 Size = 16110
-Delta = 0.000561
-ObjValue = 169238.274208
+Delta = 0.002361
+ObjValue = 18506037.608645
 
 Iter = 9
 Size = 16110
-Delta = 0.000534
-ObjValue = 169234.463936
+Delta = 0.002032
+ObjValue = 18538634.674389
 
 Iter = 10
 Size = 16110
-Delta = 0.000508
-ObjValue = 169230.913323
+Delta = 0.001757
+ObjValue = 18565400.754162
 
 Iter = 11
 Size = 16110
-Delta = 0.000490
-ObjValue = 169227.727934
+Delta = 0.001533
+ObjValue = 18586604.478303
 
 Iter = 12
 Size = 16110
-Delta = 0.000472
-ObjValue = 169225.054050
+Delta = 0.001347
+ObjValue = 18603103.435821
 
 Iter = 13
 Size = 16110
-Delta = 0.000448
-ObjValue = 169222.805160
+Delta = 0.001187
+ObjValue = 18616108.907661
 
 Iter = 14
 Size = 16110
-Delta = 0.000424
-ObjValue = 169220.697464
+Delta = 0.001046
+ObjValue = 18626577.913986
 
 Iter = 15
 Size = 16110
-Delta = 0.000407
-ObjValue = 169218.529170
+Delta = 0.000923
+ObjValue = 18635062.249540
 
 Iter = 16
 Size = 16110
-Delta = 0.000401
-ObjValue = 169216.253489
+Delta = 0.000817
+ObjValue = 18642082.000480
 
 Iter = 17
 Size = 16110
-Delta = 0.000389
-ObjValue = 169213.925905
+Delta = 0.000730
+ObjValue = 18647319.188932
 
 Iter = 18
 Size = 16110
-Delta = 0.000363
-ObjValue = 169211.592936
+Delta = 0.000660
+ObjValue = 18651084.034147
 
 Iter = 19
 Size = 16110
-Delta = 0.000336
-ObjValue = 169209.233338
+Delta = 0.000602
+ObjValue = 18654217.284692
 
 Iter = 20
 Size = 16110
-Delta = 0.000323
-ObjValue = 169206.813529
+Delta = 0.000554
+ObjValue = 18656695.393885
 
 Iter = 21
 Size = 16110
-Delta = 0.000321
-ObjValue = 169204.349483
+Delta = 0.000516
+ObjValue = 18658022.892388
 
 Iter = 22
 Size = 16110
-Delta = 0.000316
-ObjValue = 169201.877725
+Delta = 0.000485
+ObjValue = 18658058.421798
 
 Iter = 23
 Size = 16110
-Delta = 0.000305
-ObjValue = 169199.412073
+Delta = 0.000457
+ObjValue = 18657051.558578
 
 Iter = 24
 Size = 16110
-Delta = 0.000298
-ObjValue = 169196.974520
+Delta = 0.000434
+ObjValue = 18654222.368856
 
 Iter = 25
 Size = 16110
-Delta = 0.000302
-ObjValue = 169194.591009
+Delta = 0.000419
+ObjValue = 18650083.232911
 
 Iter = 26
 Size = 16110
-Delta = 0.000315
-ObjValue = 169192.258093
+Delta = 0.000399
+ObjValue = 18647559.699696
 
 Iter = 27
 Size = 16110
-Delta = 0.000325
-ObjValue = 169189.958511
+Delta = 0.000371
+ObjValue = 18646968.598047
 
 Iter = 28
 Size = 16110
-Delta = 0.000323
-ObjValue = 169187.707504
+Delta = 0.000339
+ObjValue = 18647155.562371
 
 Iter = 29
 Size = 16110
-Delta = 0.000314
-ObjValue = 169185.541952
+Delta = 0.000311
+ObjValue = 18647460.170300
 
 Iter = 30
 Size = 16110
-Delta = 0.000300
-ObjValue = 169183.463754
+Delta = 0.000285
+ObjValue = 18647694.640695
 
 Iter = 31
 Size = 16110
-Delta = 0.000284
-ObjValue = 169181.452161
+Delta = 0.000263
+ObjValue = 18647810.449001
 
 Iter = 32
 Size = 16110
-Delta = 0.000270
-ObjValue = 169179.524036
+Delta = 0.000242
+ObjValue = 18647731.502951
 
 Iter = 33
 Size = 16110
-Delta = 0.000257
-ObjValue = 169177.732877
+Delta = 0.000225
+ObjValue = 18647207.830520
 
 Iter = 34
 Size = 16110
-Delta = 0.000248
-ObjValue = 169176.104119
+Delta = 0.000214
+ObjValue = 18645842.330984
 
 Iter = 35
 Size = 16110
-Delta = 0.000243
-ObjValue = 169174.628387
+Delta = 0.000209
+ObjValue = 18643507.283137
 
 Iter = 36
 Size = 16110
-Delta = 0.000243
-ObjValue = 169173.287771
+Delta = 0.000207
+ObjValue = 18640282.296442
 
 Iter = 37
 Size = 16110
-Delta = 0.000242
-ObjValue = 169172.061199
+Delta = 0.000205
+ObjValue = 18636620.016474
 
 Iter = 38
 Size = 16110
-Delta = 0.000236
-ObjValue = 169170.921294
+Delta = 0.000202
+ObjValue = 18633458.635197
 
 Iter = 39
 Size = 16110
-Delta = 0.000227
-ObjValue = 169169.839446
+Delta = 0.000196
+ObjValue = 18630416.518842
 
 Iter = 40
 Size = 16110
-Delta = 0.000220
-ObjValue = 169168.795022
+Delta = 0.000193
+ObjValue = 18626991.707213
 
 Iter = 41
 Size = 16110
-Delta = 0.000212
-ObjValue = 169167.770553
+Delta = 0.000189
+ObjValue = 18623954.665873
 
 Iter = 42
 Size = 16110
-Delta = 0.000204
-ObjValue = 169166.742260
+Delta = 0.000182
+ObjValue = 18621580.289631
 
 Iter = 43
 Size = 16110
-Delta = 0.000198
-ObjValue = 169165.686903
+Delta = 0.000175
+ObjValue = 18619152.561212
 
 Iter = 44
 Size = 16110
-Delta = 0.000197
-ObjValue = 169164.587265
+Delta = 0.000173
+ObjValue = 18615495.608669
 
 Iter = 45
 Size = 16110
-Delta = 0.000202
-ObjValue = 169163.428988
+Delta = 0.000180
+ObjValue = 18610150.945992
 
 Iter = 46
 Size = 16110
-Delta = 0.000212
-ObjValue = 169162.196760
+Delta = 0.000191
+ObjValue = 18604268.155382
 
 Iter = 47
 Size = 16110
-Delta = 0.000225
-ObjValue = 169160.877798
+Delta = 0.000202
+ObjValue = 18598714.402008
 
 Iter = 48
 Size = 16110
-Delta = 0.000234
-ObjValue = 169159.465131
+Delta = 0.000210
+ObjValue = 18593467.658166
 
 Iter = 49
 Size = 16110
-Delta = 0.000232
-ObjValue = 169157.952266
+Delta = 0.000217
+ObjValue = 18588165.501286
 
 Iter = 50
 Size = 16110
-Delta = 0.000221
-ObjValue = 169156.335877
+Delta = 0.000225
+ObjValue = 18582448.687703
 
 Iter = 51
 Size = 16110
-Delta = 0.000210
-ObjValue = 169154.637394
+Delta = 0.000234
+ObjValue = 18576231.747830
 
 Iter = 52
 Size = 16110
-Delta = 0.000204
-ObjValue = 169152.907691
+Delta = 0.000242
+ObjValue = 18569884.436440
 
 Iter = 53
 Size = 16110
-Delta = 0.000201
-ObjValue = 169151.205078
+Delta = 0.000243
+ObjValue = 18564080.280098
 
 Iter = 54
 Size = 16110
-Delta = 0.000200
-ObjValue = 169149.573244
+Delta = 0.000233
+ObjValue = 18559329.583678
 
 Iter = 55
 Size = 16110
-Delta = 0.000203
-ObjValue = 169148.028851
+Delta = 0.000215
+ObjValue = 18555646.120180
 
 Iter = 56
 Size = 16110
-Delta = 0.000213
-ObjValue = 169146.555542
+Delta = 0.000195
+ObjValue = 18552691.712582
 
 Iter = 57
 Size = 16110
-Delta = 0.000236
-ObjValue = 169145.107796
+Delta = 0.000177
+ObjValue = 18550093.305107
 
 Iter = 58
 Size = 16110
-Delta = 0.000275
-ObjValue = 169143.653215
+Delta = 0.000164
+ObjValue = 18547577.924933
 
 Iter = 59
 Size = 16110
-Delta = 0.000307
-ObjValue = 169142.248177
+Delta = 0.000156
+ObjValue = 18544976.571061
 
 Iter = 60
 Size = 16110
-Delta = 0.000297
-ObjValue = 169140.975470
+Delta = 0.000153
+ObjValue = 18542257.229933
 
 Iter = 61
 Size = 16110
-Delta = 0.000253
-ObjValue = 169139.802532
+Delta = 0.000151
+ObjValue = 18539571.687458
 
 Iter = 62
 Size = 16110
-Delta = 0.000213
-ObjValue = 169138.645771
+Delta = 0.000148
+ObjValue = 18537158.521372
 
 Iter = 63
 Size = 16110
-Delta = 0.000190
-ObjValue = 169137.449348
+Delta = 0.000142
+ObjValue = 18535190.108051
 
 Iter = 64
 Size = 16110
-Delta = 0.000179
-ObjValue = 169136.194835
+Delta = 0.000134
+ObjValue = 18533737.495705
 
 Iter = 65
 Size = 16110
-Delta = 0.000175
-ObjValue = 169134.900431
+Delta = 0.000124
+ObjValue = 18532742.861956
 
 Iter = 66
 Size = 16110
-Delta = 0.000174
-ObjValue = 169133.597199
+Delta = 0.000114
+ObjValue = 18532055.394885
 
 Iter = 67
 Size = 16110
-Delta = 0.000175
-ObjValue = 169132.303332
+Delta = 0.000105
+ObjValue = 18531532.387797
 
 Iter = 68
 Size = 16110
-Delta = 0.000179
-ObjValue = 169131.024712
+Delta = 0.000098
+ObjValue = 18531072.092798
 
 Iter = 69
 Size = 16110
-Delta = 0.000183
-ObjValue = 169129.782682
+Delta = 0.000092
+ObjValue = 18530592.186359
 
 Iter = 70
 Size = 16110
-Delta = 0.000183
-ObjValue = 169128.602090
+Delta = 0.000089
+ObjValue = 18530009.073532
 
 Iter = 71
 Size = 16110
-Delta = 0.000180
-ObjValue = 169127.445881
+Delta = 0.000087
+ObjValue = 18529233.788294
 
 Iter = 72
 Size = 16110
-Delta = 0.000179
-ObjValue = 169126.240277
+Delta = 0.000088
+ObjValue = 18528191.237222
 
 Iter = 73
 Size = 16110
-Delta = 0.000183
-ObjValue = 169124.956928
+Delta = 0.000092
+ObjValue = 18526872.016502
 
 Iter = 74
 Size = 16110
-Delta = 0.000186
-ObjValue = 169123.631514
+Delta = 0.000097
+ObjValue = 18525391.014775
 
 Iter = 75
 Size = 16110
-Delta = 0.000186
-ObjValue = 169122.285650
+Delta = 0.000101
+ObjValue = 18523951.041198
 
 Iter = 76
 Size = 16110
-Delta = 0.000186
-ObjValue = 169120.921557
+Delta = 0.000102
+ObjValue = 18522675.978242
 
 Iter = 77
 Size = 16110
-Delta = 0.000184
-ObjValue = 169119.576998
+Delta = 0.000100
+ObjValue = 18521520.279659
 
 Iter = 78
 Size = 16110
-Delta = 0.000178
-ObjValue = 169118.270802
+Delta = 0.000098
+ObjValue = 18520369.807626
 
 Iter = 79
 Size = 16110
-Delta = 0.000171
-ObjValue = 169116.974894
+Delta = 0.000096
+ObjValue = 18519146.625261
 
 Iter = 80
 Size = 16110
-Delta = 0.000167
-ObjValue = 169115.667684
+Delta = 0.000094
+ObjValue = 18517795.909711
 
 Iter = 81
 Size = 16110
-Delta = 0.000165
-ObjValue = 169114.355299
+Delta = 0.000092
+ObjValue = 18516228.453377
 
 Iter = 82
 Size = 16110
-Delta = 0.000164
-ObjValue = 169113.064667
+Delta = 0.000091
+ObjValue = 18514332.009829
 
 Iter = 83
 Size = 16110
-Delta = 0.000163
-ObjValue = 169111.830955
+Delta = 0.000091
+ObjValue = 18512079.312564
 
 Iter = 84
 Size = 16110
-Delta = 0.000162
-ObjValue = 169110.684708
+Delta = 0.000092
+ObjValue = 18509669.515563
 
 Iter = 85
 Size = 16110
-Delta = 0.000161
-ObjValue = 169109.642901
+Delta = 0.000092
+ObjValue = 18507536.229241
 
 Iter = 86
 Size = 16110
-Delta = 0.000159
-ObjValue = 169108.705490
+Delta = 0.000090
+ObjValue = 18506066.891680
 
 Iter = 87
 Size = 16110
-Delta = 0.000156
-ObjValue = 169107.857609
+Delta = 0.000086
+ObjValue = 18505290.436913
 
 Iter = 88
 Size = 16110
-Delta = 0.000154
-ObjValue = 169107.075678
+Delta = 0.000082
+ObjValue = 18504953.309762
 
 Iter = 89
 Size = 16110
-Delta = 0.000151
-ObjValue = 169106.333792
+Delta = 0.000079
+ObjValue = 18504791.920748
 
 Iter = 90
 Size = 16110
-Delta = 0.000149
-ObjValue = 169105.607784
+Delta = 0.000078
+ObjValue = 18504652.761950
 
 Iter = 91
 Size = 16110
-Delta = 0.000148
-ObjValue = 169104.877086
+Delta = 0.000077
+ObjValue = 18504470.558218
 
 Iter = 92
 Size = 16110
-Delta = 0.000148
-ObjValue = 169104.125777
+Delta = 0.000076
+ObjValue = 18504215.629309
 
 Iter = 93
 Size = 16110
-Delta = 0.000148
-ObjValue = 169103.343416
+Delta = 0.000075
+ObjValue = 18503868.029756
 
 Iter = 94
 Size = 16110
-Delta = 0.000148
-ObjValue = 169102.525249
+Delta = 0.000072
+ObjValue = 18503441.914093
 
 Iter = 95
 Size = 16110
-Delta = 0.000149
-ObjValue = 169101.671748
+Delta = 0.000070
+ObjValue = 18502999.324685
 
 Iter = 96
 Size = 16110
-Delta = 0.000151
-ObjValue = 169100.788120
+Delta = 0.000068
+ObjValue = 18502594.501896
 
 Iter = 97
 Size = 16110
-Delta = 0.000153
-ObjValue = 169099.883790
+Delta = 0.000067
+ObjValue = 18502241.913855
 
 Iter = 98
 Size = 16110
-Delta = 0.000158
-ObjValue = 169098.971057
+Delta = 0.000067
+ObjValue = 18501931.762602
 
 Iter = 99
 Size = 16110
-Delta = 0.000165
-ObjValue = 169098.061290
+Delta = 0.000067
+ObjValue = 18501641.349965
 
 Iter = 100
 Size = 16110
-Delta = 0.000173
-ObjValue = 169098.061290
+Delta = 0.000067
+ObjValue = 18501641.349965
 
-B_AB = {{0.002868 0.000000 0.000000 }{0.000000 0.000513 0.000000 }{0.000000 0.000000 0.019009 }}
-B_AC = {{0.000815 0.000000 0.000000 }{0.000000 0.014811 0.000000 }{0.000000 0.000000 0.021235 }}
-B_BA = {{0.002868 0.000000 0.000000 }{0.000000 0.000513 0.000000 }{0.000000 0.000000 0.019009 }}
-B_BC = {{0.028669 0.000000 0.000000 }{0.000000 0.003562 0.000000 }{0.000000 0.000000 0.000202 }}
-B_CA = {{0.000815 0.000000 0.000000 }{0.000000 0.005581 0.000000 }{0.000000 0.000000 0.022590 }}
-B_CB = {{0.028669 0.000000 0.000000 }{0.000000 0.001341 0.000000 }{0.000000 0.000000 0.000194 }}
-0.182623sec per iteration
-Global accuracy = 11779/21654
+B_AB = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_AC = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_BA = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_BC = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_CA = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+B_CB = {{1.000000 0.000000 0.000000 }{0.000000 1.000000 0.000000 }{0.000000 0.000000 1.000000 }}
+0.040665sec per iteration
+Global accuracy = 10948/21654
 Incremental accuracy = 7118/10677
 
-Processed in 31.058622sec (0.373706sec for IO)
+Processed in 8.479776sec (1.723909sec for IO)
 Done.

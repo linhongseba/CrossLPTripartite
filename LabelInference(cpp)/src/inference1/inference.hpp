@@ -71,8 +71,8 @@ inference::inference(graph* g,const std::function<void(matrix&)>& labelInit):g(g
     }
     sum.resize(thrNum);
 	fore(t,thrNum)for(auto t0:TYPES)sum[t][t0]=empty;
-	for(auto v:cand)if(!v->isY0)labelInit(v->label);
 	cand=g->verts;
+	for(auto v:cand)if(!v->isY0)labelInit(v->label);
 }
 
 double inference::objective() {

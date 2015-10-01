@@ -25,7 +25,7 @@ std::unordered_map<std::string,std::function<inference*(graph* g)> > algo({
 
 inference* compute(std::string algoName, double labeledRatio, graph* g, graph* deltaGraph, double incrementalRatio, double nuance, int maxIter) {
 	cout<<"----------Computing----------"<<endl;
-	g->select<degreeSelector>(0.05);
+	g->select<degreeSelector>(labeledRatio);
 	double cnt=0;
 	for(vertex **u=g->verts.data(),**end=g->verts.data()+g->verts.size()-1;u<=end;u++)
 		if((cnt+=incrementalRatio)>=1) {

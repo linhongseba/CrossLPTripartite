@@ -36,6 +36,7 @@ public:
             for(int t=1;t<thrNum;t++)
                 dBup[0][t0][t1]+=dBup[t][t0][t1];
             newB[t0][t1]=(B[t0][t1]^!(dBup[0][t0][t1]/=(dBdown[0][t0]*B[t0][t1]*dBdown[0][t1])));
+            //std::cout<<newB[t0][t1]<<std::endl;
         }
         flagA=true;
     }

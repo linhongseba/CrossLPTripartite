@@ -71,8 +71,8 @@ inference::inference(graph* g,const std::function<void(matrix&)>& labelInit):g(g
     }
     sum.resize(thrNum);
 	fore(t,thrNum)for(auto t0:TYPES)sum[t][t0]=empty;
-	for(auto v:cand)if(!v->isY0)labelInit(v->label);
 	cand=g->verts;
+	for(auto v:cand)if(!v->isY0)labelInit(v->label);
 }
 
 double inference::objective() {
@@ -136,9 +136,9 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp, std::fu
     for(iter=0;iter<maxIter;iter++) {
         time=steady_clock::now();
 
-        std::thread uB([&]{updateB();});
+        //std::thread uB([&]{updateB();});
         std::thread uO([&]{obj=objective();});
-        uB.join();
+        //uB.join();
         uO.join();
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1)B[t0][t1]=newB[t0][t1];
         std::thread uY([&]{updateY();});

@@ -38,7 +38,7 @@ public:
     		-A[t0];
     		for(int t1:TYPES)if(t0!=t1)A[t0]+=dBright[0][t1];
     		A[t0]*=1.0/(A[t0]||matrix::NORMF);
-    		etac_L[t0]=etac;
+    		//etac_L[t0]=etac;
 		}
 
         multiRun(cand, [&](vertex* u, int thrID){
@@ -49,7 +49,7 @@ public:
             }
             label-=(A[u->t]*u->label);
             if(u->isY0)(label+=u->truth)-=u->label;
-            u->newLabel=std::move(((label*=etac_L[u->t])+=u->label)());
+            u->newLabel=std::move(((label*=etac)+=u->label)());
         });
         alphaY=alphaYNext;
         flagA=false;
