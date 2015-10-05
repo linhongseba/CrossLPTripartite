@@ -1,0 +1,212 @@
+Inferencer=MRO
+Selector=DEG
+Iter = 1
+Size = 23025
+Delta = 22810.040702
+ObjValue = 77.066586
+Iter = 2
+Size = 23025
+Delta = 210.066826
+ObjValue = 76.226389
+Iter = 3
+Size = 23025
+Delta = 87.682322
+ObjValue = 76.219876
+Iter = 4
+Size = 23025
+Delta = 47.585103
+ObjValue = 76.202395
+Iter = 5
+Size = 23025
+Delta = 27.869917
+ObjValue = 76.199740
+Iter = 6
+Size = 23025
+Delta = 18.378369
+ObjValue = 76.195947
+Iter = 7
+Size = 23025
+Delta = 14.510794
+ObjValue = 76.192039
+Iter = 8
+Size = 23025
+Delta = 13.293205
+ObjValue = 76.187476
+Iter = 9
+Size = 23025
+Delta = 13.429658
+ObjValue = 76.182512
+Iter = 10
+Size = 23025
+Delta = 14.199462
+ObjValue = 76.177084
+Iter = 11
+Size = 23025
+Delta = 15.307680
+ObjValue = 76.170797
+Iter = 12
+Size = 23025
+Delta = 16.977081
+ObjValue = 76.162743
+Iter = 13
+Size = 23025
+Delta = 19.337680
+ObjValue = 76.151280
+Iter = 14
+Size = 23025
+Delta = 22.623923
+ObjValue = 76.133633
+Iter = 15
+Size = 23025
+Delta = 27.210880
+ObjValue = 76.105277
+Iter = 16
+Size = 23025
+Delta = 33.590224
+ObjValue = 76.059142
+Iter = 17
+Size = 23025
+Delta = 42.364469
+ObjValue = 75.984893
+Iter = 18
+Size = 23025
+Delta = 54.537849
+ObjValue = 75.869107
+Iter = 19
+Size = 23025
+Delta = 71.390894
+ObjValue = 75.698052
+Iter = 20
+Size = 23025
+Delta = 94.548508
+ObjValue = 75.465446
+Iter = 21
+Size = 23025
+Delta = 125.727479
+ObjValue = 75.185736
+Iter = 22
+Size = 23025
+Delta = 165.975223
+ObjValue = 74.902790
+Iter = 23
+Size = 23025
+Delta = 215.160857
+ObjValue = 74.671105
+Iter = 24
+Size = 23025
+Delta = 271.211802
+ObjValue = 74.516089
+Iter = 25
+Size = 23025
+Delta = 327.862010
+ObjValue = 74.425071
+Iter = 26
+Size = 23025
+Delta = 375.321631
+ObjValue = 74.373321
+Iter = 27
+Size = 23025
+Delta = 407.334241
+ObjValue = 74.342942
+Iter = 28
+Size = 23025
+Delta = 426.451811
+ObjValue = 74.324410
+Iter = 29
+Size = 23025
+Delta = 440.777541
+ObjValue = 74.312900
+Iter = 30
+Size = 23025
+Delta = 457.440662
+ObjValue = 74.305780
+Iter = 31
+Size = 23025
+Delta = 480.345103
+ObjValue = 74.301507
+Iter = 32
+Size = 23025
+Delta = 511.021941
+ObjValue = 74.299135
+Iter = 33
+Size = 23025
+Delta = 549.836993
+ObjValue = 74.298067
+Iter = 34
+Size = 23025
+Delta = 596.943589
+ObjValue = 74.297911
+B =
+{{0.3192982456140351, 0.1394736842105263}, {0.5114035087719299, 1.0}}
+{{0.5914351851851852, 0.14814814814814814}, {0.9398148148148148, 1.0}}
+{{0.3192982456140351, 0.5114035087719299}, {0.1394736842105263, 1.0}}
+{{1.0, 0.0}, {0.0, 0.35555555555555557}}
+{{0.5914351851851852, 0.9398148148148148}, {0.14814814814814814, 1.0}}
+{{1.0, 0.0}, {0.0, 0.35555555555555557}}
+Processed in 54850.729 ms(update only)
+Processed in 56196 ms(total)
+Recompute2
+Iter = 0
+ObjValue = 11747.068206
+Iter = 1
+Size = 23025
+Delta = 22777.640993
+ObjValue = 77.068306
+Iter = 2
+Size = 23025
+Delta = 215.673086
+ObjValue = 76.158483
+B =
+{{0.3192982456140351, 0.1394736842105263}, {0.5114035087719299, 1.0}}
+{{0.5914351851851852, 0.14814814814814814}, {0.9398148148148148, 1.0}}
+{{0.3192982456140351, 0.5114035087719299}, {0.1394736842105263, 1.0}}
+{{1.0, 0.0}, {0.0, 0.35555555555555557}}
+{{0.5914351851851852, 0.9398148148148148}, {0.14814814814814814, 1.0}}
+{{1.0, 0.0}, {0.0, 0.35555555555555557}}
+Processed in 2464.174 ms(update only)
+Processed in 4344 ms(total)
+Incremental
+Totle = 0(A), 0(B), 0(C), 0(all)
+Labeled = 0(A), 0(B), 0(C), 0(all)
+AllLabels : [0, 0]
+TrainLabels : [0, 0]
+Accuracy = NaN(A), NaN(B), NaN(C), NaN(all)
+BER : NaN
+Global
+Totle = 837(A), 10520(B), 11668(C), 23025(all)
+Labeled = 59(A), 447(B), 324(C), 830(all)
+AllLabels : [11268, 5339]
+TrainLabels : [0, 2]
+Accuracy = 0.500000(A), 0.500000(B), 0.500000(C), 0.500000(all)
+BER : 0.5
+confidence=0.0
+Iter = 0
+ObjValue = 0.000000
+Iter = 1
+Size = 0
+Delta = NaN
+ObjValue = 0.000000
+B =
+{{0.3192982456140351, 0.1394736842105263}, {0.5114035087719299, 1.0}}
+{{0.5914351851851852, 0.14814814814814814}, {0.9398148148148148, 1.0}}
+{{0.3192982456140351, 0.5114035087719299}, {0.1394736842105263, 1.0}}
+{{1.0, 0.0}, {0.0, 0.35555555555555557}}
+{{0.5914351851851852, 0.9398148148148148}, {0.14814814814814814, 1.0}}
+{{1.0, 0.0}, {0.0, 0.35555555555555557}}
+Processed in 0.205 ms(update only)
+Processed in 1093 ms(total)
+Incremental
+Totle = 0(A), 0(B), 0(C), 0(all)
+Labeled = 0(A), 0(B), 0(C), 0(all)
+AllLabels : [0, 0]
+TrainLabels : [0, 0]
+Accuracy = NaN(A), NaN(B), NaN(C), NaN(all)
+BER : NaN
+Global
+Totle = 837(A), 10520(B), 11668(C), 23025(all)
+Labeled = 59(A), 447(B), 324(C), 830(all)
+AllLabels : [11268, 5339]
+TrainLabels : [414, 416]
+Accuracy = 0.906977(A), 0.830487(B), 0.897917(C), 0.854915(all)
+BER : 0.14508456551644994
+Done.
