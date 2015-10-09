@@ -37,7 +37,7 @@ public:
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1) {
             for(int t=1;t<thrNum;t++)
                 dBleft[0][t0][t1]+=dBleft[t][t0][t1];
-            newB[t0][t1]=(B[t0][t1]+((dBleft[0][t0][t1]-=dBright[0][t0]*B[t0][t1]*dBright[0][t1])*=etac/((dBright[0][t1]*dBright[0][t0])||matrix::NORMF)))();
+            newB[t0][t1]=(B[t0][t1]+((dBleft[0][t0][t1]-=dBright[0][t0]*B[t0][t1]*dBright[0][t1])*=etac/sqrt((dBright[0][t1]*dBright[0][t0])||matrix::NORMF)))();
         }
         alphaB=alphaBNext;
         flagA=true;

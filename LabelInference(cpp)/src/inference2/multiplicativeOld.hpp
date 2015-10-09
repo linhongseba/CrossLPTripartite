@@ -33,7 +33,7 @@ public:
     	if(!flagA)multiplicativeOld::updateB();
     	for(int t0:TYPES){
     		-A[t0];
-    		for(int t1:TYPES)if(t0!=t1)A[t0]+=dBdown[0][t1];
+    		for(int t1:TYPES)if(t0!=t1)A[t0]+=B[t0][t1]*dBdown[0][t1]**B[t0][t1];
 		}
         
         multiRun(cand, [&](vertex* u, int thrID){
@@ -41,7 +41,7 @@ public:
             label=u->label;
             for(const auto& e:u->edges) {
                 const auto& v=e.neighbor;
-                label+=(B[u->t][v->t]*v->label)*=e.weight;
+                label+=((B[u->t][v->t]*v->label)*=e.weight);
             }
             if(u->isY0)(label+=u->truth)/=((A[u->t]*u->label)+=u->label);
             else label/=A[u->t]*u->label;

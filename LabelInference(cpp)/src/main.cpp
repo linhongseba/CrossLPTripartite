@@ -34,14 +34,14 @@ inference* compute(std::string algoName, double labeledRatio, graph* g, graph* d
 			g->removeVertex(*u);
 			end--;u--;
 		}
-	if(algoName[1]=='G')LP(g).getResult(maxIter/10,nuance,inference::DISP_NONE);
+	if(algoName[1]=='G')LP(g,1).getResult(maxIter/10,-1,inference::DISP_NONE);
 	for(auto u:deltaGraph->verts)for(auto e:u->edges) {
 		auto v=e.neighbor;
 		if(deltaGraph->id2v.find(v->id)==deltaGraph->id2v.end())
 			v->removeEdge(u,e.weight);
 	}
     inference* ifr=algo[algoName](g);
-    ifr->getResult(maxIter,nuance,inference::DISP_ALL^inference::DISP_LABEL);
+    ifr->getResult(maxIter,nuance,inference::DISP_ALL/*^inference::DISP_LABEL*/);
     cout<<"Old ";
 	g->dispAccuracy();
     cout<<endl;

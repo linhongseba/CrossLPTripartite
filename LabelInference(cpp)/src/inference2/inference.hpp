@@ -82,7 +82,7 @@ double inference::objective() {
     	sum[thrID][u->t]+=u->label**u->label;
         for(const auto& e:u->edges) {
             const auto& v=e.neighbor;
-            double YuT_Btutv_Yv=((*u->label)*B[u->t][v->t]*=v->label).data.front();
+            double YuT_Btutv_Yv=(((*u->label)*B[u->t][v->t])*=v->label).data.front();
             obj[thrID]+=pow((e.weight-YuT_Btutv_Yv),2)-YuT_Btutv_Yv*YuT_Btutv_Yv;
         }
         if(u->isY0)obj[thrID]+=pow(u->truth-u->label||matrix::NORMF,2);
@@ -136,9 +136,9 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp, std::fu
     for(iter=0;iter<maxIter;iter++) {
         time=steady_clock::now();
 
-        //std::thread uB([&]{updateB();});
+        std::thread uB([&]{updateB();});
         std::thread uO([&]{obj=objective();});
-        //uB.join();
+        uB.join();
         uO.join();
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1)B[t0][t1]=newB[t0][t1];
         std::thread uY([&]{updateY();});
@@ -166,6 +166,7 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp, std::fu
 }
 
 void inference::increase(graph* deltaGraph, int maxIter, double nuance, double a, int disp) {
+	SET_THR_NUM(g->NoE*g->k*g->k);
 	std::vector<double[3][3]> w(thrNum),s(thrNum),n(thrNum);
 	multiRun(cand, [&](const vertex* u, int thrID){
 		for(const auto e:u->edges) {
@@ -222,6 +223,7 @@ void inference::increase(graph* deltaGraph, int maxIter, double nuance, double a
 }
 
 void inference::recompute(graph* deltaGraph, int maxIter, double nuance, int disp) {
+	SET_THR_NUM(g->NoE*g->k*g->k);
 	for(auto u:deltaGraph->verts) {
 		g->addVertex(u);
 		for(auto e:u->edges) {

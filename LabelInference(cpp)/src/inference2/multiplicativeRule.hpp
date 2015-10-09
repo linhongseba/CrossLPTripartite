@@ -25,7 +25,7 @@ public:
         multiRun(cand, [&](const vertex* u, int thrID){
             for(const auto& e:u->edges) {
                 const vertex* v=e.neighbor;
-                dBup[thrID][u->t][v->t]+=(u->label**v->label)*=e.weight;
+                dBup[thrID][u->t][v->t]+=(v->label**u->label)*=e.weight;
             }
             dBdown[thrID][u->t]+=u->label**u->label;
         });
@@ -36,7 +36,6 @@ public:
             for(int t=1;t<thrNum;t++)
                 dBup[0][t0][t1]+=dBup[t][t0][t1];
             newB[t0][t1]=(B[t0][t1]^!(dBup[0][t0][t1]/=(dBdown[0][t0]*B[t0][t1]*dBdown[0][t1])));
-            //std::cout<<newB[t0][t1]<<std::endl;
         }
         flagA=true;
     }
