@@ -100,6 +100,7 @@ public interface LabelInference {
             if(v.isY0()) labelObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
         }
         obj+=labelObj;
+        //System.out.print("SquaredObj="+obj+"\n"); 
         obj=Math.sqrt(obj);
         return obj;
     }

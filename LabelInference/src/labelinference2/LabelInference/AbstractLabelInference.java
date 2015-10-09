@@ -128,7 +128,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
             deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
-            if (iter>0 && (delta<=nuance || deltaObj<=nuance))break;
+            if (iter>0 && (delta<=nuance ))break;
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
@@ -182,7 +182,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
             deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
-            if (iter>0 && (delta<=nuance || deltaObj<=nuance))break;
+            if (iter>0 && (delta<=nuance ))break;
             
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
@@ -284,6 +284,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 iter++;
                 LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, cand,candS, Y0,B,k,obj);
             } while(delta>nuance && iter!=maxIter);
+            
             LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, cand,candS, Y0,B,k,0);
     }
     
