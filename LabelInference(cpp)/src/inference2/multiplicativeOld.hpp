@@ -37,15 +37,14 @@ public:
 		}
         
         multiRun(cand, [&](vertex* u, int thrID){
-            matrix& label=u->newLabel;
-            label=u->label;
+            matrix label(k,1);
             for(const auto& e:u->edges) {
                 const auto& v=e.neighbor;
                 label+=((B[u->t][v->t]*v->label)*=e.weight);
             }
             if(u->isY0)(label+=u->truth)/=((A[u->t]*u->label)+=u->label);
             else label/=A[u->t]*u->label;
-            ((!label)^=u->label)();
+            u->newLabel=std::move(((!label)^=u->label)());
         });
         flagA=false;
     }

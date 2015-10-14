@@ -4,8 +4,8 @@ rols=['0.05']
 rois=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 cfds=['0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 maxIter='100'
-graphs=['graph-30','graph_imdb_10M']
-algorithms=['AG','AR','AO','MG','MR','MO','LP']
+graphs=['graph-30','graph_imdb_10M','graph-37','graph_paper']
+algorithms=['MR']
 
 def experiment(graph,rol,algo,roi,nuance,cfd):
     fileName='results/'+graph+'_'+rol+'_'+algo+'_'+roi+'_'+nuance+'_'+cfd+'.txt'

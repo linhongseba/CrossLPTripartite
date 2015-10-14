@@ -34,7 +34,7 @@ public:
     std::function<void(matrix&)> labelInit;    
     int k;
     matrix idm,empty;
-    matrix B[3][3],newB[3][3];
+    matrix B[3][3],newB[3][3],tempB[3][3];
     std::vector<vertex*> cand;
     int thrNum;
 
@@ -68,11 +68,15 @@ inference::inference(graph* g,const std::function<void(matrix&)>& labelInit):g(g
     for(type t0:TYPES)for(type t1:TYPES)if(t0!=t1) {
         B[t0][t1]=idm;
         newB[t0][t1]=idm;
+        tempB[t0][t1]=idm;
     }
     sum.resize(thrNum);
 	fore(t,thrNum)for(auto t0:TYPES)sum[t][t0]=empty;
 	cand=g->verts;
-	for(auto v:cand)if(!v->isY0)labelInit(v->label);
+	for(auto v:cand)if(!v->isY0){
+		labelInit(v->label);
+		labelInit(v->tempLabel);
+	}
 }
 
 double inference::objective() {
@@ -200,7 +204,7 @@ void inference::increase(graph* deltaGraph, int maxIter, double nuance, double a
 	}
 	
 	cand=deltaGraph->verts;
-	std::cout<<cand.size()<<std::endl;
+	SET_THR_NUM(g->NoE*g->k*g->k);
 	getResult(maxIter, nuance, disp, [&]{
 		std::mutex mtx;
 		multiRun(cand, [&](const vertex* u, int thrID){
@@ -223,7 +227,6 @@ void inference::increase(graph* deltaGraph, int maxIter, double nuance, double a
 }
 
 void inference::recompute(graph* deltaGraph, int maxIter, double nuance, int disp) {
-	SET_THR_NUM(g->NoE*g->k*g->k);
 	for(auto u:deltaGraph->verts) {
 		g->addVertex(u);
 		for(auto e:u->edges) {
@@ -234,6 +237,8 @@ void inference::recompute(graph* deltaGraph, int maxIter, double nuance, int dis
 		}
 		labelInit(u->label);
 	}
+	SET_THR_NUM(g->NoE*g->k*g->k);
+	cand=g->verts;
 	getResult(maxIter, nuance, disp);
 }
 #include"labelPropagation.hpp"

@@ -236,6 +236,7 @@ inline matrix& matrix::operator()() {
         return *this;
     }
     for(auto x=data.begin();x!=data.end();x++)*x/=maxV;
+	//for(auto x=data.begin();x!=data.end();x++)*x=std::max(*x,EPSILON);
     return *this;
 }
 

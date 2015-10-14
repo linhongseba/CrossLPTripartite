@@ -7,7 +7,7 @@ private:
     std::vector<vertex*> candS;
 public:
     double alpha;
-    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(0) {
+    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(0.5) {
     }
     
     labelPropagation(graph* g):labelPropagation(g,inference::defaultLabelInit) {
@@ -25,7 +25,7 @@ public:
             for(const auto e:u->edges) {
                 const vertex* v=e.neighbor;
                 u->cache[v->t]+=v->label*(e.weight/v->sumE);
-            }
+			}
         });
         multiRun(cand,[&](vertex* u, int thrID){
             if(u->isY0) {
@@ -39,7 +39,6 @@ public:
                 b+=((v->cache[u->t]-(u->label*(e.weight/u->sumE)))*=(e.weight/v->sumE));
             }
             u->newLabel=std::move((a()*=(1-alpha))+=(b()*=alpha));
-            
         });
     }
 };

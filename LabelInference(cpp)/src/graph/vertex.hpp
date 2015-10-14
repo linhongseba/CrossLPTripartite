@@ -15,6 +15,7 @@ public:
     matrix truth;
     matrix newLabel;
     matrix cache[3];//for LP
+    matrix tempLabel;//for AR
     type t;
     bool isY0;
     bool isTruth;
@@ -42,6 +43,7 @@ vertex::vertex(std::string vid, int k):	sumE(0),
 										label(k,1),
 										truth(k,1),
 										newLabel(k,1),
+										tempLabel(k,1),
 										t(vid[0]-'A'),
 										isY0(false),
 										isTruth(false),

@@ -33,22 +33,26 @@ public:
     void updateY() {
     	if(!flagA)additiveOld::updateB();
     	alphaYNext=(1+sqrt(4*alphaY*alphaY+1))/2;
-    	double etac=(alphaYNext+alphaY-1)/alphaYNext;
+    	double etac=(alphaY-1)/alphaYNext,eta[3];
     	for(int t0:TYPES){
     		-A[t0];
     		for(int t1:TYPES)if(t0!=t1)A[t0]+=dBright[0][t1];
-    		A[t0]*=1.0/sqrt(A[t0]||matrix::NORMF);
+    		eta[t0]=1.0/sqrt(A[t0]||matrix::NORM1);
+    		A[t0]*=eta[t0];
 		}
-
+		
         multiRun(cand, [&](vertex* u, int thrID){
             matrix label(k,1);
             for(auto& e:u->edges) {
                 vertex* v=e.neighbor;
                 label+=(B[u->t][v->t]*v->label)*=e.weight;
             }
-            label-=(A[u->t]*u->label);
-            if(u->isY0)(label+=u->truth)-=u->label;
-            u->newLabel=std::move(((label*=etac)+=u->label)());
+            label-=((A[u->t]*u->tempLabel)*=(label||matrix::NORM1));
+            //std::cout<<label<<std::endl;
+            u->tempLabel+=label;
+            (u->newLabel=u->tempLabel)();
+            //for(auto x=u->newLabel.data.begin();x!=u->newLabel.data.end();x++)*x=std::max(*x,EPSILON);
+            u->tempLabel=u->newLabel+((u->newLabel-u->label)*=etac);
         });
         alphaY=alphaYNext;
         flagA=false;
