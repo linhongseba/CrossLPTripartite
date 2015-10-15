@@ -48,6 +48,7 @@ vertex::vertex(std::string vid, int k):	sumE(0),
 										isY0(false),
 										isTruth(false),
 										isCand(false){
+	cache[0]=cache[1]=cache[2]=label;
 }
 
 vertex::vertex(const vertex& b):sumE(b.sumE),

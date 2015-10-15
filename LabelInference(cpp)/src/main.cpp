@@ -41,7 +41,7 @@ inference* compute(std::string algoName, double labeledRatio, graph* g, graph* d
 			v->removeEdge(u,e.weight);
 	}
     inference* ifr=algo[algoName](g);
-    ifr->getResult(maxIter,nuance,inference::DISP_ALL^inference::DISP_LABEL);
+    ifr->getResult(maxIter,nuance,inference::DISP_ALL/*^inference::DISP_LABEL*/);
     cout<<"Old ";
 	g->dispAccuracy();
     cout<<endl;

@@ -7,7 +7,7 @@ private:
     std::vector<vertex*> candS;
 public:
     double alpha;
-    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(0.5) {
+    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(1) {
     }
     
     labelPropagation(graph* g):labelPropagation(g,inference::defaultLabelInit) {

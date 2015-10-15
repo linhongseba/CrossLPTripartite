@@ -1,0 +1,67 @@
+----------Computing----------
+Iter = 0
+Size = 23025
+Delta = 0.000000
+ObjValue = 70692504.879680
+
+Iter = 1
+Size = 23025
+Delta = 0.125904
+ObjValue = 35763.549359
+
+Iter = 2
+Size = 23025
+Delta = 0.106589
+ObjValue = 10748.673878
+
+Iter = 3
+Size = 23025
+Delta = 0.100405
+ObjValue = 10344.181467
+
+Iter = 4
+Size = 23025
+Delta = 0.091171
+ObjValue = 10312.546036
+
+Iter = 5
+Size = 23025
+Delta = 0.079484
+ObjValue = 10306.989139
+
+Iter = 6
+Size = 23025
+Delta = 0.065924
+ObjValue = 10305.232328
+
+Iter = 7
+Size = 23025
+Delta = 0.052632
+ObjValue = 10304.549986
+
+Iter = 8
+Size = 23025
+Delta = 0.041691
+ObjValue = 10304.439883
+
+Iter = 9
+Size = 23025
+Delta = 0.033787
+ObjValue = 10304.684549
+
+Iter = 10
+Size = 23025
+Delta = 0.028290
+ObjValue = 10304.684549
+
+B_AB = {{0.000013 0.000000 }{0.000000 0.000023 }}
+B_AC = {{0.000508 0.000000 }{0.000000 0.003650 }}
+B_BA = {{0.000013 0.000000 }{0.000000 0.000023 }}
+B_BC = {{0.000274 0.000000 }{0.000000 0.000450 }}
+B_CA = {{0.000508 0.000000 }{0.000000 0.003650 }}
+B_CB = {{0.000274 0.000000 }{0.000000 0.000450 }}
+0.195472sec per iteration
+Old accuracy = 28106/31554
+
+Processed in 11.735888sec (7.440661sec for IO)
+Done.
