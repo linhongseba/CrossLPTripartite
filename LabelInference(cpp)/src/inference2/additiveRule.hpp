@@ -37,7 +37,7 @@ public:
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1) {
             for(int t=1;t<thrNum;t++)
                 dBleft[0][t0][t1]+=dBleft[t][t0][t1];
-            tempB[t0][t1]+=((dBleft[0][t0][t1]-=dBright[0][t0]*tempB[t0][t1]*dBright[0][t1])*=1.0/sqrt((dBright[0][t1]*dBright[0][t0])||matrix::NORMF));
+            tempB[t0][t1]+=((dBleft[0][t0][t1]-=dBright[0][t0]*tempB[t0][t1]*dBright[0][t1])*=1.0/((dBright[0][t1]*dBright[0][t0])||matrix::NORMF));
             (newB[t0][t1]=tempB[t0][t1])();
             tempB[t0][t1]=newB[t0][t1]+(newB[t0][t1]-B[t0][t1])*=etac;
         }

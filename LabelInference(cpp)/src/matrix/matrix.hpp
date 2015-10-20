@@ -223,7 +223,7 @@ inline matrix& matrix::operator()() {
         for(auto x=data.begin();x!=data.end();x++)*x/=sum;
         return *this;
     }
-    
+    /*
     double minV=0,maxV=0;
     for(auto x=data.begin();x!=data.end();x++) {
         minV<=*x?0:(minV=*x);
@@ -235,8 +235,8 @@ inline matrix& matrix::operator()() {
         for(auto x=data.begin();x!=data.end();x++)*x=(*x-minV)/maxV;
         return *this;
     }
-    for(auto x=data.begin();x!=data.end();x++)*x/=maxV;
-	//for(auto x=data.begin();x!=data.end();x++)*x=std::max(*x,EPSILON);
+    for(auto x=data.begin();x!=data.end();x++)*x/=maxV;*/
+	for(auto x=data.begin();x!=data.end();x++)*x=std::max(*x,EPSILON);
     return *this;
 }
 

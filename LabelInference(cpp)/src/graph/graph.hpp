@@ -61,8 +61,11 @@ graph::graph(std::string path) {
     }
     for(auto& v:verts) { 
     	v->sumE/=maxE; 
-        for(auto& e:v->edges)
-            e.weight/=maxE;
+        for(auto& e:v->edges) {
+        	e.weight/=maxE;
+        	//std::cout<<e.weight<<std::endl;
+		}
+            
 	}
 	delete[] buffer;
 }

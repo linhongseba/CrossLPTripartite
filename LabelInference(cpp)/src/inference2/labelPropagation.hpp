@@ -7,7 +7,7 @@ private:
     std::vector<vertex*> candS;
 public:
     double alpha;
-    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(1) {
+    labelPropagation(graph* g, const std::function<void(matrix&)>& labelInit):inference(g,labelInit),alpha(0) {
     }
     
     labelPropagation(graph* g):labelPropagation(g,inference::defaultLabelInit) {
@@ -38,7 +38,9 @@ public:
                 a+=v->label*e.weight;
                 b+=((v->cache[u->t]-(u->label*(e.weight/u->sumE)))*=(e.weight/v->sumE));
             }
+            //std::cout<<a<<std::endl;
             u->newLabel=std::move((a()*=(1-alpha))+=(b()*=alpha));
+            
         });
     }
 };

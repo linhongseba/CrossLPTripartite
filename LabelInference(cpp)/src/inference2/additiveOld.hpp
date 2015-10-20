@@ -36,22 +36,20 @@ public:
     	double etac=(alphaY-1)/alphaYNext,eta[3];
     	for(int t0:TYPES){
     		-A[t0];
-    		for(int t1:TYPES)if(t0!=t1)A[t0]+=dBright[0][t1];
-    		eta[t0]=1.0/sqrt(A[t0]||matrix::NORM1);
-    		A[t0]*=eta[t0];
+    		for(int t1:TYPES)if(t0!=t1)A[t0]+=B[t0][t1]*dBright[0][t1]**B[t0][t1];
+    		eta[t0]=1.0/(A[t0]||matrix::NORMF);
 		}
 		
         multiRun(cand, [&](vertex* u, int thrID){
             matrix label(k,1);
             for(auto& e:u->edges) {
                 vertex* v=e.neighbor;
-                label+=(B[u->t][v->t]*v->label)*=e.weight;
+                label+=((B[u->t][v->t]*v->label)*=e.weight);
             }
-            label-=((A[u->t]*u->tempLabel)*=(label||matrix::NORM1));
-            //std::cout<<label<<std::endl;
+            (label-=(A[u->t]*u->tempLabel))*=eta[u->t];
             u->tempLabel+=label;
-            (u->newLabel=u->tempLabel)();
-            //for(auto x=u->newLabel.data.begin();x!=u->newLabel.data.end();x++)*x=std::max(*x,EPSILON);
+            (u->newLabel=u->tempLabel);
+            for(auto x=u->newLabel.data.begin();x!=u->newLabel.data.end();x++)*x=std::max(*x,EPSILON);
             u->tempLabel=u->newLabel+((u->newLabel-u->label)*=etac);
         });
         alphaY=alphaYNext;

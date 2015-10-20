@@ -95,9 +95,11 @@ double inference::objective() {
     	obj[0]+=obj[t];
     	for(auto t0:TYPES)sum[0][t0]+=sum[t][t0];
     }
-    for(auto t0:TYPES)for(auto t1:TYPES)if(t0!=t1)
+    //std::cout<<obj[0]<<std::endl;
+	for(auto t0:TYPES)for(auto t1:TYPES)if(t0!=t1)
     	fore(a,g->k)fore(b,g->k)fore(c,g->k)fore(d,g->k)
     		obj[0]+=B[t0][t1][a][b]*B[t0][t1][c][d]*sum[0][t0][a][c]*sum[0][t1][b][d];
+	//std::cout<<obj[0]<<std::endl;
     return obj[0];
 }
 
@@ -147,7 +149,7 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp, std::fu
         for(int t0:TYPES)for(int t1:TYPES)if(t0!=t1)B[t0][t1]=newB[t0][t1];
         std::thread uY([&]{updateY();});
         std::thread uD([&]{
-			infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta[0], timeUsed, obj);
+			infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta[0], timeUsed, obj/cand.size());
 		});
         uY.join();
         uD.join();
@@ -159,18 +161,22 @@ void inference::getResult(int maxIter, double nuance, unsigned int disp, std::fu
         });
         for(int i=1;i<thrNum;i++)delta[0]+=delta[i];
         deltaObj = (oldObj-obj)/g->verts.size();
-        delta[0]/=g->verts.size();
+        delta[0]/=cand.size();
         oldObj = obj;
 
 		func();
         timeUsed+=duration_cast<duration<double>>(steady_clock::now()-time).count();
         if (iter>0 && (delta[0]<=nuance || nuance>0 && deltaObj<=nuance)){iter++;break;}
     }
+    multiRun(cand, [&](vertex* u, int thrID){
+        u->label();
+    });
     infoDisplay(disp, iter, delta[0], timeUsed, oldObj);
 }
 
 void inference::increase(graph* deltaGraph, int maxIter, double nuance, double a, int disp) {
 	SET_THR_NUM(g->NoE*g->k*g->k);
+	sum.resize(thrNum);
 	std::vector<double[3][3]> w(thrNum),s(thrNum),n(thrNum);
 	multiRun(cand, [&](const vertex* u, int thrID){
 		for(const auto e:u->edges) {
