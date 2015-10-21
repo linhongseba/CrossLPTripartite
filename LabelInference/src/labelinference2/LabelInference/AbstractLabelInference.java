@@ -33,6 +33,7 @@ public abstract class AbstractLabelInference implements LabelInference{
     protected final BiConsumer<Matrix,Integer> labelInit;    
     protected final int k; //the variable denotes the number of clusters
     protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
+    protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> Btemp=new HashMap<>();
     
     /**
     * 
@@ -56,6 +57,12 @@ public abstract class AbstractLabelInference implements LabelInference{
             B.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types)
                 B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
+        }
+        for(Vertex.Type t0:Vertex.types) {
+            Btemp.put(t0, new HashMap<>());
+            for(Vertex.Type t1:Vertex.types)
+                if(t0!=t1)
+                    Btemp.get(t0).put(t1,B.get(t0).get(t1));
         }
         try {
             for(Vertex u:g.getVertices(v->v.isY0()))
@@ -111,7 +118,19 @@ public abstract class AbstractLabelInference implements LabelInference{
         double obj;
         double deltaObj;
         
-        int iter=0; //the variable controls the iteration times.
+        for(Vertex.Type t0:Vertex.types) {
+            Btemp.put(t0, new HashMap<>());
+            for(Vertex.Type t1:Vertex.types)
+                if(t0!=t1)
+                {
+                    Btemp.get(t0).put(t1,B.get(t0).get(t1).copy());
+                    //System.out.print(String.format(Btemp.get(t0).get(t1).toString()));;
+                }
+            
+        }
+        for(Vertex u:g.getVertices()) {
+            u.setTempLabel(u.getLabel().copy());
+        }int iter=0; //the variable controls the iteration times.
         //oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
         //LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         Map<Vertex, Matrix> Y;
@@ -128,7 +147,12 @@ public abstract class AbstractLabelInference implements LabelInference{
             obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
             deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
-            if (iter>0 && (delta<=nuance ))break;
+            if (iter>0 && (delta<=nuance ))
+            {
+                System.out.print(String.format("Result@_@Delta = %.6f\n",delta));
+                break;
+            }
+            
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
@@ -165,7 +189,15 @@ public abstract class AbstractLabelInference implements LabelInference{
         double oldObj=0;
         double deltaObj;
         double obj;
-        int iter=0; //the variable controls the iteration times.
+        for(Vertex.Type t0:Vertex.types) {
+            Btemp.put(t0, new HashMap<>());
+            for(Vertex.Type t1:Vertex.types)
+                if(t0!=t1)
+                    Btemp.get(t0).put(t1,B.get(t0).get(t1).copy());
+        }
+        for(Vertex u:g.getVertices()) {
+            u.setTempLabel(u.getLabel().copy());
+        }int iter=0; //the variable controls the iteration times.
         oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
         LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         Map<Vertex, Matrix> Y;
@@ -182,7 +214,11 @@ public abstract class AbstractLabelInference implements LabelInference{
             obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
             deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
-            if (iter>0 && (delta<=nuance ))break;
+            if (iter>0 && (delta<=nuance ))
+            {
+                System.out.print(String.format("@_@Delta = %.6f\n",delta));
+                break;
+            }
             
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;

@@ -2,6 +2,8 @@ package labelinference.Matrix;
 
 import static java.lang.Math.abs;
 import static java.lang.Math.pow;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.IrreversibleException;
@@ -350,9 +352,21 @@ public class NaiveMatrix implements Matrix{
          for(int col=0;col<A.getColumnDimension();col++){
              for(int row=0;row<A.getRowDimension();row++){
                  if(A.get(row, col)>ZERO){
-                     A.set(row, col, A.get(row, col));
+                     try {
+                         M.set(row, col, A.get(row, col));
+                     } catch (ColumnOutOfRangeException ex) {
+                         Logger.getLogger(NaiveMatrix.class.getName()).log(Level.SEVERE, null, ex);
+                     } catch (RowOutOfRangeException ex) {
+                         Logger.getLogger(NaiveMatrix.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }else{
-                     A.set(row, col, ZERO);
+                     try {
+                         M.set(row, col, ZERO);
+                     } catch (ColumnOutOfRangeException ex) {
+                         Logger.getLogger(NaiveMatrix.class.getName()).log(Level.SEVERE, null, ex);
+                     } catch (RowOutOfRangeException ex) {
+                         Logger.getLogger(NaiveMatrix.class.getName()).log(Level.SEVERE, null, ex);
+                     }
                  }
              }
          }             
