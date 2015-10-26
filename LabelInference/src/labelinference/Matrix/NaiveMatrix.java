@@ -422,4 +422,45 @@ public class NaiveMatrix implements Matrix{
     public int Getcolnum() {
         return A.getColumnDimension();
     }
+
+    @Override
+    public void copyto(Matrix b) {
+        for(int i=0;i<this.Getrownum();i++){
+            for(int j=0;j<this.Getcolnum();j++){
+                try {
+                    b.set(i, j, this.get(i, j));
+                } catch (ColumnOutOfRangeException ex) {
+                    Logger.getLogger(NaiveMatrix.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (RowOutOfRangeException ex) {
+                    Logger.getLogger(NaiveMatrix.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Matrix maxnorm_assign() {
+        double sum=0.0;
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                    sum+=A.get(row, col);
+            }
+        }
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                if(sum>1e-9)
+                    A.set(row, col, A.get(row, col)/sum);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public void Setdefault() {
+        for(int col=0;col<A.getColumnDimension();col++){
+            for(int row=0;row<A.getRowDimension();row++){
+                    A.set(row, col, 0.5);
+            }
+        }
+    }
 }

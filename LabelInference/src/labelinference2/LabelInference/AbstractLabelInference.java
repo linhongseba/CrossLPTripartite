@@ -33,7 +33,7 @@ public abstract class AbstractLabelInference implements LabelInference{
     protected final BiConsumer<Matrix,Integer> labelInit;    
     protected final int k; //the variable denotes the number of clusters
     protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
-    protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> Btemp=new HashMap<>();
+    Map<Vertex,Matrix> Y;
     
     /**
     * 
@@ -49,53 +49,39 @@ public abstract class AbstractLabelInference implements LabelInference{
     * @param _labelInit: initial labeled vertices
     */	    
     public AbstractLabelInference(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
-        final double ZERO=1e-9;
-        g=_g;
-        k=g.getNumLabels();
-        labelInit=_labelInit;
-        for(Vertex.Type t0:Vertex.types) {
-            B.put(t0, new HashMap<>());
-            for(Vertex.Type t1:Vertex.types)
-                B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
-        }
-        for(Vertex.Type t0:Vertex.types) {
-            Btemp.put(t0, new HashMap<>());
-            for(Vertex.Type t1:Vertex.types)
-                if(t0!=t1)
-                    Btemp.get(t0).put(t1,B.get(t0).get(t1));
-        }
-        try {
-            for(Vertex u:g.getVertices(v->v.isY0()))
-                for(Vertex v:u.getNeighbors())if(v.isY0())
-                    B.get(u.getType()).get(v.getType()).add_assign(
-                        u.getLabel()
-                        .times(v.getLabel().transpose()));
-            for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) {
-                double maxItem=0;
-                double minItem=0;
-                Matrix curB=B.get(t0).get(t1);
-                for(int row=0;row<k;row++)
-                    for(int col=0;col<k;col++) {
-                        double curItem=curB.get(row, col);
-                        if(curItem>maxItem)maxItem=curItem;
-                        if(curItem<minItem)minItem=curItem;
-                    }
-                if(minItem<ZERO) {
-                    if(minItem>0)minItem=-ZERO;
-                    maxItem-=2*minItem;
-                    for(int row=0;row<k;row++)
-                        for(int col=0;col<k;col++)
-                            curB.set(row, col, (curB.get(row, col)-2*minItem)/maxItem);
+            g=_g;
+            k=g.getNumLabels();
+            labelInit=_labelInit;
+            for(Vertex.Type t0:Vertex.types) {
+                B.put(t0, new HashMap<>());
+             
+                for(Vertex.Type t1:Vertex.types){
+                    B.get(t0).put(t1,MatrixFactory.getInstance().identityMatrix(k));
                 }
-                else { 
-                    for(int row=0;row<k;row++)
-                        for(int col=0;col<k;col++)
-                            curB.set(row, col, curB.get(row, col)/maxItem);
-                }
+                
             }
-        } catch (DimensionNotAgreeException | ColumnOutOfRangeException | RowOutOfRangeException ex) {
-            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//            try{
+//            for(Vertex u:g.getVertices(v->v.isY0())){
+//                for(Vertex v:u.getNeighbors())if(v.isY0()){
+//                    B.get(u.getType()).get(v.getType()).add_assign(
+//                            u.getLabel()
+//                                    .times(v.getLabel().transpose()));
+//                    B.get(v.getType()).get(u.getType()).add_assign(u.getLabel()
+//                                    .times(v.getLabel().transpose()));
+//                }
+//            }
+//            
+//            for(Vertex.Type t0:Vertex.types) {
+//                for(Vertex.Type t1:Vertex.types){
+//                    B.get(t0).get(t1).maxnorm_assign();
+//                    //System.out.println("Initilization of B");
+//                   // System.out.println(B.get(t0).get(t1));
+//                }
+//            }
+//        } catch (DimensionNotAgreeException ex) {
+//            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+            
     }
     
     /**
@@ -117,42 +103,44 @@ public abstract class AbstractLabelInference implements LabelInference{
         double oldObj=0;
         double obj;
         double deltaObj;
-        
-        for(Vertex.Type t0:Vertex.types) {
-            Btemp.put(t0, new HashMap<>());
-            for(Vertex.Type t1:Vertex.types)
-                if(t0!=t1)
-                {
-                    Btemp.get(t0).put(t1,B.get(t0).get(t1).copy());
-                    //System.out.print(String.format(Btemp.get(t0).get(t1).toString()));;
-                }
-            
-        }
+        MatrixFactory mf=MatrixFactory.getInstance();
+//        for(Vertex u:g.getVertices()){
+//            Matrix temp=mf.creatMatrix(2, 1);
+//            temp.Setdefault();
+//            if(u.isY0()==true){
+//                u.setLabel(temp);
+//            }
+//        }
         for(Vertex u:g.getVertices()) {
-            u.setTempLabel(u.getLabel().copy());
-        }int iter=0; //the variable controls the iteration times.
-        //oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-        //LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
-        Map<Vertex, Matrix> Y;
+            u.setTempLabelRef(u.getLabel().copy());
+        }
+        int iter=0; //the variable controls the iteration times.
+        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        Y=new HashMap<>(g.getVertices().size());
+        for(Vertex u:g.getVertices()) {
+            Y.put(u,u.getLabel().copy());
+        }
+        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
-            Y=updateY(g.getVertices(),g.getVertices(),Y0);
+            updateY(g.getVertices(),g.getVertices(),Y0); 
             delta=0;
             for(Vertex u:g.getVertices()) {
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
                 u.setLabel(Y.get(u));
             }
-            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
-            deltaObj = (oldObj-obj)/g.getVertices().size();
+            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            deltaObj = Math.abs(oldObj-obj)/g.getVertices().size();
+            System.out.println("deltaObj is "+deltaObj);
             oldObj = obj;
-            if (iter>0 && (delta<=nuance ))
+            if (iter>0 && ((delta<=nuance )||(deltaObj<=nuance)))
             {
                 System.out.print(String.format("Result@_@Delta = %.6f\n",delta));
+                System.out.print(String.format("Result@_@Delta = %.6f\n",deltaObj));
                 break;
             }
-            
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
@@ -189,15 +177,7 @@ public abstract class AbstractLabelInference implements LabelInference{
         double oldObj=0;
         double deltaObj;
         double obj;
-        for(Vertex.Type t0:Vertex.types) {
-            Btemp.put(t0, new HashMap<>());
-            for(Vertex.Type t1:Vertex.types)
-                if(t0!=t1)
-                    Btemp.get(t0).put(t1,B.get(t0).get(t1).copy());
-        }
-        for(Vertex u:g.getVertices()) {
-            u.setTempLabel(u.getLabel().copy());
-        }int iter=0; //the variable controls the iteration times.
+        int iter=0; //the variable controls the iteration times.
         oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
         LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         Map<Vertex, Matrix> Y;

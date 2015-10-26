@@ -95,7 +95,6 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         }
         //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
         
-        Map<Vertex, Matrix> Y=new HashMap<>();
         for(Vertex u:cand) {
             Matrix label= mf.creatMatrix(k, 1);
             for(Vertex v:u.getNeighbors())

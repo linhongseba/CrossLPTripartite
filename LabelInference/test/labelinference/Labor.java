@@ -43,7 +43,8 @@ public class Labor {
         Labor labor=Labor.getInstance();
         Graph expResult=new Graph(path);
         Graph graph=new Graph(path);
-//        graph.generateSubMatrix();  // for calculating full objective 
+        //graph.Printgraph();
+        //graph.generateSubMatrix();  // for calculating full objective 
         
         Collection<Vertex> Y0=graph.getVertices(v->v.isY0());
         Selector selected=selector.apply(Y0);

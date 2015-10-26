@@ -28,6 +28,7 @@ public class Vertex implements Comparable<Vertex> {
     private boolean ISY0;
     private double sume;
     private Matrix label;
+    private Matrix templabel;
     private final String id;
     private final Map<Vertex,Double> neighbors;
     
@@ -67,12 +68,24 @@ public class Vertex implements Comparable<Vertex> {
         return ISY0;
     }
     
-    public void setLabel(Matrix _label) {
+    public void setLabelRef(Matrix _label) {
         label=_label;
+    }
+    public void setLabel(Matrix _label){
+        _label.copyto(label);
     }
 
     public Matrix getLabel() {
         return label;
+    }
+    public Matrix getTempLabel(){
+        return templabel;
+    }
+    public void setTempLabelRef(Matrix _label){
+        templabel=_label;
+    }
+    public void setTempLabel(Matrix _label){
+        _label.copyto(templabel);
     }
     
     public Type getType() { 

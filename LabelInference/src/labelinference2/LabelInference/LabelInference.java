@@ -152,9 +152,9 @@ public interface LabelInference {
         double bcObj = Math.pow(g.mBC.subtract(lableB.transpose().times(B.get(Vertex.typeB).get(Vertex.typeC)).times(lableC))
                 .norm(Matrix.FROBENIUS_NORM), 2);
         
-        abObj = Math.sqrt(abObj/(g.cntA*g.cntB));
-        acObj = Math.sqrt(acObj/(g.cntA*g.cntC));
-        bcObj = Math.sqrt(bcObj/(g.cntB*g.cntC));
+//        abObj = Math.sqrt(abObj/(g.cntA*g.cntB));
+//        acObj = Math.sqrt(acObj/(g.cntA*g.cntC));
+//        bcObj = Math.sqrt(bcObj/(g.cntB*g.cntC));
         
         for(Vertex v:cand) {
             if(v.isY0()) lableObj += pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);

@@ -51,9 +51,9 @@ public class Graph {
                     if(weight>maxE)maxE=weight;
                 }
             }
-            for(Vertex v:this.getVertices())
-                for(Vertex u:v.getNeighbors())
-                    u.addEdge(v, v.getEdge(u)/maxE);
+//            for(Vertex v:this.getVertices())
+//                for(Vertex u:v.getNeighbors())
+//                    u.addEdge(v, v.getEdge(u));
         } catch (ColumnOutOfRangeException | RowOutOfRangeException ex) {}
     }
     
@@ -71,7 +71,16 @@ public class Graph {
     public int getNumLabels() {
         return numLabels;
     }
-
+    public void Printgraph(){
+        for(Vertex v:this.getVertices()){
+            System.out.print(v.getId()+"\t"+v.degree());
+                for(Vertex u:v.getNeighbors()){
+                    System.out.print(":"+u.getId()+","+v.getEdge(u));
+                }
+                System.out.println();
+        }
+        
+    }
     public final void addVertex(Vertex _vertex) {
         ((HashMap<String,Vertex>)vertices).put(_vertex.getId(), _vertex);
     }
@@ -120,6 +129,22 @@ public class Graph {
     public Matrix mAB, mAC, mBC;
 
     // generate Bimatrix AB, AC and BC
+    public void Countvertexttype(){
+         cntA = cntB = cntC = 0;
+        
+        for (Vertex v: vertices.values()) {
+            if (v.getType() == Vertex.typeA) {
+                cntA++;
+            } else if (v.getType() == Vertex.typeB) {
+                cntB++;
+            } else {
+                cntC++;
+            }
+        }
+        System.out.println("A "+cntA);
+        System.out.println("B "+cntB);
+        System.out.println("C "+cntC);
+    }
     public void generateSubMatrix() throws ColumnOutOfRangeException, RowOutOfRangeException {
         aMap = new TreeMap<Vertex, Integer>();
         bMap = new TreeMap<Vertex, Integer>();

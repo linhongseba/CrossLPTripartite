@@ -51,62 +51,64 @@ public class Additive extends AbstractLabelInference implements LabelInference {
     protected void updateB(Collection<Vertex> cand, Collection<Vertex> candS) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
         //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
-        
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBleft=new HashMap<>();
         Map<Vertex.Type,Matrix> dBright=new HashMap<>();
         for(Vertex.Type t0:Vertex.types) {
             dBleft.put(t0, new HashMap<>());
             for(Vertex.Type t1:Vertex.types) {
                 if(t0!=t1)
-                dBleft.get(t0).put(t1,mf.creatMatrix(k,k));
+                    dBleft.get(t0).put(t1,mf.creatMatrix(k,k));
             }
             dBright.put(t0,mf.creatMatrix(k,k));
         }
-        for(Vertex u:cand)for(Vertex v:u.getNeighbors()) {
+        //dBleft_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
+        for(Vertex u:cand)
+            for(Vertex v:u.getNeighbors()) {
+            Matrix temp=v.getLabel().transpose();
+            Matrix temp2=u.getLabel().times(temp);
             dBleft.get(u.getType()).get(v.getType()).add_assign(
-                u.getLabel()
-                .times(v.getLabel().transpose())
-                .times_assign(u.getEdge(v)));
+                temp2.times_assign(u.getEdge(v)));
         }
-
+        //dBright_{t}=\sum_{u\in V_t}Y(u)*Y(u)^T
         for(Vertex u:cand){
-            dBright.get(u.getType()).add_assign(
+            dBright.get(u.getType()).add_assign(  
                 u.getLabel().times(u.getLabel().transpose()));
         }
-        //dBleft_{tt'}=\Sigma{(Y(u)^T*Y(v)*G(u,v))} (u \in t, v \in t')
-        //dBright_{tt'}=\Sigma{(Y(u)*Y(u)^T*B(u,v)*Y(v)*Y(v)^T)} (u \in t, v \in t')
         //L_{tt'}=\Sigma{Y(u)*Y(u)^T*Y(v)*Y(v)^T*G(u,v)}(u\in t,v\in t')
-
-        double alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
-        for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
-             double Lb=(dBright.get(t0).times(dBright.get(t1))).norm(Matrix.FROBENIUS_NORM);
+        for(Vertex.Type t0:Vertex.types){
+            //System.out.println("DBright matrix is "+dBright.get(t0));
+            for(Vertex.Type t1:Vertex.types)
+                if(t0!=t1) {
+             Matrix temp=dBright.get(t0).times(dBright.get(t1));
+             //System.out.println("DBright matrix is "+dBright.get(t1).toString());
+             double Lb=temp.norm(Matrix.FROBENIUS_NORM);
+             //System.out.println("Lb for B is"+(1.0/Lb));
+//             if(Lb<1){
+//                 System.out.println("Lb for B is"+ Lb);
+//                 for(Vertex.Type t2:Vertex.types)
+//                     System.out.println(dBright.get(t2));
+//             }
             //double etab;
             //if(temp>1e-16)
             //    etab=(alphaNext+alpha-1)/alphaNext/temp;
             //else
             //    etab=(alphaNext+alpha-1)/alphaNext;
-
-            Btemp.get(t0).put(t1,Btemp.get(t0).get(t1).add(
-                dBleft.get(t0).get(t1)
-                .subtract((dBright.get(t0).times(Btemp.get(t0).get(t1))).times_assign(dBright.get(t1)))
-                .times_assign(1/Lb)));
+             
+             temp=dBright.get(t0).times(B.get(t0).get(t1));
+             temp.times_assign(dBright.get(t1));
+             //System.out.println("left part is "+dBleft.get(t0).get(t1));
+             //System.out.println("right part is "+temp.toString());
+             Matrix temp2=dBleft.get(t0).get(t1).subtract(temp);
+             temp2.times_assign(1.0/Lb);
+             //System.out.println("incremental part is "+temp2);
+             //System.out.println("old B value is "+Btemp.get(t0).get(t1).toString());
+             B.get(t0).get(t1).add_assign(temp2).projectpositive_assign();
+             //System.out.println(B.get(t0).get(t1));
             //B_{tt'}=B_{tt'}+\eta_b(dBleft_{tt'}-dBright_{tt'})/maxE
             //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
+             //System.out.println("Btemp matrix is "+Btemp.get(t0).get(t1));
+             //B.get(t0).get(t1).projectpositive();
             }
-        Map<Vertex.Type,Map<Vertex.Type,Matrix>> Bold=new HashMap<>();
-        for(Vertex.Type t0:Vertex.types) {
-            Bold.put(t0, new HashMap<>());
-            for(Vertex.Type t1:Vertex.types)
-                if(t0!=t1)
-                    Bold.get(t0).put(t1,B.get(t0).get(t1).copy());
-        }
-        for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types) if(t0!=t1){
-            Matrix curB=Btemp.get(t0).get(t1).copy();
-            curB.projectpositive_assign();
-            B.get(t0).put(t1, curB);
-        }
-        for(Vertex.Type t0:Vertex.types)for(Vertex.Type t1:Vertex.types)if(t0!=t1) {
-            Btemp.get(t0).put(t1, B.get(t0).get(t1).add(B.get(t0).get(t1).subtract(Bold.get(t0).get(t1)).times((alpha-1)/alphaNext)));
         }
 //        try {
 //            final double ZERO=1e-9;
@@ -144,62 +146,60 @@ public class Additive extends AbstractLabelInference implements LabelInference {
 	 */
     protected Map<Vertex, Matrix> updateY(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0) throws DimensionNotAgreeException {
         MatrixFactory mf=MatrixFactory.getInstance();
+        //check whether getTempLabel is initilized;
         Map<Vertex.Type,Matrix> A;
         A=new HashMap<>();
-        for(Vertex.Type type:Vertex.types) {
+        for(Vertex.Type type:Vertex.types){
+             //System.out.println("candS size"+candS.size());
+            //Start updating At
             A.put(type, mf.creatMatrix(k, k));
-            for(Vertex u:candS)
-                if(u.getType()!=type)
-                    A.get(type).add_assign(
-                        B.get(type).get(u.getType())
-                        .times(u.getTempLabel())
-                        .times_assign(u.getTempLabel().transpose())
-                        .times_assign(B.get(type).get(u.getType()).transpose()));
-        }/*
-        System.out.print("testA =\n");
-            for(Vertex.Type t0:Vertex.types)
-                System.out.print(A.get(t0).toString()+"\n");*/
-        Map<Vertex, Matrix> Y=new HashMap<>(),Yold=new HashMap<>();
-        double alphaNext=(1+sqrt(4*alpha*alpha+1))/2;
-        double delta=0;
-        for(Vertex u:cand) {
-            Matrix label_temp= mf.creatMatrix(k, 1);
-            
-            L=A.get(u.getType()).norm(Matrix.FROBENIUS_NORM);
-            //double eta;
-            //if(L>1e-16)
-            //    eta=(alphaNext+alpha-1)/alphaNext/L;
-            //else
-            //    eta=(alphaNext+alpha-1)/alphaNext;
-            //System.out.println(A.get(u.getType()));
-            //\eta=\frac{alphaNext+alpha-1}{alphaNext*\|A_{t(u)}\|_F}
-
-            for(Vertex v:u.getNeighbors())
-                label_temp.add_assign(
-                    B.get(u.getType()).get(v.getType())
-                    .times(v.getTempLabel())
-                    .times_assign(u.getEdge(v)));
-            
-            Matrix t=A.get(u.getType()).times(u.getTempLabel());
-            //System.out.print(String.format(label_temp.toString()));;
-            label_temp.subtract_assign(t);
-            if(u.isY0())label_temp.add_assign(Y0.get(u)).subtract_assign(u.getTempLabel());
-            //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
-            label_temp.times_assign(1.0/L);
-            label_temp.add_assign(u.getTempLabel());
-
-            //label_temp.normone_assign();
-            Yold.put(u, u.getLabel().copy());
-            Y.put(u, label_temp.projectpositive());
-            label_temp=Y.get(u).add(Y.get(u).subtract(Yold.get(u)).times((alpha-1)/alphaNext));
-            //System.out.print(String.format("\n"+"label_temp %.6f "+label_temp.toString()+"\n",L)+"\n");
-            u.setTempLabel(label_temp);
+            for(Vertex u:candS){
+                if(u.getType()!=type){
+                    //System.out.println("B vale is "+B.get(type).get(u.getType()));
+                    //System.out.println("Yu value is "+Y.get(u));
+                    Matrix temp= B.get(type).get(u.getType()).times(Y.get(u));
+                    //System.out.println("temp matrix value is "+temp);
+                    temp.times_assign(Y.get(u).transpose());
+                    //System.out.println("temp matrix value 1 is "+temp);
+                    temp.times_assign(B.get(type).get(u.getType()).transpose());
+                    //System.out.println("temp matrix value  2 is "+temp);
+                    A.get(type).add_assign(temp);
+                }
+            }
+            //System.out.println("A matrix is "+A.get(type));
+            //finish updating Atype
+            L=A.get(type).norm(Matrix.FROBENIUS_NORM);
+            //Update vertex type by type
+            for(Vertex u:cand){
+                if(u.getType()==type){
+                    Matrix label_temp= mf.creatMatrix(k, 1);
+                    for(Vertex v:u.getNeighbors()){
+                        Matrix temp=B.get(u.getType()).get(v.getType()).times(Y.get(v));
+                        temp.times_assign(u.getEdge(v));
+                        label_temp.add_assign(temp);
+                    } 
+                    Matrix t=A.get(u.getType()).times(u.getTempLabel());
+                    label_temp.subtract_assign(t);
+                    if(u.isY0())
+                        label_temp.add_assign(Y0.get(u)).subtract_assign(u.getTempLabel());
+                    //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
+                    label_temp.times_assign(1.0/L);
+                    label_temp.add_assign(u.getTempLabel());
+                    u.setTempLabel(label_temp);
+                    //System.out.println(u.getTempLabel());
+                }
+            }
+            for(Vertex u:cand){
+                if(u.getType()==type){
+                    Y.put(u, u.getTempLabel().projectpositive());
+                    u.setTempLabel(Y.get(u));
+                }
+            }  
         }
         //    for(Vertex u:g.getVertices()) {
         //        delta+=Y.get(u).subtract(Yold.get(u)).norm(Matrix.FIRST_NORM);
         //    }
         //System.out.print(String.format("ADDITIVE@_@Delta = %.6f\n",(alpha-1)/alphaNext));;
-        alpha=alphaNext;
         return Y;
     }
 

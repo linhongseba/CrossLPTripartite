@@ -23,6 +23,7 @@ public interface Matrix {
     Matrix times_assign(double lambda);
     double innerProduct(Matrix b)throws DimensionNotAgreeException,ColumnOutOfRangeException,RowOutOfRangeException;
     Matrix copy();
+    void copyto(Matrix b);
     Matrix cron(Matrix b) throws DimensionNotAgreeException;
     Matrix cron_assign(Matrix b) throws DimensionNotAgreeException;
     Matrix add(Matrix b) throws DimensionNotAgreeException;
@@ -41,6 +42,7 @@ public interface Matrix {
     void setCol(int col,Matrix b) throws ColumnOutOfRangeException,DimensionNotAgreeException;
     double determinant();
     void reset();
+    void Setdefault();
     int Getrownum();
     int Getcolnum();
     Matrix inverse() throws IrreversibleException;
@@ -49,6 +51,7 @@ public interface Matrix {
     Matrix normalize();
     Matrix normalize_assign();
     Matrix normone_assign();
+    Matrix maxnorm_assign();
     Matrix projectpositive();
     Matrix projectpositive_assign();
     double norm(Norm normName);
