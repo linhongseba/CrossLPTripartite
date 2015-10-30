@@ -5,8 +5,8 @@ rois=['0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9']
 maxIter='100'
 nuance='0.0000000000000001'
 graphs=['graph-30']
-algorithms=['ARG','ARR','ARO','MRG','MRR','MRO','GRF']
-thr=4
+algorithms=['ARG','MRG','ARO','MRO','GRF']
+thr=1
 
 def experiment(graph,rol,algo,roi,cfd0,cfd1,nuance):
     if cfd0==cfd1:
