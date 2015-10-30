@@ -48,24 +48,27 @@ public class Main {
         if(args.length<4){
             System.out.println("Usage: Java -jar [graph path] [inference algorithm] [selector algorithm] options");
             System.out.println("graph path (string type)");
-            System.out.println("inference algorithm (string type): MA, BCD, LP");
+            System.out.println("inference algorithm (string type): AR(R/G/O), MR(R/G/O), LP");
             System.out.println("selector algorithm (string type): RND, DEG, SHR");
             System.out.println("option0: (double type): percentage of labeled data, default 0.05");
             System.out.println("option1: (double type): percentage of increment, default 0");
-            System.out.println("option2: (double type): LP parameter");
-            System.out.println("option3: (integer type): maximum number of iterations");
-            System.out.println("option4: (double type): confidence level");
+            System.out.println("option2: (double type): confidence interval start");
+            System.out.println("option3: (double type): confidence interval end");
+            System.out.println("option4: (double type): convergence parameter");
+            System.out.println("option5: (integer type): maximum number of iterations");
+            System.out.println("option6: (double type): label regularization parameter");
             System.exit(2);
         }
         final String path=args[0]; //graph data directory
-        final double rol=Double.parseDouble(args[1]);
-        final String inference=args[2]; //the inference algorithm option
-        final String selector=args[3]; //the algorithm options to select seed nodes
-        final double roi=Double.parseDouble(args[4]); //default ratio=0
+        final String inference=args[1]; //the inference algorithm option
+        final String selector=args[2]; //the algorithm options to select seed nodes
+        final double rol=args.length>4?Double.parseDouble(args[3]):0.05;
+        final double roi=args.length>5?Double.parseDouble(args[4]):0; //default ratio=0.05
         final double a0=Double.parseDouble(args[5]);
         final double a1=Double.parseDouble(args[6]);
         final double nuance=args.length>=8?Double.parseDouble(args[7]):0;//default 0.0
         final int maxIter=args.length>=9?Integer.parseInt(args[8]):100;//default maximum number of iteration
+        double beta=args.length>=10?Double.parseDouble(args[9]):1.0;
         
         
         final Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
@@ -99,7 +102,8 @@ public class Main {
         
         Selector selected=selectors.get(selector).apply(result.getVertices(v->v.isY0()));
         for(Vertex v:result.getVertices())
-            if(!selected.contains(v))v.init(v.getType(), v.getLabel(), false);
+            if(!selected.contains(v))
+                v.init(v.getType(), v.getLabel(), false);
         
         for(int i=0;i<roi*result.getVertices().size();i++)
             deltaGraph.add(result.findVertexByID(list.get(i)));
@@ -110,10 +114,11 @@ public class Main {
             result.removeVertex(u);
         }
         long mTime=System.currentTimeMillis();
-        LabelInference lp=new LabelPropagation(result,0.15);
+        LabelInference lp=new LabelPropagation(result,0);
         if(inference.charAt(inference.length()-1)=='G')
             lp.getResult(maxIter/10, nuance, DISP_NONE);
         LabelInference li=inferences.get(inference).apply(result);
+        li.SetBeta(beta);
         li.getResult(maxIter-maxIter/10,nuance,DISP_ALL^DISP_LABEL);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         System.out.print("Old Accuracy\n");
@@ -124,7 +129,8 @@ public class Main {
         if(deltaGraph.size()>0){
             System.out.print("Recompute2\n");
             mTime=System.currentTimeMillis();
-            if(inference.charAt(inference.length()-1)=='G')li.recompute(deltaGraph,maxIter/10, nuance, DISP_NONE);
+            if(inference.charAt(inference.length()-1)=='G')
+                lp.recompute(deltaGraph,maxIter/10, nuance, DISP_NONE);
             for(Vertex u:deltaGraph) {
                 for(Vertex v:u.getNeighbors())
                     if(!deltaGraph.contains(v))v.removeEdge(u);

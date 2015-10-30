@@ -188,7 +188,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                     Matrix t=A.get(u.getType()).times(u.getTempLabel());
                     label_temp.subtract_assign(t);
                     if(u.isY0())
-                        label_temp.add_assign(Y0.get(u).times(5)).subtract_assign(u.getTempLabel().times(5));
+                        label_temp.add_assign(Y0.get(u).times(this.beta)).subtract_assign(u.getTempLabel().times(this.beta));
                     //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
                     label_temp.times_assign(1.0/L);
                     label_temp.add_assign(u.getTempLabel());

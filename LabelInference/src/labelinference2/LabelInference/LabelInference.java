@@ -11,7 +11,6 @@ import java.util.function.BiConsumer;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Matrix.Matrix;
-import labelinference.Matrix.MatrixFactory;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
@@ -27,6 +26,7 @@ import labelinference.exceptions.RowOutOfRangeException;
 * @see labelinference.AbstractLabelInference.AbstractLabelInference(Graph _g)
 */
 public interface LabelInference {
+    void SetBeta(double _beta);
     void getResult(int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     void increase(Collection<Vertex> deltaGraph, int maxIter, double nuance, double a, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
     void recompute(Collection<Vertex> deltaGraph, int maxIter, double nuance, int disp) throws DimensionNotAgreeException, RowOutOfRangeException, ColumnOutOfRangeException;
@@ -66,7 +66,7 @@ public interface LabelInference {
      * @throws labelinference.exceptions.ColumnOutOfRangeException	
      * @throws labelinference.exceptions.RowOutOfRangeException	
      * @throws labelinference.exceptions.DimensionNotAgreeException*/	
-    public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
+    public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k, double beta) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
     	double obj=0.0;
     	double labelObj = 0.0;
         //MatrixFactory mf=MatrixFactory.getInstance();
@@ -111,7 +111,7 @@ public interface LabelInference {
                 temp.times_assign(u.getLabel());
                 obj+=(pow(v.getEdge(u)-temp.get(0, 0),2)-pow(temp.get(0, 0),2));
             }
-            if(v.isY0()) labelObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2)*5;
+            if(v.isY0()) labelObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2)*beta;
         }
         obj+=labelObj;
         //System.out.print("SquaredObj="+obj+"\n"); 

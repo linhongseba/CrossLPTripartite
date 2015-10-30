@@ -36,6 +36,7 @@ public abstract class AbstractLabelInference implements LabelInference{
     protected final int k; //the variable denotes the number of clusters
     protected Map<Vertex.Type,Map<Vertex.Type,Matrix>> B=new HashMap<>();
     Map<Vertex,Matrix> Y;
+    double beta;
     
     /**
     * 
@@ -55,6 +56,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             k=g.getNumLabels();
             System.out.println("number of labels is "+k);
             labelInit=_labelInit;
+            beta=1.0;
             for(Vertex.Type t0:Vertex.types) {
                 B.put(t0, new HashMap<>());
              
@@ -86,7 +88,10 @@ public abstract class AbstractLabelInference implements LabelInference{
         }
             
     }
-    
+    @Override
+    public void SetBeta(double _beta){
+        this.beta=_beta;
+    }
     /**
     * 
     * @param maxIter: the max iterations times
@@ -117,7 +122,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             u.setTempLabelRef(u.getLabel().copy());
         }
         int iter=0; //the variable controls the iteration times.
-        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
         Y=new HashMap<>(g.getVertices().size());
         for(Vertex u:g.getVertices()) {
             Y.put(u,u.getLabel().copy());
@@ -134,7 +139,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 u.setLabel(Y.get(u));
             }
             //LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
-            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
             deltaObj = Math.abs(oldObj-obj)/g.getVertices().size();
             //System.out.println("deltaObj is "+deltaObj);
             oldObj = obj;
@@ -184,7 +189,7 @@ public abstract class AbstractLabelInference implements LabelInference{
             u.setTempLabelRef(u.getLabel().copy());
         }
         int iter=0; //the variable controls the iteration times.
-        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
         Y=new HashMap<>(g.getVertices().size());
         for(Vertex u:g.getVertices()) {
             Y.put(u,u.getLabel().copy());
@@ -200,7 +205,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
                 u.setLabel(Y.get(u));
             }
-            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
             deltaObj = (oldObj-obj)/g.getVertices().size();
             oldObj = obj;
             if (iter>0 && (delta<=nuance ))
@@ -287,7 +292,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 u.setTempLabelRef(u.getLabel().copy());
             }
             int iter=0; //the variable controls the iteration times.
-            oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
             Y=new HashMap<>(g.getVertices().size());
             for(Vertex u:g.getVertices()) {
                 Y.put(u,u.getLabel().copy());
@@ -298,7 +303,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 updateY(cand,candS,Y0);
                 for(Vertex u:cand)
                     u.setLabel(Y.get(u));
-                obj=LabelInference.objective(cand, candS, Y0, B, k);
+                obj=LabelInference.objective(cand, candS, Y0, B, k,beta);
                 delta=Math.abs(oldObj-obj)/cand.size();
                 oldObj=obj;
                 Collection deltaCand=new HashSet<>();
@@ -348,10 +353,10 @@ public abstract class AbstractLabelInference implements LabelInference{
         if(labelInit==LabelInference.randomLabelInit) {
             final Map<Vertex,Matrix> best=new HashMap<>();
             for(Vertex v:cand)best.put(v, v.getLabel());
-            double minObj=LabelInference.objective(cand, candS, Y0, B, k);
+            double minObj=LabelInference.objective(cand, candS, Y0, B, k,beta);
             for(int i=0;i<100;i++) {
                 for (Vertex v:cand)if(!v.isY0())labelInit.accept(v.getLabel(),k);
-                double obj=LabelInference.objective(cand, candS, Y0, B, k);
+                double obj=LabelInference.objective(cand, candS, Y0, B, k,beta);
                 if(obj<minObj) {
                     for(Vertex v:cand)best.put(v, v.getLabel());
                     minObj=obj;
