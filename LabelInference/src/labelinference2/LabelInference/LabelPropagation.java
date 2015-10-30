@@ -68,7 +68,6 @@ public class LabelPropagation extends AbstractLabelInference implements LabelInf
             cache.put(u, value);
         }
 
-        Map<Vertex, Matrix> Y=new HashMap<>();
         for(final Vertex u:cand) {
             if(u.isY0()) {
                 Y.put(u, u.getLabel());

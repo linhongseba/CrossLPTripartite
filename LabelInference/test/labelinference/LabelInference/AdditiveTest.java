@@ -12,9 +12,9 @@ import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import labelinference.Labor;
 import labelinference.Selector.DegreeSelector;
-import labelinference.Selector.RandomSelector;
+//import labelinference.Selector.RandomSelector;
 import labelinference.Selector.Selector;
-import labelinference.Selector.SimpleHeuristicSelector;
+//import labelinference.Selector.SimpleHeuristicSelector;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
@@ -39,10 +39,10 @@ public class AdditiveTest {
         Function<Collection<Vertex>,Selector> selector10=g->new DegreeSelector(g,g.size()/10);
         Function<Collection<Vertex>,Selector> selector5=g->new DegreeSelector(g,g.size()/20);
         //Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::defaultLabelInit);
-       Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::noneInit);
+        Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::noneInit);
        //Function<Graph,LabelInference> labelInference=g->new Additive(g, LabelInference::randomLabelInit);
         
         //labor.testLabelInference("data/graph-1.txt",selector10,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ);
-        labor.testLabelInference("data/graph_paper.txt",selector10,labelInference,500,-1,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_B);
+        labor.testLabelInference("data/graph_paper.txt",selector5,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_B);
     }
 }

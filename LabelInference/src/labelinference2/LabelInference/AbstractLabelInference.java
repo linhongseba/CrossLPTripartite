@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
 import static labelinference2.LabelInference.LabelInference.*;
@@ -51,6 +49,7 @@ public abstract class AbstractLabelInference implements LabelInference{
     public AbstractLabelInference(Graph _g, BiConsumer<Matrix,Integer> _labelInit) {
             g=_g;
             k=g.getNumLabels();
+            System.out.println("number of labels is "+k);
             labelInit=_labelInit;
             for(Vertex.Type t0:Vertex.types) {
                 B.put(t0, new HashMap<>());
@@ -102,8 +101,7 @@ public abstract class AbstractLabelInference implements LabelInference{
         double delta; //the variable denotes the difference between Y and last produced Y.
         double oldObj=0;
         double obj;
-        double deltaObj;
-        MatrixFactory mf=MatrixFactory.getInstance();
+        double deltaObj=0;
 //        for(Vertex u:g.getVertices()){
 //            Matrix temp=mf.creatMatrix(2, 1);
 //            temp.Setdefault();
@@ -131,9 +129,10 @@ public abstract class AbstractLabelInference implements LabelInference{
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
                 u.setLabel(Y.get(u));
             }
+            //LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
             obj=LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
             deltaObj = Math.abs(oldObj-obj)/g.getVertices().size();
-            System.out.println("deltaObj is "+deltaObj);
+            //System.out.println("deltaObj is "+deltaObj);
             oldObj = obj;
             if (iter>0 && ((delta<=nuance )||(deltaObj<=nuance)))
             {
@@ -177,15 +176,21 @@ public abstract class AbstractLabelInference implements LabelInference{
         double oldObj=0;
         double deltaObj;
         double obj;
+        for(Vertex u:g.getVertices()) {
+            u.setTempLabelRef(u.getLabel().copy());
+        }
         int iter=0; //the variable controls the iteration times.
         oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+        Y=new HashMap<>(g.getVertices().size());
+        for(Vertex u:g.getVertices()) {
+            Y.put(u,u.getLabel().copy());
+        }
         LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
-        Map<Vertex, Matrix> Y;
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
             updateB(g.getVertices(),g.getVertices());
-            Y=updateY(g.getVertices(),g.getVertices(),Y0);
+            updateY(g.getVertices(),g.getVertices(),Y0);
             delta=0;
             for(Vertex u:g.getVertices()) {
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
@@ -206,6 +211,9 @@ public abstract class AbstractLabelInference implements LabelInference{
             iter++;
             LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
         } while(iter!=maxIter);
+        for(Vertex u:g.getVertices()){
+            u.setLabel(Y.get(u).normone_assign());
+        }
         LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
     }
     
@@ -271,13 +279,21 @@ public abstract class AbstractLabelInference implements LabelInference{
             double delta; 
             double oldObj=0;
             double obj;
-            int iter=0;                                                       
-            LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, cand,candS, Y0,B,k,0);
+            for(Vertex u:g.getVertices()) {
+                u.setTempLabelRef(u.getLabel().copy());
+            }
+            int iter=0; //the variable controls the iteration times.
+            oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k);
+            Y=new HashMap<>(g.getVertices().size());
+            for(Vertex u:g.getVertices()) {
+                Y.put(u,u.getLabel().copy());
+            }
             do {
                 long nTime=System.nanoTime();
                 long mTime=System.currentTimeMillis();
-                Map<Vertex, Matrix> Y=updateY(cand,candS,Y0);
-                for(Vertex u:cand)u.setLabel(Y.get(u));
+                updateY(cand,candS,Y0);
+                for(Vertex u:cand)
+                    u.setLabel(Y.get(u));
                 obj=LabelInference.objective(cand, candS, Y0, B, k);
                 delta=Math.abs(oldObj-obj)/cand.size();
                 oldObj=obj;
@@ -300,7 +316,9 @@ public abstract class AbstractLabelInference implements LabelInference{
                 iter++;
                 LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, cand,candS, Y0,B,k,obj);
             } while(delta>nuance && iter!=maxIter);
-            
+            for(Vertex u:g.getVertices()){
+                u.setLabel(Y.get(u).normone_assign());
+            }
             LabelInference.infoDisplay(disp&(DISP_TIME|DISP_B|DISP_LABEL), iter, delta, timeUsed, cand,candS, Y0,B,k,0);
     }
     

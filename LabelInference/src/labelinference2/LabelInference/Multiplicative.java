@@ -85,7 +85,7 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
         Map<Vertex.Type,Matrix> A=new HashMap<>();
         for(Vertex.Type type:Vertex.types) {
             A.put(type, mf.creatMatrix(k, k));
-            for(Vertex u:candS)
+            for(Vertex u:cand)
                 if(u.getType()!=type)
                     A.get(type).add_assign(
                         B.get(type).get(u.getType())

@@ -39,7 +39,7 @@ public class MultiplicativeTest {
         Function<Graph,LabelInference> labelInference=g->new Multiplicative(g,LabelInference::noneInit);
         
         
-        labor.testLabelInference("data/graph-30.txt",selector10,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ);
+        labor.testLabelInference("data/graph-30.txt",selector5,labelInference,100,-1,DISP_ITER|DISP_DELTA|DISP_OBJ);
         //labor.testLabelInference("data/graph-1.txt",selector5,labelInference,100,0,DISP_ITER|DISP_DELTA|DISP_OBJ|DISP_LABEL);
     }
 }

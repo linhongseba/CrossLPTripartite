@@ -1,6 +1,4 @@
 package labelinference2.LabelInference;
-
-import static java.lang.Math.sqrt;
 import java.util.Collection;
 import labelinference.Matrix.MatrixFactory;
 import labelinference.Matrix.Matrix;
@@ -70,9 +68,14 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                 temp2.times_assign(u.getEdge(v)));
         }
         //dBright_{t}=\sum_{u\in V_t}Y(u)*Y(u)^T
+        //int count=0;
         for(Vertex u:cand){
             dBright.get(u.getType()).add_assign(  
                 u.getLabel().times(u.getLabel().transpose()));
+            //count++;
+            //if(count%1000==0){
+                //System.out.println("dBright is:"+dBright.get(u.getType()));
+            //}
         }
         //L_{tt'}=\Sigma{Y(u)*Y(u)^T*Y(v)*Y(v)^T*G(u,v)}(u\in t,v\in t')
         for(Vertex.Type t0:Vertex.types){
@@ -82,7 +85,11 @@ public class Additive extends AbstractLabelInference implements LabelInference {
              Matrix temp=dBright.get(t0).times(dBright.get(t1));
              //System.out.println("DBright matrix is "+dBright.get(t1).toString());
              double Lb=temp.norm(Matrix.FROBENIUS_NORM);
-             //System.out.println("Lb for B is"+(1.0/Lb));
+             if(Lb<1e-9){
+                 Lb=1e-9;
+             }
+             //System.out.println("Lb for B is "+Lb);
+             //System.out.println("Lb for B is "+(1.0/Lb));
 //             if(Lb<1){
 //                 System.out.println("Lb for B is"+ Lb);
 //                 for(Vertex.Type t2:Vertex.types)
@@ -153,7 +160,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
              //System.out.println("candS size"+candS.size());
             //Start updating At
             A.put(type, mf.creatMatrix(k, k));
-            for(Vertex u:candS){
+            for(Vertex u:cand){
                 if(u.getType()!=type){
                     //System.out.println("B vale is "+B.get(type).get(u.getType()));
                     //System.out.println("Yu value is "+Y.get(u));

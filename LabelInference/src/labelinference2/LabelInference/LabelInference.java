@@ -67,35 +67,49 @@ public interface LabelInference {
      * @throws labelinference.exceptions.RowOutOfRangeException	
      * @throws labelinference.exceptions.DimensionNotAgreeException*/	
     public static double objective(Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
-    	Double obj=0.0;
-    	Double labelObj = 0.0;
-
+    	double obj=0.0;
+    	double labelObj = 0.0;
+        //MatrixFactory mf=MatrixFactory.getInstance();
         Map<Vertex.Type,Double>[][] sum=new Map[k][k];
-        for(int i=0;i<k;i++)
+        for(int i=0;i<k;i++){
             for(int j=0;j<k;j++) {
                 sum[i][j]=new HashMap<>();
-                for(Vertex.Type t:Vertex.types)sum[i][j].put(t, 0.0);
-                for(Vertex v:candS)sum[i][j].put(v.getType(), sum[i][j].get(v.getType())+v.getLabel().get(i, 0)*v.getLabel().get(j, 0)); 
+                for(Vertex.Type t:Vertex.types)
+                    sum[i][j].put(t, 0.0);
+                for(Vertex v:candS){
+                    //if(v.getLabel().get(i, 0)>1.0e-9)
+                        //System.out.println("label information is "+v.getLabel().get(i, 0));
+                    double value=sum[i][j].get(v.getType());
+                    value+=(v.getLabel().get(i, 0)*v.getLabel().get(j, 0));
+                    sum[i][j].put(v.getType(), value); 
+                }
             }
-        for(int i=0;i<k;i++)
-            for(int j=0;j<k;j++)
-                for(int m=0;m<k;m++)
-                    for(int n=0;n<k;n++)
-                        for(Vertex.Type t0:Vertex.types)
-                            for(Vertex.Type t1:Vertex.types)
-                                if(t0!=t1)
-                                    obj+=sum[i][m].get(t0)*sum[j][n].get(t1)*B.get(t0).get(t1).get(i,j)*B.get(t0).get(t1).get(m,n);
+        }
+        for(int i=0;i<k;i++){
+            for(int j=0;j<k;j++){
+                for(int m=0;m<k;m++){
+                    for(int n=0;n<k;n++){
+                        for(Vertex.Type t0:Vertex.types){
+                            for(Vertex.Type t1:Vertex.types){
+                                if(t0!=t1){
+                                    double v=sum[i][m].get(t0)*sum[j][n].get(t1)*B.get(t0).get(t1).get(i,j)*B.get(t0).get(t1).get(m,n);
+                                    obj+=v;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //System.out.println(obj);
         
     	//obj=\Sigma {(G(u,v)-Y(u)^T*B_{t(u)t(v)}*Y(v))}+1_{YL(u)}*\|Y0(v)-Y(v)\|_F^2  (v \in  cand,u \in N(v))
         for(Vertex v:cand) {
             for(Vertex u:v.getNeighbors()) {
-                obj+=(pow(v.getEdge(u)
-                        -v.getLabel().transpose()
-                        .times_assign(B.get(u.getType()).get(v.getType()))
-                        .times_assign(u.getLabel()).get(0, 0),2)
-                    -pow(v.getLabel().transpose()
-                        .times_assign(B.get(u.getType()).get(v.getType()))
-                        .times_assign(u.getLabel()).get(0, 0),2));
+                Matrix temp=v.getLabel().transpose();
+                temp.times_assign(B.get(v.getType()).get(u.getType()));
+                temp.times_assign(u.getLabel());
+                obj+=(pow(v.getEdge(u)-temp.get(0, 0),2)-pow(temp.get(0, 0),2));
             }
             if(v.isY0()) labelObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
         }
@@ -117,51 +131,7 @@ public interface LabelInference {
      * @throws RowOutOfRangeException
      * @throws DimensionNotAgreeException
      */
-    public static double objectiveFull(Graph g, Collection<Vertex> cand, Collection<Vertex> candS, Map<Vertex,Matrix> Y0, Map<Vertex.Type,Map<Vertex.Type,Matrix>> B, int k) throws ColumnOutOfRangeException, RowOutOfRangeException, DimensionNotAgreeException {
-        Double lableObj = 0.0;
-        
-        MatrixFactory matrixFactory = MatrixFactory.getInstance();
-        Matrix lableA = matrixFactory.creatMatrix(k, g.cntA);
-        Matrix lableB = matrixFactory.creatMatrix(k, g.cntB);
-        Matrix lableC = matrixFactory.creatMatrix(k, g.cntC);
-        
-        int num = 0;
-        for (Vertex a: g.aMap.keySet()) {
-            lableA.setCol(num, a.getLabel());
-            num++;
-        }
-        
-        num = 0;
-        for (Vertex b: g.bMap.keySet()) {
-            lableB.setCol(num, b.getLabel());
-            num++;
-        }
-        
-        num = 0;
-        for (Vertex c: g.cMap.keySet()) {
-            lableC.setCol(num, c.getLabel());
-            num++;
-        }
-        
-        double abObj = Math.pow(g.mAB.subtract(lableA.transpose().times(B.get(Vertex.typeA).get(Vertex.typeB)).times(lableB))
-                .norm(Matrix.FROBENIUS_NORM), 2);
-        
-        double acObj = Math.pow(g.mAC.subtract(lableA.transpose().times(B.get(Vertex.typeA).get(Vertex.typeC)).times(lableC))
-                .norm(Matrix.FROBENIUS_NORM), 2);
-        
-        double bcObj = Math.pow(g.mBC.subtract(lableB.transpose().times(B.get(Vertex.typeB).get(Vertex.typeC)).times(lableC))
-                .norm(Matrix.FROBENIUS_NORM), 2);
-        
-//        abObj = Math.sqrt(abObj/(g.cntA*g.cntB));
-//        acObj = Math.sqrt(acObj/(g.cntA*g.cntC));
-//        bcObj = Math.sqrt(bcObj/(g.cntB*g.cntC));
-        
-        for(Vertex v:cand) {
-            if(v.isY0()) lableObj += pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
-        }
-        
-        return abObj + acObj + bcObj + lableObj;
-    }
+    
     
     final int DISP_ITER=1;
     final int DISP_DELTA=2;
