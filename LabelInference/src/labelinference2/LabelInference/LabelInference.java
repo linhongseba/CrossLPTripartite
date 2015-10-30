@@ -111,7 +111,7 @@ public interface LabelInference {
                 temp.times_assign(u.getLabel());
                 obj+=(pow(v.getEdge(u)-temp.get(0, 0),2)-pow(temp.get(0, 0),2));
             }
-            if(v.isY0()) labelObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2);
+            if(v.isY0()) labelObj+=pow(Y0.get(v).subtract(v.getLabel()).norm(Matrix.FROBENIUS_NORM),2)*5;
         }
         obj+=labelObj;
         //System.out.print("SquaredObj="+obj+"\n"); 

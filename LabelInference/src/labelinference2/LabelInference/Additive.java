@@ -85,8 +85,8 @@ public class Additive extends AbstractLabelInference implements LabelInference {
              Matrix temp=dBright.get(t0).times(dBright.get(t1));
              //System.out.println("DBright matrix is "+dBright.get(t1).toString());
              double Lb=temp.norm(Matrix.FROBENIUS_NORM);
-             if(Lb<1e-9){
-                 Lb=1e-9;
+             if(Lb<1e-11){
+                 Lb=1e-11;
              }
              //System.out.println("Lb for B is "+Lb);
              //System.out.println("Lb for B is "+(1.0/Lb));
@@ -188,7 +188,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                     Matrix t=A.get(u.getType()).times(u.getTempLabel());
                     label_temp.subtract_assign(t);
                     if(u.isY0())
-                        label_temp.add_assign(Y0.get(u)).subtract_assign(u.getTempLabel());
+                        label_temp.add_assign(Y0.get(u).times(5)).subtract_assign(u.getTempLabel().times(5));
                     //Y(u)=\|Y(u)+2\eta*(\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}-\frac{2*A_{t(u)}*Y(u)*\|\Sigma{B_{t(u)t(v)}*Y(v)*G(u,v)}\|}{\|2*A_{t(u)}*Y(u)\|*maxE}+1_{YL}*(Y0(u)-Y(u)))\|
                     label_temp.times_assign(1.0/L);
                     label_temp.add_assign(u.getTempLabel());

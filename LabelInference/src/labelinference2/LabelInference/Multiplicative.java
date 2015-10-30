@@ -103,10 +103,10 @@ public class Multiplicative extends AbstractLabelInference implements LabelInfer
                     .times(v.getLabel())
                     .times_assign(u.getEdge(v)));
             if(u.isY0())label.add_assign(
-                Y0.get(u))
+                Y0.get(u).times(5))
                 .divide_assign(A.get(u.getType())
                     .times(u.getLabel())
-                    .add_assign(u.getLabel()));
+                    .add_assign(u.getLabel().times(5)));
             else label.divide_assign(A.get(u.getType()).times(u.getLabel()));
             label.sqrt_assign().cron_assign(u.getLabel());
             Y.put(u, label);

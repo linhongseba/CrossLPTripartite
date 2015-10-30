@@ -1,6 +1,8 @@
 package labelinference2.LabelInference;
 
 import static java.lang.Math.max;
+import static java.lang.Math.max;
+import static java.lang.Math.max;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 import java.util.Collection;
@@ -8,14 +10,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import labelinference.Graph.Graph;
 import labelinference.Graph.Vertex;
-import static labelinference2.LabelInference.LabelInference.*;
 import labelinference.Matrix.Matrix;
 import labelinference.Matrix.MatrixFactory;
 import labelinference.exceptions.ColumnOutOfRangeException;
 import labelinference.exceptions.DimensionNotAgreeException;
 import labelinference.exceptions.RowOutOfRangeException;
+import static labelinference2.LabelInference.LabelInference.*;
 import static labelinference2.LabelInference.LabelInference.DISP_TIME;
 
 /**
@@ -59,27 +63,27 @@ public abstract class AbstractLabelInference implements LabelInference{
                 }
                 
             }
-//            try{
-//            for(Vertex u:g.getVertices(v->v.isY0())){
-//                for(Vertex v:u.getNeighbors())if(v.isY0()){
-//                    B.get(u.getType()).get(v.getType()).add_assign(
-//                            u.getLabel()
-//                                    .times(v.getLabel().transpose()));
-//                    B.get(v.getType()).get(u.getType()).add_assign(u.getLabel()
-//                                    .times(v.getLabel().transpose()));
-//                }
-//            }
-//            
-//            for(Vertex.Type t0:Vertex.types) {
-//                for(Vertex.Type t1:Vertex.types){
-//                    B.get(t0).get(t1).maxnorm_assign();
-//                    //System.out.println("Initilization of B");
-//                   // System.out.println(B.get(t0).get(t1));
-//                }
-//            }
-//        } catch (DimensionNotAgreeException ex) {
-//            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+            try{
+            for(Vertex u:g.getVertices(v->v.isY0())){
+                for(Vertex v:u.getNeighbors())if(v.isY0()){
+                    B.get(u.getType()).get(v.getType()).add_assign(
+                            u.getLabel()
+                                    .times(v.getLabel().transpose()));
+                    //B.get(v.getType()).get(u.getType()).add_assign(u.getLabel()
+                                    //.times(v.getLabel().transpose()));
+                }
+            }
+            
+            for(Vertex.Type t0:Vertex.types) {
+                for(Vertex.Type t1:Vertex.types){
+                    B.get(t0).get(t1).maxnorm_assign();
+                    //System.out.println("Initilization of B");
+                   // System.out.println(B.get(t0).get(t1));
+                }
+            }
+        } catch (DimensionNotAgreeException ex) {
+            Logger.getLogger(AbstractLabelInference.class.getName()).log(Level.SEVERE, null, ex);
+        }
             
     }
     

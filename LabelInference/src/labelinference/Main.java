@@ -110,11 +110,11 @@ public class Main {
             result.removeVertex(u);
         }
         long mTime=System.currentTimeMillis();
-//        LabelInference lp=new LabelPropagation(result,1);
-//        if(inference.charAt(inference.length()-1)=='G')
-//            lp.getResult(maxIter/10, nuance, DISP_NONE);
+        LabelInference lp=new LabelPropagation(result,0.15);
+        if(inference.charAt(inference.length()-1)=='G')
+            lp.getResult(maxIter/10, nuance, DISP_NONE);
         LabelInference li=inferences.get(inference).apply(result);
-        li.getResult(maxIter,nuance,DISP_ALL^DISP_LABEL);
+        li.getResult(maxIter-maxIter/10,nuance,DISP_ALL^DISP_LABEL);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         System.out.print("Old Accuracy\n");
         check(expResult,result.getVertices());
