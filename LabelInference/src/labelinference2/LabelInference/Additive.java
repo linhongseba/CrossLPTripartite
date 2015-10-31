@@ -51,9 +51,11 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         //A_t=\Sigma{B_{tt(u)}*Y(u)*Y(u)^T*B_{tt(u)}^T} (t(u)\neq{t} )
         Map<Vertex.Type,Map<Vertex.Type,Matrix>> dBleft=new HashMap<>();
         Map<Vertex.Type,Matrix> dBright=new HashMap<>();
-        for(Vertex.Type t0:Vertex.types) {
+        for(int i=0;i<3;i++) {
+            Vertex.Type t0=Vertex.types[i];
             dBleft.put(t0, new HashMap<>());
-            for(Vertex.Type t1:Vertex.types) {
+            for(int j=0;j<3;j++) {
+                Vertex.Type t1=Vertex.types[j];
                 if(t0!=t1)
                     dBleft.get(t0).put(t1,mf.creatMatrix(k,k));
             }
@@ -78,9 +80,11 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             //}
         }
         //L_{tt'}=\Sigma{Y(u)*Y(u)^T*Y(v)*Y(v)^T*G(u,v)}(u\in t,v\in t')
-        for(Vertex.Type t0:Vertex.types){
+        for(int i=0;i<3;i++) {
+            Vertex.Type t0=Vertex.types[i];
             //System.out.println("DBright matrix is "+dBright.get(t0));
-            for(Vertex.Type t1:Vertex.types)
+            for(int j=0;j<3;j++) {
+                Vertex.Type t1=Vertex.types[j];
                 if(t0!=t1) {
              Matrix temp=dBright.get(t0).times(dBright.get(t1));
              //System.out.println("DBright matrix is "+dBright.get(t1).toString());
@@ -115,7 +119,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             //System.out.println(L.get(t0).get(t1).norm(Matrix.FROBENIUS_NORM));
              //System.out.println("Btemp matrix is "+Btemp.get(t0).get(t1));
              //B.get(t0).get(t1).projectpositive();
-            }
+            }}
         }
 //        try {
 //            final double ZERO=1e-9;
@@ -156,10 +160,12 @@ public class Additive extends AbstractLabelInference implements LabelInference {
         //check whether getTempLabel is initilized;
         Map<Vertex.Type,Matrix> A;
         A=new HashMap<>();
-        for(Vertex.Type type:Vertex.types){
-             //System.out.println("candS size"+candS.size());
+        for(int i=0;i<3;i++) {
+            Vertex.Type type=Vertex.types[i];
+            //System.out.println("candS size"+candS.size());
             //Start updating At
             A.put(type, mf.creatMatrix(k, k));
+            int ii=0;
             for(Vertex u:cand){
                 if(u.getType()!=type){
                     //System.out.println("B vale is "+B.get(type).get(u.getType()));
@@ -172,10 +178,14 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                     //System.out.println("temp matrix value  2 is "+temp);
                     A.get(type).add_assign(temp);
                 }
+                //ii++;
+                //if(ii<=10)
+                //    System.out.print(A.get(type).toString()+"\n");
             }
             //System.out.println("A matrix is "+A.get(type));
             //finish updating Atype
             L=A.get(type).norm(Matrix.FROBENIUS_NORM);
+            //System.out.print(String.format("L = %.6f\n",L));
             //Update vertex type by type
             for(Vertex u:cand){
                 if(u.getType()==type){
@@ -201,7 +211,8 @@ public class Additive extends AbstractLabelInference implements LabelInference {
                     Y.put(u, u.getTempLabel().projectpositive());
                     u.setTempLabel(Y.get(u));
                 }
-            }  
+            }
+            //System.out.print(A.get(type).toString()+"\n");
         }
         //    for(Vertex u:g.getVertices()) {
         //        delta+=Y.get(u).subtract(Yold.get(u)).norm(Matrix.FIRST_NORM);

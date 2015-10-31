@@ -127,7 +127,7 @@ public abstract class AbstractLabelInference implements LabelInference{
         for(Vertex u:g.getVertices()) {
             Y.put(u,u.getLabel().copy());
         }
-        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
+        LabelInference.infoDisplay(disp&(DISP_ITER|DISP_OBJ|DISP_B), iter, 0, 0, g.getVertices(),g.getVertices(), Y0,B,k,oldObj);
         do {
             long nTime=System.nanoTime();
             long mTime=System.currentTimeMillis();
@@ -135,6 +135,8 @@ public abstract class AbstractLabelInference implements LabelInference{
             updateY(g.getVertices(),g.getVertices(),Y0); 
             delta=0;
             for(Vertex u:g.getVertices()) {
+                //if(iter==0)
+                //    System.out.print(u.getLabel().toString()+"\n");
                 delta+=u.getLabel().subtract(Y.get(u)).norm(Matrix.FIRST_NORM);
                 u.setLabel(Y.get(u));
             }

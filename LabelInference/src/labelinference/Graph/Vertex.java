@@ -17,12 +17,12 @@ public class Vertex implements Comparable<Vertex> {
     public final static Type typeA=new Type();
     public final static Type typeB=new Type();
     public final static Type typeC=new Type();
-    public static final Collection<Type> types=new HashSet<>();
+    public static Type types[]=new Type[3];
     
     static {
-        types.add(typeA);
-        types.add(typeB);
-        types.add(typeC);
+        types[0]=typeA;
+        types[1]=typeB;
+        types[2]=typeC;
     }
     
     private boolean ISY0;

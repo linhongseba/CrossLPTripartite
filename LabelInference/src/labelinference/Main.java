@@ -68,7 +68,7 @@ public class Main {
         final double a1=Double.parseDouble(args[6]);
         final double nuance=args.length>=8?Double.parseDouble(args[7]):0;//default 0.0
         final int maxIter=args.length>=9?Integer.parseInt(args[8]):100;//default maximum number of iteration
-        double beta=args.length>=10?Double.parseDouble(args[9]):1.0;
+        double beta=args.length>=10?Double.parseDouble(args[9]):10.0;
         
         
         final Map<String,Function<Collection<Vertex>,Selector>> selectors=new HashMap<>();
