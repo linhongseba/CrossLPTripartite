@@ -1,7 +1,7 @@
 #
 # Running on python3
 #
-import xlwt3 as xlwt
+import xlwt
 import math
 
 def _isdigit(ch):
@@ -70,10 +70,10 @@ xls=xlwt.Workbook()
 #================================================================================
 sheet = xls.add_sheet('accuracy',cell_overwrite_ok=True)
 
-graph=['graph-30','graph-37','graph_imdb','graph_paper'];
-algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+graph=['graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRO','ARO'];
 
-for i in range(0,7):
+for i in range(0,4):
     sheet.write(0,1+i,algorithm[i])
 
 x=0
@@ -84,26 +84,26 @@ for g in graph:
     for a in algorithm:
         y+=1
         tot=0;
-        filename=g+'_05_'+a+'_0_0_0.0000000000000001.txt';
+        filename=g+'_05_'+a+'_0_0_-1_5.txt';
         sheet.write(x,y,find_xls(filename,1))
 #================================================================================
 #================================================================================
 
-graph=['graph-30','graph-37','graph_imdb','graph_paper'];
-algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+graph=['graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRO','ARO'];
 
 
 for g in graph:
     sheet = xls.add_sheet('converge-recompute2'+g,cell_overwrite_ok=True)
     sheet.write(0,0,'#iteration')
-    for i in range(0,7):
+    for i in range(0,4):
         sheet.write(0,1+i,algorithm[i])
 
     y=0
     _maxx=0
     for a in algorithm:
         y+=1
-        filename=g+'_05_'+a+'_0_0_0.0000000000000001.txt';
+        filename=g+'_05_'+a+'_0_0_-1_5.txt';
         obj=find_xls(filename,2)
 
         x=0
@@ -120,11 +120,11 @@ for g in graph:
 #================================================================================
 sheet = xls.add_sheet('running_time',cell_overwrite_ok=True)
 
-graph=['graph-30','graph-37','graph_imdb','graph_paper'];
-algorithm=['MRG','ARG','MRR','ARR','GRF','MRO','ARO'];
+graph=['graph-30','graph-37','graph_imdb_10M','graph_paper'];
+algorithm=['MRG','ARG','MRO','ARO'];
 
 sheet.write(0,0,'running time (sec)')
-for i in range(0,7):
+for i in range(0,4):
     sheet.write(0,1+i,algorithm[i])
 
 x=0
@@ -135,7 +135,7 @@ for g in graph:
     for a in algorithm:
         y+=1
         tot=0;
-        filename=g+'_05_'+a+'_0_0_0.0000000000000001.txt';
+        filename=g+'_05_'+a+'_0_0_-1_5.txt';
         sheet.write(x,y,find_xls(filename,3))
 
 #================================================================================
