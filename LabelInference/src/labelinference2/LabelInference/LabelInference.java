@@ -104,8 +104,9 @@ public interface LabelInference {
         //System.out.println(obj);
         
     	//obj=\Sigma {(G(u,v)-Y(u)^T*B_{t(u)t(v)}*Y(v))}+1_{YL(u)}*\|Y0(v)-Y(v)\|_F^2  (v \in  cand,u \in N(v))
-        for(Vertex v:cand) {
-            for(Vertex u:v.getNeighbors()) {
+       for(Vertex v:cand) {
+            for(Vertex u:v.getNeighbors()) 
+                {
                 Matrix temp=v.getLabel().transpose();
                 temp.times_assign(B.get(v.getType()).get(u.getType()));
                 temp.times_assign(u.getLabel());
