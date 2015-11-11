@@ -21,8 +21,8 @@ public class Vertex implements Comparable<Vertex> {
     
     static {
         types[0]=typeA;
-        types[1]=typeB;
-        types[2]=typeC;
+        types[1]=typeC;
+        types[2]=typeB;
     }
     
     private boolean ISY0;

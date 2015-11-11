@@ -165,7 +165,7 @@ public class Additive extends AbstractLabelInference implements LabelInference {
             //System.out.println("candS size"+candS.size());
             //Start updating At
             A.put(type, mf.creatMatrix(k, k));
-            int ii=0;
+            //int ii=0;
             for(Vertex u:cand){
                 if(u.getType()!=type){
                     //System.out.println("B vale is "+B.get(type).get(u.getType()));

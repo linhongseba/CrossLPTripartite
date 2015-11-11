@@ -1,0 +1,173 @@
+Inferencer=MRG
+Selector=DEG
+number of labels is 2
+number of labels is 2
+Processed in 73524 ms(total)
+Old Accuracy
+Totle = 937(A), 17043(B), 13211(C), 31191(all)
+Labeled = 69(A), 776(B), 542(C), 1387(all)
+AllLabels : [24808, 2616]
+TrainLabels : [825, 562]
+Accuracy = 0.812500(A), 0.901395(B), 0.656116(C), 0.809406(all)
+BER : 0.18625212364672217
+Recompute2
+Processed in 268746 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [810, 544]
+Accuracy = 0.750000(A), 0.841695(B), 0.754023(C), 0.808417(all)
+BER : 0.1915828659001454
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1594, 1147]
+Accuracy = 0.812500(A), 0.842224(B), 0.754544(C), 0.809151(all)
+BER : 0.19084870695638723
+confidence=0.1
+Processed in 359645 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [763, 591]
+Accuracy = 0.750000(A), 0.892731(B), 0.722852(C), 0.828261(all)
+BER : 0.1717394637061781
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1546, 1195]
+Accuracy = 0.781250(A), 0.892699(B), 0.666726(C), 0.807452(all)
+BER : 0.19148023751338938
+confidence=0.2
+Processed in 342796 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [719, 635]
+Accuracy = 0.750000(A), 0.894463(B), 0.720221(C), 0.828337(all)
+BER : 0.171662700061327
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1500, 1241]
+Accuracy = 0.781250(A), 0.894518(B), 0.665148(C), 0.807990(all)
+BER : 0.19094085046024561
+confidence=0.30000000000000004
+Processed in 291701 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [703, 651]
+Accuracy = 0.750000(A), 0.895144(B), 0.719613(C), 0.828529(all)
+BER : 0.1714707909491997
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1485, 1256]
+Accuracy = 0.781250(A), 0.895042(B), 0.663264(C), 0.807606(all)
+BER : 0.1913261269267768
+confidence=0.4
+Processed in 238707 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [697, 657]
+Accuracy = 0.750000(A), 0.895206(B), 0.719512(C), 0.828529(all)
+BER : 0.1714707909491997
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1478, 1263]
+Accuracy = 0.781250(A), 0.895443(B), 0.666064(C), 0.808911(all)
+BER : 0.1900161869405705
+confidence=0.5
+Processed in 190593 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [701, 653]
+Accuracy = 0.750000(A), 0.893597(B), 0.720929(C), 0.828069(all)
+BER : 0.1719313728183054
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1483, 1258]
+Accuracy = 0.781250(A), 0.893963(B), 0.671664(C), 0.810102(all)
+BER : 0.18882182989432333
+confidence=0.6
+Processed in 190735 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [704, 650]
+Accuracy = 0.750000(A), 0.894525(B), 0.720119(C), 0.828337(all)
+BER : 0.171662700061327
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1486, 1255]
+Accuracy = 0.781250(A), 0.894949(B), 0.671410(C), 0.810620(all)
+BER : 0.18830170666450607
+confidence=0.7
+Processed in 190338 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [705, 649]
+Accuracy = 0.750000(A), 0.896195(B), 0.718399(C), 0.828721(all)
+BER : 0.1712788818370724
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1487, 1254]
+Accuracy = 0.781250(A), 0.896275(B), 0.670748(C), 0.811196(all)
+BER : 0.18772379196470912
+confidence=0.7999999999999999
+Processed in 195383 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [709, 645]
+Accuracy = 0.750000(A), 0.898608(B), 0.717083(C), 0.829719(all)
+BER : 0.1702809544540102
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1492, 1249]
+Accuracy = 0.781250(A), 0.899019(B), 0.670951(C), 0.812981(all)
+BER : 0.1859322563953386
+confidence=0.8999999999999999
+Processed in 196917 ms(total)
+Incremental
+Totle = 990(A), 16942(B), 13260(C), 31192(all)
+Labeled = 69(A), 777(B), 508(C), 1354(all)
+AllLabels : [24912, 2496]
+TrainLabels : [718, 636]
+Accuracy = 0.750000(A), 0.903681(B), 0.708683(C), 0.829681(all)
+BER : 0.17031933627643575
+Global
+Totle = 1927(A), 33985(B), 26471(C), 62383(all)
+Labeled = 138(A), 1553(B), 1050(C), 2741(all)
+AllLabels : [49720, 5112]
+TrainLabels : [1502, 1239]
+Accuracy = 0.781250(A), 0.904076(B), 0.668355(C), 0.815150(all)
+BER : 0.1837554443594367
+Done.

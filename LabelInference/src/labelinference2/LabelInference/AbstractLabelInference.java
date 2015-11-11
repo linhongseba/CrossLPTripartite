@@ -155,7 +155,14 @@ public abstract class AbstractLabelInference implements LabelInference{
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
             iter++;
-            LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
+            if(iter<10){
+                    if(iter==1||iter==5)
+                        LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
+                }else{
+                    if(iter%10==0)
+                        LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, g.getVertices(),g.getVertices(), Y0,B,k,obj);
+                }
+            //LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed,g.getVertices(),g.getVertices(), Y0,B,k,obj);
         } while(iter!=maxIter);
         for(Vertex u:g.getVertices()){
             u.setLabel(Y.get(u).normone_assign());
@@ -208,14 +215,13 @@ public abstract class AbstractLabelInference implements LabelInference{
                 u.setLabel(Y.get(u));
             }
             obj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
-            deltaObj = (oldObj-obj)/g.getVertices().size();
+            deltaObj =Math.abs(oldObj-obj)/g.getVertices().size();
             oldObj = obj;
-            if (iter>0 && (delta<=nuance ))
-            {
-                System.out.print(String.format("@_@Delta = %.6f\n",delta));
+            if (iter>0 && ((delta<=nuance )||(deltaObj<=nuance))){
+                System.out.print(String.format("Result@_@Delta = %.6f\n",delta));
+                System.out.print(String.format("Result@_@Delta = %.6f\n",deltaObj));
                 break;
             }
-            
             nTime=System.nanoTime()-nTime;
             mTime=System.currentTimeMillis()-mTime;
             timeUsed+=max(mTime,nTime/1000000.0);
@@ -294,7 +300,7 @@ public abstract class AbstractLabelInference implements LabelInference{
                 u.setTempLabelRef(u.getLabel().copy());
             }
             int iter=0; //the variable controls the iteration times.
-            oldObj = LabelInference.objective(g.getVertices(), g.getVertices(), Y0, B, k,beta);
+            oldObj = LabelInference.objective(cand, candS, Y0, B, k,beta);
             Y=new HashMap<>(g.getVertices().size());
             for(Vertex u:g.getVertices()) {
                 Y.put(u,u.getLabel().copy());
@@ -325,7 +331,13 @@ public abstract class AbstractLabelInference implements LabelInference{
                 mTime=System.currentTimeMillis()-mTime;
                 timeUsed+=max(mTime,nTime/1000000.0);
                 iter++;
-                LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, cand,candS, Y0,B,k,obj);
+                if(iter<10){
+                    if(iter==1||iter==5)
+                        LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, cand,candS, Y0,B,k,obj);
+                }else{
+                    if(iter%10==0)
+                        LabelInference.infoDisplay(disp&~DISP_TIME&~DISP_B&~DISP_LABEL, iter, delta, timeUsed, cand,candS, Y0,B,k,obj);
+                }
             } while(delta>nuance && iter!=maxIter);
             for(Vertex u:g.getVertices()){
                 u.setLabel(Y.get(u).normone_assign());

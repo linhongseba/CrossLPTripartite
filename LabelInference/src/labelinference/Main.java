@@ -63,7 +63,7 @@ public class Main {
         final String inference=args[1]; //the inference algorithm option
         final String selector=args[2]; //the algorithm options to select seed nodes
         final double rol=args.length>4?Double.parseDouble(args[3]):0.05;
-        final double roi=args.length>5?Double.parseDouble(args[4]):0; //default ratio=0.05
+        final double roi=args.length>5?Double.parseDouble(args[4]):0; //default ratio=0
         final double a0=Double.parseDouble(args[5]);
         final double a1=Double.parseDouble(args[6]);
         final double nuance=args.length>=8?Double.parseDouble(args[7]):0;//default 0.0
@@ -119,7 +119,8 @@ public class Main {
             lp.getResult(maxIter/10, nuance, DISP_NONE);
         LabelInference li=inferences.get(inference).apply(result);
         li.SetBeta(beta);
-        li.getResult(maxIter-maxIter/10,nuance,DISP_ALL^DISP_LABEL);
+        //li.getResult(maxIter-maxIter/10,nuance,DISP_ALL^DISP_LABEL);
+        li.getResult(maxIter-maxIter/10,nuance,DISP_NONE);
         System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
         System.out.print("Old Accuracy\n");
         check(expResult,result.getVertices());
@@ -136,7 +137,8 @@ public class Main {
                     if(!deltaGraph.contains(v))v.removeEdge(u);
                 result.removeVertex(u);
             }
-            li.recompute(deltaGraph, maxIter,nuance, DISP_ALL^DISP_LABEL);
+            //li.recompute(deltaGraph, maxIter,nuance, DISP_ALL^DISP_LABEL);
+            li.recompute(deltaGraph, maxIter,nuance, DISP_NONE);
             System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
             System.out.print("Incremental\n");
             check(expResult,deltaGraph);
@@ -161,7 +163,8 @@ public class Main {
                         if(!deltaGraph.contains(v))v.removeEdge(u);
                     result.removeVertex(u);
                 }
-                li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
+                li.increase(deltaGraph, maxIter,nuance, a, DISP_NONE);
+                //li.increase(deltaGraph, maxIter,nuance, a, DISP_ALL^DISP_LABEL);
                 System.out.print(String.format("Processed in %d ms(total)\n",System.currentTimeMillis()-mTime));
 
                 System.out.print("Incremental\n");
