@@ -5,7 +5,7 @@
 
 -[Graph Summary on K-partite Graph](#summary)
 
--[Label Propagation on K-partite Graph](#LP)
+-[Label Propagation on K-partite Graph](#Label Propagation)
 
 ##Clustering
 ###Related Publications
@@ -71,4 +71,6 @@ where:
 
 ###summary
 On-going work
-###LP
+
+###Label Propagation
+
