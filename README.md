@@ -1,17 +1,22 @@
 # Learning algorithms on K-partite Graphs
+
 ##Table of Content
 -[Clustering on K-partite Graph](#clustering)
+
 -[Graph Summary on K-partite Graph](#summary)
+
 -[Label Propagation on K-partite Graph](#LP)
+
 ##Clustering
-###Code location
-The matlab implementation for clustering on Tripartite graph is located within folder Triclustering
 ###Related Publications
 
 Linhong Zhu, Aram Galstyan, James Cheng, and Kristina Lerman. Tripartite Graph Clustering for Dynamic Sentiment Analysis on Social Media. ACM SIGMOD 2014: 1531-1542.
 
 Linhong Zhu, Aram Galstyan, James Cheng, Kristina Lerman:
 Tripartite Graph Clustering for Dynamic Sentiment Analysis on Social Media. CoRR abs/1402.6010 (2014)
+
+###Code location
+The matlab implementation for clustering on Tripartite graph is located within folder Triclustering
 ###Usage:
 [Su,Sp,Sf,Hu,Hp,errsu, errsp, errsr, accyu,accyp, MIu, MIp] = tricluster(Xu,Xr,Xp,Gu,Sf0,alpha,beta,tlabel, ulabel)
 where:
