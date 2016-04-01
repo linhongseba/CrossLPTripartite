@@ -1,6 +1,9 @@
-# CrossLPTripartite
-Learning algorithms on Tripartite Graphs
-##Clustering on Tripartite Graph
+# Learning algorithms on K-partite Graphs
+##Table of Content
+-[Clustering on K-partite Graph](#clustering)
+-[Graph Summary on K-partite Graph](#summary)
+-[Label Propagation on K-partite Graph](#LP)
+##Clustering
 ###Code location
 The matlab implementation for clustering on Tripartite graph is located within folder Triclustering
 ###Related Publications
@@ -61,6 +64,6 @@ where:
   
   %MIp: tweet-level MI of each iteration
 
-###Label Propagation on Tripartite Graph
+###summary
 On-going work
-
+###LP
