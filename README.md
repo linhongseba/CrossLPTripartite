@@ -3,7 +3,7 @@
 ##Table of Content
 -[Clustering on K-partite Graph](#clustering)
 
--[Graph Summary on K-partite Graph](#summary)
+-[Graph Summary on K-partite Graph](#graph-summarization)
 
 -[Label Propagation on K-partite Graph](#label-propagation)
 
@@ -69,7 +69,7 @@ where:
   
   %MIp: tweet-level MI of each iteration
 
-##summary
+##Graph Summarization
 On-going work
 
 ##Label Propagation
