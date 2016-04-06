@@ -5,7 +5,7 @@
 
 -[Graph Summary on K-partite Graph](#summary)
 
--[Label Propagation on K-partite Graph](#Label Propagation)
+-[Label Propagation on K-partite Graph](#label-propagation)
 
 ##Clustering
 ###Related Publications
@@ -69,8 +69,8 @@ where:
   
   %MIp: tweet-level MI of each iteration
 
-###summary
+##summary
 On-going work
 
-###Label Propagation
+##Label Propagation
 
