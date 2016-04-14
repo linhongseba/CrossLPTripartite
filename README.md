@@ -73,4 +73,15 @@ where:
 On-going work
 
 ##Label Propagation
+###Publication
+   Under Review in ICML'16
+###Code location
+We have two versions of implementations, one is implemented in Java, and another is implemented in C++ with parallel in pthread.
+
+The source codes are located in [LabelInference](https://github.com/linhongseba/CrossLPTripartite/tree/master/LabelInference) and [LabelInference(CPP)](https://github.com/linhongseba/CrossLPTripartite/tree/master/LabelInference%28cpp%29)
+
+###Compile and Installation
+
+### Input Format
+
 
