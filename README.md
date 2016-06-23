@@ -24,7 +24,9 @@ C++ version:   [LabelInference(CPP)](https://github.com/linhongseba/CrossLPTripa
     - Enter into LabelInference(cpp) folder, and type make to compile the file
     
 ### Java
-    - Compile with IDE Netbeans, see detailed instruction from (https://netbeans.org/kb/73/java/project-setup.html?print=yes#existing-java-sources)
+    - Compile with IDE Netbeans, see detailed instruction from
+    
+    (https://netbeans.org/kb/73/java/project-setup.html?print=yes#existing-java-sources)
 
 
 
