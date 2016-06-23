@@ -6,8 +6,8 @@
 - [Installation] (##intallation)
 - [Usage] (##usage)
 - [Input and Output] (##input-and-output)
-- [Example Pipeline) (##example-pipeline)
-- [Development Manual) ()
+- [Example Pipeline] (##example-pipeline)
+- [Development Manual] ()
 
 
 ## Publication
@@ -34,4 +34,4 @@ C++ version:   [LabelInference(CPP)](https://github.com/linhongseba/CrossLPTripa
 
 ## Usage
 
-
+## Example Pipeline
