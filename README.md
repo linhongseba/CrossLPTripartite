@@ -34,4 +34,18 @@ C++ version:   [LabelInference(CPP)](https://github.com/linhongseba/CrossLPTripa
 
 ## Usage
 
+To run the Java code,
+
+path.format(graph),rol,algo,'DEG',roi,cfd0,cfd1,nuance,maxIter
+
+Java -jar LabelInference.jar [graph-file-folder] [percentage-of-training-labels] [algorithm-name] [algorithm-to-select-seeds] [number of new data] [confidence parameter 1] [confidence parameter 2] [abort parameter] [maxnimum number of iterations] [value of parameter beta]
+
+To run the c++ code,
+
+Similar to the above
+
 ## Example Pipeline
+ 
+ Please refer to the script LabelInference/experiment/experimental_scripts/experiment.py for more examples
+ 
+ 
